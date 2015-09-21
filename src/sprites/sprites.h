@@ -15,9 +15,10 @@
 #include <types.h>
 
 extern const u8 G_palette[16];
-extern const u8 G_stageTile01[32];
-extern const u8 G_stageTile02[32];
-extern const u8 G_stageTile03[32];
-extern const u8 G_stageTile04[32];
+extern const u8 G_tile01[32];
+extern const u8 G_tile02[32];
+extern const u8 G_tile03[32];
+extern const u8 G_tile04[32];
 extern const u8 G_redPotion[32];
 extern const u8 G_bluePotion[32];
+extern const u8 G_yellowPotion[32];
