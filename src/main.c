@@ -1,6 +1,6 @@
 //-----------------------------LICENSE NOTICE------------------------------------
-//  This file is part of CPCtelera: An Amstrad CPC Game Engine
-//  Copyright (C) 2015 ronaldo / Fremos / Cheesetea / ByteRealms (@FranGallegoBR)
+//  This file is part of TopTop: An Amstrad CPC Game
+//  Copyright (C) 2015 Rantan (@RantanGames)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -17,18 +17,61 @@
 //------------------------------------------------------------------------------
 
 #include <cpctelera.h>
+#include "scenes/menu.h"
+#include "scenes/game.h"
 
+// Initialization of the Amstrad CPC at the start of the application
+void initializeCPC() {
+   // Disable firmware: we dont want it to interfere with our code
+   cpct_disableFirmware();
+
+   // Set the hardware palette (convert firmware colour values to hardware ones and set the palette)
+   //cpct_fw2hw(G_palette, 16);
+   //cpct_setPalette(G_palette, 16);    // Descomentar estas tres lineas cuando tengamos paleta
+   //cpct_setBorder(G_palette[8]);
+
+   // Change to Mode 0 (160x200, 16 colours)
+   cpct_setVideoMode(0);
+}
+
+
+// Main
 void main(void) {
-   u8* video_memory_start  = (u8*)0xC000;
-   u8  character_line_size = 0x050;
+   u8 scene = G_sceneMenu;    // Escena actual
+   u8 nextScene = scene;    // Escena siguiente (si se va a cambiar)
 
-   // Clear Screen
-   cpct_memset(video_memory_start, 0, 0x4000);
+   // Initialize CPC before starting the game
+   initializeCPC();
 
-   // Draw String on the middle of the screen
-   cpct_drawStringM1("Welcome to CPCtelera!",
-                     video_memory_start + character_line_size * 12,
-                     1, 0);
-   // Loop forever
-   while (1);
+   // Inicializamos la primera escena (Menu)
+   initMenu();
+
+   // Main loop
+   while (1) {
+      // Scene updates
+      switch(scene) {
+         case G_sceneMenu:
+            nextScene = updateMenu();
+            break;
+         case G_sceneGame:
+            nextScene = updateGame();
+            break;
+      }
+
+      // Comprobamos si vamos a cambiar de escena para prepararla
+      if(nextScene != scene) {
+         // Actualizamos la escena actual
+         scene = nextScene;
+
+         // Scene inits
+         switch(nextScene) {
+            case G_sceneMenu:
+               initMenu();
+               break;
+            case G_sceneGame:
+               initGame();
+               break;
+         }
+      }
+   }
 }
