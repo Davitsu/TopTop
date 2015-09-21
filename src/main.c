@@ -19,6 +19,7 @@
 #include <cpctelera.h>
 #include "scenes/menu.h"
 #include "scenes/game.h"
+#include "sprites/sprites.h"
 #include "constants.h"
 
 // Initialization of the Amstrad CPC at the start of the application
@@ -27,12 +28,17 @@ void initializeCPC() {
    cpct_disableFirmware();
 
    // Set the hardware palette (convert firmware colour values to hardware ones and set the palette)
-   //cpct_fw2hw(G_palette, 16);
-   //cpct_setPalette(G_palette, 16);    // Descomentar estas tres lineas cuando tengamos paleta
-   //cpct_setBorder(G_palette[8]);
+   cpct_fw2hw(G_palette, 16);
+   cpct_setPalette(G_palette, 16);    // Descomentar estas tres lineas cuando tengamos paleta
+   cpct_setBorder(G_palette[14]);
 
    // Change to Mode 0 (160x200, 16 colours)
    cpct_setVideoMode(0);
+
+   // Clear screen
+   //cpct_clearScreen(0x00);
+
+   cpct_drawTileAligned4x8(G_stageTile01, 0xC000);
 }
 
 

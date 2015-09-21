@@ -21,3 +21,5 @@ extern const u8 G_stageTile03[32];
 extern const u8 G_stageTile04[32];
 extern const u8 G_redPotion[32];
 extern const u8 G_bluePotion[32];
+
+#endif
