@@ -16,17 +16,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#include <cpctelera.h>
-#include "menu.h"
-#include "../constants.h"
+#ifndef _CONSTANTS_H_
+#define _CONSTANTS_H_
 
-// Inicializa el menu
-void initMenu() {
-	// Code...
-}
+#include <types.h>
 
-// Update del menu
-u8 updateMenu() {
-	// Code...
-	return G_sceneMenu;
-}
+#define G_sceneMenu 0   // Escena del menu principal
+#define G_sceneGame 1   // Escena del juego
+
+#endif

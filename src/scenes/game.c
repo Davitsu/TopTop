@@ -18,6 +18,7 @@
 
 #include <cpctelera.h>
 #include "game.h"
+#include "../constants.h"
 
 // Inicializa el menu
 void initGame() {
