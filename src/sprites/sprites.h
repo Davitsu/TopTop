@@ -9,6 +9,11 @@
 //
 // ------------------------------------------------------
 
+#ifndef _SPRITES_H_
+#define _SPRITES_H_
+
+#include <types.h>
+
 extern const u8 G_palette[16];
 extern const u8 G_stage-tile01[32];
 extern const u8 G_stage-tile02[32];
