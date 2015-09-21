@@ -21,8 +21,6 @@
 
 #include <types.h>
 
-#define G_sceneGame 1   // Escena del juego
-
 void initGame();
 u8 updateGame();
 

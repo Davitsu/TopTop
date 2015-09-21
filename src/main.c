@@ -19,6 +19,7 @@
 #include <cpctelera.h>
 #include "scenes/menu.h"
 #include "scenes/game.h"
+#include "constants.h"
 
 // Initialization of the Amstrad CPC at the start of the application
 void initializeCPC() {

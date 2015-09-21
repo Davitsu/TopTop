@@ -21,8 +21,6 @@
 
 #include <types.h>
 
-#define G_sceneMenu 0   // Escena del menu principal
-
 void initMenu();
 u8 updateMenu();
 
