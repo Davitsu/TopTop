@@ -30,28 +30,35 @@ void initializeCPC() {
    // Set the hardware palette (convert firmware colour values to hardware ones and set the palette)
    cpct_fw2hw(G_palette, 16);
    cpct_setPalette(G_palette, 16);    // Descomentar estas tres lineas cuando tengamos paleta
-   cpct_setBorder(G_palette[14]);
+   cpct_setBorder(G_palette[0]);
 
    // Change to Mode 0 (160x200, 16 colours)
    cpct_setVideoMode(0);
 
-   // Clear screen
-   //cpct_clearScreen(0x00);
-
-   cpct_drawTileAligned4x8(G_stageTile01, 0xC000);
 }
 
+void initScene(u8 *scene) {
+   // Scene inits
+   switch(*scene) {
+      case G_sceneMenu:
+         initMenu();
+         break;
+      case G_sceneGame:
+         initGame();
+         break;
+   }
+}
 
 // Main
 void main(void) {
-   u8 scene = G_sceneMenu;    // Escena actual
-   u8 nextScene = scene;    // Escena siguiente (si se va a cambiar)
+   u8 scene = G_sceneGame;    // Primera escena (y la actual)
+   u8 nextScene = scene;      // Siguiente escena (siempre empieza siendo igual a la primera)
 
    // Initialize CPC before starting the game
    initializeCPC();
 
-   // Inicializamos la primera escena (Menu)
-   initMenu();
+   // Inicializamos la primera escena
+   initScene(&scene);
 
    // Main loop
    while (1) {
@@ -65,20 +72,11 @@ void main(void) {
             break;
       }
 
-      // Comprobamos si vamos a cambiar de escena para prepararla
-      if(nextScene != scene) {
-         // Actualizamos la escena actual
+      // Comprobamos si vamos a cambiar de escena
+      if(scene != nextScene) {
+         // Cambiamos la escena actual y la inicializamos
          scene = nextScene;
-
-         // Scene inits
-         switch(nextScene) {
-            case G_sceneMenu:
-               initMenu();
-               break;
-            case G_sceneGame:
-               initGame();
-               break;
-         }
+         initScene(&scene);
       }
    }
 }
