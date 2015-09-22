@@ -23,5 +23,6 @@
 
 void initGame();
 u8 updateGame();
+void drawGameBorder();
 
 #endif

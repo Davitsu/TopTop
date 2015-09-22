@@ -18,15 +18,52 @@
 
 #include <cpctelera.h>
 #include "game.h"
+#include "../sprites/sprites.h"
 #include "../constants.h"
 
 // Inicializa el menu
 void initGame() {
-	// Code...
+	drawGameBorder();
 }
 
 // Update del menu
 u8 updateGame() {
 	// Code...
 	return G_sceneGame;
+}
+
+// Dibuja el borde del area de juego
+void drawGameBorder() {
+   u8* pvideomem;
+   u8 i;
+
+   for(i=0; i<20; i++) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4, 4*8);
+      cpct_drawTileAligned4x8(G_tile01, pvideomem);
+   }
+
+   for(i=0; i<24; i++) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4, 24*8);
+      cpct_drawTileAligned4x8(G_tile01, pvideomem);
+   }
+
+   for(i=0; i<19; i++) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 0, 5*8+i*8);
+      cpct_drawTileAligned4x8(G_tile01, pvideomem);
+   }
+
+   for(i=0; i<19; i++) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 9*4, 5*8+i*8);
+      cpct_drawTileAligned4x8(G_tile01, pvideomem);
+   }
+
+   for(i=0; i<19; i++) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 10*4, 5*8+i*8);
+      cpct_drawTileAligned4x8(G_tile01, pvideomem);
+   }
+   
+   for(i=0; i<19; i++) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 19*4, 5*8+i*8);
+      cpct_drawTileAligned4x8(G_tile01, pvideomem);
+   }
 }
