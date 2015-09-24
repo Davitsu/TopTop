@@ -23,6 +23,9 @@
 
 void initGame();
 u8 updateGame();
+void createHeroes();
+void updatePlayers();
+void drawHeroes();
 void drawGameBorder();
 
 #endif
