@@ -37,11 +37,13 @@ void initGame() {
 
 // Update del menu
 u8 updateGame() {
-	// Code...
-   drawHeroes();
-   //while(alive) {
+   u8 alive = 1;
+
+   while(alive) {
       updatePlayers();
-   //}
+      cpct_waitVSYNC();             // Wait for VSYNC and...
+      drawHeroes();
+   }
 	return G_sceneGame;
 }
 
@@ -57,9 +59,15 @@ void createHeroes() {
 // Dibuja los personajes
 void drawHeroes() {
    u8* pvideomem;
+   u8 c;
+
+   c = cpct_px2byteM0(0,0);  // Colour pattern 8-8 (black-black)
 
    pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x, heroe1.y);
-   cpct_drawSprite(G_heroR_idle01, pvideomem, 4, 12);
+   cpct_drawSpriteMasked(G_heroR_idle01, pvideomem, 4, 12); 
+
+   //pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x+4, heroe1.y);
+   //cpct_drawSolidBox(pvideomem, c, 4, 12);
 
    pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.x, heroe2.y);
    cpct_drawSprite(G_heroB_idle01, pvideomem, 4, 12);
