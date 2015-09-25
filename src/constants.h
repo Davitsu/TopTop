@@ -45,4 +45,17 @@
 
 u8* const G_SCR_VMEM = (u8*)0xC000; // Pointer to the start of default video memory screen
 
+#define G_maxHealth 6	// Vida maxima de los personajes
+
+//Bordes hasta los que el personaje puede moverse
+#define G_borderRight_p1    32
+#define G_borderLeft_p1      4
+#define G_borderTop_p1      40 
+#define G_borderBottom_p1  180
+
+#define G_borderRight_p2    72
+#define G_borderLeft_p2     44
+#define G_borderTop_p2      40
+#define G_borderBottom_p2  180
+
 #endif

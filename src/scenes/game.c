@@ -22,6 +22,14 @@
 #include "../constants.h"
 #include "../maps/maps.h"
 
+//Sprite del jugador
+struct Heroe {
+  u8 x, y, preX, preY, health;
+};
+
+struct Heroe heroe1;
+struct Heroe heroe2;
+
 // Inicializa el menu
 void initGame() {
    u8 x, y;
@@ -44,12 +52,76 @@ void initGame() {
    }
 
 	drawGameBorder();
+   createHeroes();
 }
 
 // Update del menu
 u8 updateGame() {
 	// Code...
+   drawHeroes();
+   //while(alive) {
+      updatePlayers();
+   //}
 	return G_sceneGame;
+}
+
+// Crea a los personajes
+void createHeroes() {
+   heroe1.x = 28;
+   heroe1.y = 180;
+
+   heroe2.x = 48;
+   heroe2.y = 180;
+}
+
+// Dibuja los personajes
+void drawHeroes() {
+   u8* pvideomem;
+
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x, heroe1.y);
+   cpct_drawSprite(G_heroR_idle01, pvideomem, 4, 12);
+
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.x, heroe2.y);
+   cpct_drawSprite(G_heroB_idle01, pvideomem, 4, 12);
+}
+
+void updatePlayers() {
+   // Scan Keyboard
+   cpct_scanKeyboard_f();
+
+   //PLAYER 1
+   if (cpct_isKeyPressed(Key_A) && heroe1.x > G_borderLeft_p1) {  //izquierda
+      heroe1.x--;
+   }
+   else if (cpct_isKeyPressed(Key_D) && heroe1.x < G_borderRight_p1) {  //derecha
+      heroe1.x++;
+   }
+   else if (cpct_isKeyPressed(Key_W) && heroe1.y > G_borderTop_p1) {  //arriba
+      heroe1.y-=2;
+   }
+   else if (cpct_isKeyPressed(Key_S) && heroe1.y < G_borderBottom_p1) { //abajo
+      heroe1.y+=2;
+   }
+   else {   //si no se pulsa ninguna
+      //estado idle
+   }
+ 
+   //PLAYER 2
+   if (cpct_isKeyPressed(Key_CursorLeft) && heroe2.x > G_borderLeft_p2) {  //izquierda
+      heroe2.x--;
+   }
+   else if (cpct_isKeyPressed(Key_CursorRight) && heroe2.x < G_borderRight_p2) {  //derecha
+      heroe2.x++;
+   }
+   else if (cpct_isKeyPressed(Key_CursorUp) && heroe2.y > G_borderTop_p2) {  //arriba
+      heroe2.y-=2;
+   }
+   else if (cpct_isKeyPressed(Key_CursorDown) && heroe2.y < G_borderBottom_p2) { //abajo
+      heroe2.y+=2;
+   }
+   else {   //si no se pulsa ninguna
+      //estado idle
+   }
 }
 
 // Dibuja el borde del area de juego
