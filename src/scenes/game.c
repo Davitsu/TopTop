@@ -20,9 +20,29 @@
 #include "game.h"
 #include "../sprites/sprites.h"
 #include "../constants.h"
+#include "../maps/maps.h"
 
 // Inicializa el menu
 void initGame() {
+   u8 x, y;
+
+   // Lee y prepara los mapas
+   for(y=0; y<G_mapH; y++) {
+      for(x=0; x<G_mapW; x++) {
+         // Obtenemos los datos de nuestros mapas
+         mapLeft[y*G_mapW+x] = G_map01[y*G_mapW+x];
+         mapRight[y*G_mapW+x] = G_map01[y*G_mapW+x];
+
+         // Si el tile es pared... (mejorar este codigo, evitar duplicar los ifs)
+         if(mapLeft[y*G_mapW+x] == 0x00) {
+            drawTile(G_tile01, x, y, G_left);
+         }
+         if(mapRight[y*G_mapW+x] == 0x00) {
+            drawTile(G_tile01, x, y, G_right);
+         }
+      }
+   }
+
 	drawGameBorder();
 }
 
@@ -37,33 +57,49 @@ void drawGameBorder() {
    u8* pvideomem;
    u8 i;
 
-   for(i=0; i<20; i++) {
-      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4, 4*8);
+   // Filas
+   for(i=0; i<20; i++) {   // Fila superior
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, i*G_tileSizeW, 4*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
-   for(i=0; i<24; i++) {
-      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4, 24*8);
+   for(i=0; i<24; i++) {   // Fila inferior
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, i*G_tileSizeW, 24*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
-   for(i=0; i<19; i++) {
-      pvideomem = cpct_getScreenPtr((u8*)0xC000, 0, 5*8+i*8);
+   // Columnas
+   for(i=0; i<19; i++) {   // Columna izquierda
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 0, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
-   for(i=0; i<19; i++) {
-      pvideomem = cpct_getScreenPtr((u8*)0xC000, 9*4, 5*8+i*8);
+   for(i=0; i<19; i++) {   // Columna central izq
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 9*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
-   for(i=0; i<19; i++) {
-      pvideomem = cpct_getScreenPtr((u8*)0xC000, 10*4, 5*8+i*8);
+   for(i=0; i<19; i++) {   // Columna central der
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 10*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
    
-   for(i=0; i<19; i++) {
-      pvideomem = cpct_getScreenPtr((u8*)0xC000, 19*4, 5*8+i*8);
+   for(i=0; i<19; i++) {   // Columna derecha
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 19*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
+}
+
+// Dibuja un sprite en el tile indicado (coordenadas de tile, no en pixeles)
+void drawTile(u8* spriteTile, u8 xTile, u8 yTile, u8 side) {
+   u8* pvideomem;
+
+   // Mapa izq (side 0)
+   if(side == G_left) 
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_mapStartLX, yTile*G_tileSizeH+G_mapStartLY);
+   // Mapa der (side 1)
+   else      
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_mapStartRX, yTile*G_tileSizeH+G_mapStartRY);
+   
+   cpct_drawTileAligned4x8(spriteTile, pvideomem);
 }

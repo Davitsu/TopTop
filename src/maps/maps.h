@@ -16,17 +16,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef _MAPS_H_
+#define _MAPS_H_
 
 #include <types.h>
 
-void initGame();
-u8 updateGame();
-void drawGameBorder();
-void drawTile(u8*, u8, u8, u8);
-
-u8 mapLeft[152];
-u8 mapRight[152];
+extern const u8 G_map01[152];
 
 #endif
