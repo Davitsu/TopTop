@@ -21,8 +21,29 @@
 
 #include <types.h>
 
-#define G_sceneMenu 0   // Escena del menu principal
-#define G_sceneGame 1   // Escena del juego
+// IDs de las escenas del juego
+#define G_sceneMenu 0   	// Escena del menu principal
+#define G_sceneGame 1   	// Escena del juego
+
+// Coordenadas de la esquina superior izquierda de cada mapa
+#define G_mapStartLX 4 	// Posicion X inicial mapa izq (4 bytes * 1 tile)
+#define G_mapStartLY 40 	// Posicion Y inicial mapa izq (8 bytes * 4 tiles)
+#define G_mapStartRX 44	// Posicion X inicial mapa der (4 bytes * 11 tiles)
+#define G_mapStartRY 40	// Posicion Y inicial mapa der (8 bytes * 4 tiles)
+
+// Tamano de un mapa
+#define G_mapW 8 			// Ancho de un mapa
+#define G_mapH 19 			// Alto de un mapa
+
+// Tamano de un tile
+#define G_tileSizeW 4 		// Ancho de tile en bytes
+#define G_tileSizeH 8		// Alto de tile en bytes
+
+// Izquierda y derecha
+#define G_left 0 			// Izquierda
+#define G_right 1  			// Derecha
+
+u8* const G_SCR_VMEM = (u8*)0xC000; // Pointer to the start of default video memory screen
 
 #define G_maxHealth 6	// Vida maxima de los personajes
 
