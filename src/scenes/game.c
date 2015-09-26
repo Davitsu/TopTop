@@ -81,19 +81,32 @@ void drawHeroes() {
    u8* pvideomem;
    u8 c;
 
-   c = cpct_px2byteM0(0,0);  // Colour pattern 8-8 (black-black)
+   c = cpct_px2byteM0(0,0);  // Colour pattern 0-0 (black-black)
 
+   //Se dibuja el rectangulo negro para borrar el rastro
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.preX, heroe1.preY);
+   cpct_drawSolidBox(pvideomem, c, 4, 12);
+
+   //Se dibuja el sprite del personaje 1
    pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x, heroe1.y);
    cpct_drawSpriteMasked(G_heroR_idle01, pvideomem, 4, 12); 
 
-   //pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x+4, heroe1.y);
-   //cpct_drawSolidBox(pvideomem, c, 4, 12);
+   //Se dibuja el rectangulo negro para borrar el rastro
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.preX, heroe2.preY);
+   cpct_drawSolidBox(pvideomem, c, 4, 12);
 
+   //Se dibuja el sprite del personaje 2
    pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.x, heroe2.y);
    cpct_drawSprite(G_heroB_idle01, pvideomem, 4, 12);
 }
 
 void updatePlayers() {
+   heroe1.preX = heroe1.x;
+   heroe1.preY = heroe1.y;
+
+   heroe2.preX = heroe2.x;
+   heroe2.preY = heroe2.y;
+
    // Scan Keyboard
    cpct_scanKeyboard_f();
 
