@@ -57,13 +57,10 @@ void initGame() {
 
 // Update del menu
 u8 updateGame() {
-   u8 alive = 1;
-
-   while(alive) {
-      updatePlayers();
-      cpct_waitVSYNC();             // Wait for VSYNC and...
-      drawHeroes();
-   }
+   updatePlayers();
+   cpct_waitVSYNC();             // Wait for VSYNC and...
+   drawHeroes();
+      
 	return G_sceneGame;
 }
 
