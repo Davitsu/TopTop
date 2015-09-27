@@ -27,6 +27,11 @@
 struct Heroe heroe1;
 struct Heroe heroe2;
 
+u8 map1[152];
+u8 map2[152];
+
+extern u8* const G_SCR_VMEM = (u8*)0xC000; 
+
 // Inicializa el menu
 void initGame() {
    u8 x, y;
@@ -35,14 +40,14 @@ void initGame() {
    for(y=0; y<G_mapHTiles; y++) {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
-         mapLeft[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
-         mapRight[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
+         map1[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
+         map2[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
 
          // Si el tile es pared... (mejorar este codigo, evitar duplicar los ifs)
-         if(mapLeft[y*G_mapWTiles+x] == 0x00) {
+         if(map1[y*G_mapWTiles+x] == 0x00) {
             drawTile(G_tile01, x, y, G_left);
          }
-         if(mapRight[y*G_mapWTiles+x] == 0x00) {
+         if(map2[y*G_mapWTiles+x] == 0x00) {
             drawTile(G_tile01, x, y, G_right);
          }
       }
@@ -103,6 +108,27 @@ void updateHeroes() {
    }
    else {   //si no se pulsa ninguna
       //estado idle
+   }
+
+   updateSensorHeroe(&heroe1);
+   checkHeroeCollision(&heroe1, map1);
+
+   updateSensorHeroe(&heroe2);
+   checkHeroeCollision(&heroe2, map2);
+}
+
+// Comprueba las colisiones entre un heroe y tiles
+void checkHeroeCollision(struct Heroe *heroe, u8 map[]) {
+   // Colisiones horizontales
+   if(map[heroe->sensorLT] == 0x00 || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00 ||
+      map[heroe->sensorRT] == 0x00 || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
+      heroe->x = heroe->preX;
+   }
+
+   // Colisiones verticales
+   if(map[heroe->sensorTL] == 0x00 || map[heroe->sensorTR] == 0x00 ||
+      map[heroe->sensorDL] == 0x00 || map[heroe->sensorDR] == 0x00) {
+      heroe->y = heroe->preY;
    }
 }
 
@@ -169,15 +195,15 @@ void drawGameBorder() {
 }
 
 // Dibuja un sprite en el tile indicado (coordenadas de tile, no en pixeles)
-void drawTile(u8* spriteTile, u8 xTile, u8 yTile, u8 side) {
+void drawTile(u8 *spriteTile, u8 xTile, u8 yTile, u8 side) {
    u8* pvideomem;
 
    // Mapa izq (side 0)
    if(side == G_left) 
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_mapStartLX, yTile*G_tileSizeH+G_mapStartLY);
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_offsetX_m1, yTile*G_tileSizeH+G_offsetY);
    // Mapa der (side 1)
    else      
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_mapStartRX, yTile*G_tileSizeH+G_mapStartRY);
+      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_offsetX_m2, yTile*G_tileSizeH+G_offsetY);
    
    cpct_drawTileAligned4x8(spriteTile, pvideomem);
 }

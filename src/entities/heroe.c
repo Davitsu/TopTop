@@ -22,16 +22,37 @@
 #include "heroe.h"
 #include "../sprites/animation.h"
 #include "../sprites/sprites.h"
+#include "../constants.h"
 
 // Crea a los personajes
-void initHeroes(struct Heroe* heroe1, struct Heroe* heroe2) {
+void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
+	heroe1->id = G_heroe1;
 	heroe1->x = 24;
 	heroe1->y = 140;
+	updateSensorHeroe(heroe1);
 
-	heroe2->x = 4;
+	heroe2->id = G_heroe2;
+	heroe2->x = 24;
 	heroe2->y = 140;
+	updateSensorHeroe(heroe2);
 }
 
-void updateSensorHeroe(struct Heroe* heroe) {
-	heroe->sensorLT = 0;
+// Actualiza la posicion tile de los sensores del heroe
+void updateSensorHeroe(struct Heroe *heroe) {
+	heroe->sensorLT = byte2tile(heroe->x, heroe->y);
+	heroe->sensorLC = byte2tile(heroe->x, heroe->y + G_heroeH - G_tileSizeH);
+	heroe->sensorLD = byte2tile(heroe->x, heroe->y + G_heroeH - 1);
+	heroe->sensorRT = byte2tile(heroe->x + G_heroeW - 1, heroe->y);
+	heroe->sensorRC = byte2tile(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - G_tileSizeH);
+	heroe->sensorRD = byte2tile(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
+	heroe->sensorTL = byte2tile(heroe->x, heroe->y);
+	heroe->sensorTR = byte2tile(heroe->x + G_heroeW - 1, heroe->y);
+	heroe->sensorDL = byte2tile(heroe->x, heroe->y + G_heroeH - 1);
+	heroe->sensorDR = byte2tile(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
+}
+
+// Convierte la posicion en bytes a posicion en tiles
+u8 byte2tile(u8 x, u8 y) {
+	u8 res = x / G_tileSizeW + (y / G_tileSizeH) * G_mapWTiles;
+	return res;
 }
