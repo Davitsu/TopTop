@@ -19,13 +19,10 @@
 #include <cpctelera.h>
 #include "game.h"
 #include "../sprites/sprites.h"
+#include "../sprites/animation.h"
+#include "../heroe/heroe.h"
 #include "../constants.h"
 #include "../maps/maps.h"
-
-//Sprite del jugador
-struct Heroe {
-  u8 x, y, preX, preY, health;
-};
 
 struct Heroe heroe1;
 struct Heroe heroe2;
@@ -52,7 +49,7 @@ void initGame() {
    }
 
 	drawGameBorder();
-   createHeroes();
+   initHeroes(&heroe1, &heroe2);
 }
 
 // Update del menu
@@ -60,47 +57,14 @@ u8 updateGame() {
    u8 alive = 1;
 
    while(alive) {
-      updatePlayers();
-      cpct_waitVSYNC();             // Wait for VSYNC and...
+      updateHeroes();
+      cpct_waitVSYNC();  // Wait for VSYNC and...
       drawHeroes();
    }
 	return G_sceneGame;
 }
 
-// Crea a los personajes
-void createHeroes() {
-   heroe1.x = 28;
-   heroe1.y = 180;
-
-   heroe2.x = 48;
-   heroe2.y = 180;
-}
-
-// Dibuja los personajes
-void drawHeroes() {
-   u8* pvideomem;
-   u8 c;
-
-   c = cpct_px2byteM0(0,0);  // Colour pattern 0-0 (black-black)
-
-   //Se dibuja el rectangulo negro para borrar el rastro
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.preX, heroe1.preY);
-   cpct_drawSolidBox(pvideomem, c, 4, 12);
-
-   //Se dibuja el sprite del personaje 1
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x, heroe1.y);
-   cpct_drawSpriteMasked(G_heroR_idle01, pvideomem, 4, 12); 
-
-   //Se dibuja el rectangulo negro para borrar el rastro
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.preX, heroe2.preY);
-   cpct_drawSolidBox(pvideomem, c, 4, 12);
-
-   //Se dibuja el sprite del personaje 2
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.x, heroe2.y);
-   cpct_drawSprite(G_heroB_idle01, pvideomem, 4, 12);
-}
-
-void updatePlayers() {
+void updateHeroes() {
    heroe1.preX = heroe1.x;
    heroe1.preY = heroe1.y;
 
@@ -143,6 +107,30 @@ void updatePlayers() {
    else {   //si no se pulsa ninguna
       //estado idle
    }
+}
+
+// Dibuja los personajes
+void drawHeroes() {
+   u8* pvideomem;
+   u8 c;
+
+   c = cpct_px2byteM0(0,0);  // Para dibujar el color solido - Colour pattern 0-0 (black-black)
+
+   //Se dibuja el rectangulo negro para borrar el rastro
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.preX, heroe1.preY);
+   cpct_drawSolidBox(pvideomem, c, 4, 12);
+
+   //Se dibuja el sprite del personaje 1
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x, heroe1.y);
+   cpct_drawSprite(G_heroR_idle01, pvideomem, 4, 12); 
+
+   //Se dibuja el rectangulo negro para borrar el rastro
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.preX, heroe2.preY);
+   cpct_drawSolidBox(pvideomem, c, 4, 12);
+
+   //Se dibuja el sprite del personaje 2
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.x, heroe2.y);
+   cpct_drawSprite(G_heroB_idle01, pvideomem, 4, 12);
 }
 
 // Dibuja el borde del area de juego
