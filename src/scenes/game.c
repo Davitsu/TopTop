@@ -20,7 +20,7 @@
 #include "game.h"
 #include "../sprites/sprites.h"
 #include "../sprites/animation.h"
-#include "../heroe/heroe.h"
+#include "../entities/heroe.h"
 #include "../constants.h"
 #include "../maps/maps.h"
 
@@ -57,7 +57,7 @@ u8 updateGame() {
    updateHeroes();
    cpct_waitVSYNC();             // Wait for VSYNC and...
    drawHeroes();
-      
+   
 	return G_sceneGame;
 }
 

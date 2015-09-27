@@ -24,7 +24,7 @@
 void initGame();
 u8 updateGame();
 void createHeroes();
-void updatePlayers();
+void updateHeroes();
 void drawHeroes();
 void drawGameBorder();
 void drawTile(u8*, u8, u8, u8);
