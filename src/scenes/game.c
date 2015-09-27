@@ -32,17 +32,17 @@ void initGame() {
    u8 x, y;
 
    // Lee y prepara los mapas
-   for(y=0; y<G_mapH; y++) {
-      for(x=0; x<G_mapW; x++) {
+   for(y=0; y<G_mapHTiles; y++) {
+      for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
-         mapLeft[y*G_mapW+x] = G_map01[y*G_mapW+x];
-         mapRight[y*G_mapW+x] = G_map01[y*G_mapW+x];
+         mapLeft[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
+         mapRight[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
 
          // Si el tile es pared... (mejorar este codigo, evitar duplicar los ifs)
-         if(mapLeft[y*G_mapW+x] == 0x00) {
+         if(mapLeft[y*G_mapWTiles+x] == 0x00) {
             drawTile(G_tile01, x, y, G_left);
          }
-         if(mapRight[y*G_mapW+x] == 0x00) {
+         if(mapRight[y*G_mapWTiles+x] == 0x00) {
             drawTile(G_tile01, x, y, G_right);
          }
       }
@@ -72,16 +72,16 @@ void updateHeroes() {
    cpct_scanKeyboard_f();
 
    //PLAYER 1
-   if (cpct_isKeyPressed(Key_A) && heroe1.x > G_borderLeft_p1) {  //izquierda
+   if (cpct_isKeyPressed(Key_A) && heroe1.x > 0) {  //izquierda
       heroe1.x--;
    }
-   else if (cpct_isKeyPressed(Key_D) && heroe1.x < G_borderRight_p1) {  //derecha
+   else if (cpct_isKeyPressed(Key_D) && heroe1.x < G_mapWBytes - G_heroeW) {  //derecha
       heroe1.x++;
    }
-   else if (cpct_isKeyPressed(Key_W) && heroe1.y > G_borderTop_p1) {  //arriba
+   else if (cpct_isKeyPressed(Key_W) && heroe1.y > 0) {  //arriba
       heroe1.y-=2;
    }
-   else if (cpct_isKeyPressed(Key_S) && heroe1.y < G_borderBottom_p1) { //abajo
+   else if (cpct_isKeyPressed(Key_S) && heroe1.y < G_mapHBytes - G_heroeH) { //abajo
       heroe1.y+=2;
    }
    else {   //si no se pulsa ninguna
@@ -89,16 +89,16 @@ void updateHeroes() {
    }
  
    //PLAYER 2
-   if (cpct_isKeyPressed(Key_CursorLeft) && heroe2.x > G_borderLeft_p2) {  //izquierda
+   if (cpct_isKeyPressed(Key_CursorLeft) && heroe2.x > 0) {  //izquierda
       heroe2.x--;
    }
-   else if (cpct_isKeyPressed(Key_CursorRight) && heroe2.x < G_borderRight_p2) {  //derecha
+   else if (cpct_isKeyPressed(Key_CursorRight) && heroe2.x < G_mapWBytes - G_heroeW) {  //derecha
       heroe2.x++;
    }
-   else if (cpct_isKeyPressed(Key_CursorUp) && heroe2.y > G_borderTop_p2) {  //arriba
+   else if (cpct_isKeyPressed(Key_CursorUp) && heroe2.y > 0) {  //arriba
       heroe2.y-=2;
    }
-   else if (cpct_isKeyPressed(Key_CursorDown) && heroe2.y < G_borderBottom_p2) { //abajo
+   else if (cpct_isKeyPressed(Key_CursorDown) && heroe2.y < G_mapHBytes - G_heroeH) { //abajo
       heroe2.y+=2;
    }
    else {   //si no se pulsa ninguna
@@ -114,20 +114,20 @@ void drawHeroes() {
    c = cpct_px2byteM0(0,0);  // Para dibujar el color solido - Colour pattern 0-0 (black-black)
 
    //Se dibuja el rectangulo negro para borrar el rastro
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.preX, heroe1.preY);
-   cpct_drawSolidBox(pvideomem, c, 4, 12);
+   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m1 + heroe1.preX, G_offsetY + heroe1.preY);
+   cpct_drawSolidBox(pvideomem, c, G_heroeW, G_heroeH);
 
    //Se dibuja el sprite del personaje 1
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe1.x, heroe1.y);
-   cpct_drawSprite(G_heroR_idle01, pvideomem, 4, 12); 
+   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
+   cpct_drawSprite(G_heroR_idle01, pvideomem, G_heroeW, G_heroeH); 
 
    //Se dibuja el rectangulo negro para borrar el rastro
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.preX, heroe2.preY);
-   cpct_drawSolidBox(pvideomem, c, 4, 12);
+   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m2 + heroe2.preX, G_offsetY + heroe2.preY);
+   cpct_drawSolidBox(pvideomem, c, G_heroeW, G_heroeH);
 
    //Se dibuja el sprite del personaje 2
-   pvideomem = cpct_getScreenPtr((u8*)0xC000, heroe2.x, heroe2.y);
-   cpct_drawSprite(G_heroB_idle01, pvideomem, 4, 12);
+   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
+   cpct_drawSprite(G_heroB_idle01, pvideomem, G_heroeW, G_heroeH);
 }
 
 // Dibuja el borde del area de juego

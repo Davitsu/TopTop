@@ -25,9 +25,13 @@
 
 // Crea a los personajes
 void initHeroes(struct Heroe* heroe1, struct Heroe* heroe2) {
-   heroe1->x = 28;
-   heroe1->y = 180;
+	heroe1->x = 24;
+	heroe1->y = 140;
 
-   heroe2->x = 48;
-   heroe2->y = 180;
+	heroe2->x = 4;
+	heroe2->y = 140;
+}
+
+void updateSensorHeroe(struct Heroe* heroe) {
+	heroe->sensorLT = 0;
 }
