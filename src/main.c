@@ -49,8 +49,7 @@ void initScene(u8 *scene) {
    }
 }
 
-// Main
-void main(void) {
+void application() {
    u8 scene = G_sceneGame;    // Primera escena (y la actual)
    u8 nextScene = scene;      // Siguiente escena (siempre empieza siendo igual a la primera)
 
@@ -79,4 +78,14 @@ void main(void) {
          initScene(&scene);
       }
    }
+}
+
+// Main
+// IMPORTANTE: No anadir mas lineas de codigo a esta funcion.
+// Cuando movemos la pila no se debe hacer uso de ella dentro
+// de la misma funcion, asi que simplemente llamamos a application()
+void main(void) {
+   cpct_setStackLocation((void*)0x8000);
+
+   application();   
 }

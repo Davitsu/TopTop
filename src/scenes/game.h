@@ -24,6 +24,7 @@
 #include "../entities/heroe.h"
 
 void initGame();
+void firstDraw();
 u8 updateGame();
 void createHeroes();
 void updateHeroes();
@@ -32,6 +33,8 @@ void drawHeroes();
 void drawGameBorder();
 void drawTile(u8, u8, u8);
 void repaintBackgroundOverSprite(u8, u8, u8);
+void drawMap();
+void swapBuffers(u8**);
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;

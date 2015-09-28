@@ -32,6 +32,8 @@ u8 map2[G_mapHTiles][G_mapWTiles];
 
 extern u8* const G_SCR_VMEM = (u8*)0xC000; 
 
+u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
+
 // Inicializa el menu
 void initGame() {
    u8 x, y;
@@ -42,20 +44,35 @@ void initGame() {
          // Obtenemos los datos de nuestros mapas
          map1[y][x] = G_map01[y*G_mapWTiles+x];
          map2[y][x] = G_map01[y*G_mapWTiles+x];
-         // Dibujamos el tile de cada mapa
-         drawTile(x, y, G_left);
-         drawTile(x, y, G_right);
       }
    }
 
-	drawGameBorder();
+   // Inicializamos todas las entidades...
    initHeroes(&heroe1, &heroe2);
+
+   // Preparamos el double buffer y dibujamos...
+   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+   cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
+   firstDraw();                                    // Dibujamos en el buffer actual
+   cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+   swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
+   firstDraw();                                    // Dibujamos en este buffer
+}
+
+// Dibuja todo lo que habra en pantalla al comenzar la partida
+void firstDraw() {
+   drawGameBorder();
+   drawMap();
+   drawHeroes();
 }
 
 // Update del menu
 u8 updateGame() {
    updateHeroes();
-   cpct_waitVSYNC();             // Wait for VSYNC and...
+   
+   cpct_waitVSYNC();
+   swapBuffers(g_scrbuffers);
+
    repaintBackgroundOverSprite(heroe1.preX, heroe1.preY, G_left);
    repaintBackgroundOverSprite(heroe2.preX, heroe2.preY, G_right);
    drawHeroes();
@@ -134,11 +151,11 @@ void drawHeroes() {
    u8* pvideomem;
 
    //Se dibuja el sprite del personaje 1
-   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
    cpct_drawSpriteMasked(G_heroR_idle01, pvideomem, G_heroeW, G_heroeH);
 
    //Se dibuja el sprite del personaje 2
-   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
    cpct_drawSpriteMasked(G_heroB_idle01, pvideomem, G_heroeW, G_heroeH);
 }
 
@@ -149,40 +166,40 @@ void drawGameBorder() {
 
    // Filas
    for(i=0; i<20; i++) {   // Fila superior
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, i*G_tileSizeW, 4*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*G_tileSizeW, 4*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    for(i=0; i<24; i++) {   // Fila inferior
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, i*G_tileSizeW, 24*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*G_tileSizeW, 24*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    // Columnas
    for(i=0; i<19; i++) {   // Columna izquierda
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 0, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 0, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    for(i=0; i<19; i++) {   // Columna central izq
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 9*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 9*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    for(i=0; i<19; i++) {   // Columna central der
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 10*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 10*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
    
    for(i=0; i<19; i++) {   // Columna derecha
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, 19*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 19*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 }
 
-// Dibuja un sprite en el tile indicado (coordenadas de tile, no en pixeles)
+// Dibuja un sprite en el tile indicado (coordenadas de tile, no en pixeles) en el mapa indicado (izquierdo o derecho)
 void drawTile(u8 xTile, u8 yTile, u8 side) {
-   u8 *pvideomem, *map, *sprTile, offSetX, color;
+   u8 *pvideomem, *map, *sprTile, offSetX;
 
    if(side == G_left) {
       offSetX = G_offsetX_m1;
@@ -193,36 +210,81 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
       map = *map2;
    }
 
-   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
 
-   if(map[yTile*G_mapWTiles+xTile] == 0xFF) {
-      color = cpct_px2byteM0(0,0);
-      cpct_drawSolidBox(pvideomem, color, 4, 8);
+   // Comprobamos el tipo del tile saber que grafico dibujar
+   if(map[yTile*G_mapWTiles+xTile] == 0x00) {
+      sprTile = (u8*)G_tile01;
    }
    else {
-      if(map[yTile*G_mapWTiles+xTile] == 0x00) {
-         sprTile = (u8*)G_tile01;
-      }
-      else { // Un seguro
-         sprTile = (u8*)G_tile01;
-      }
-      cpct_drawTileAligned4x8_f(sprTile, pvideomem);
+      sprTile = (u8*)G_tileBlack;
    }
+   // Lo dibujamos
+   cpct_drawTileAligned4x8_f(sprTile, pvideomem);
 }
 
+// Redibuja los tiles adyacentes al player (limpia su rastro)
 void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
    byte2tile2(&x, &y);
 
+   // Ahora limpiamos el area de tiles adyacentes al jugador (3x4 tiles)
+   // Siendo sprites de 8x12 pixeles puede parecer que solo necesitamos 2x3 tiles,
+   // pero al usar el doble buffer, tambien hace falta limpiar los tiles de la izquierda
+   // y arriba. Vamos limpiando columnas de 1x4 hasta completar todos los tiles: 
+
+   // [x][-][-][-] <- Columna y-1
+   if(y-1 >= 0) {
+      drawTile(x, y-1, side);
+      if(x+1 < G_mapWTiles) drawTile(x+1, y-1, side);
+      if(x-1 >= 0) drawTile(x-1, y-1, side);
+   }
+
+   // [-][x][-][-] <- Columna y
    drawTile(x, y, side);
    if(x+1 < G_mapWTiles) drawTile(x+1, y, side);
+   if(x-1 >= 0) drawTile(x-1, y, side);
 
+   // [-][-][x][-] <- Columna y+1
    if(y+1 < G_mapHTiles) {
       drawTile(x, y+1, side);
       if(x+1 < G_mapWTiles) drawTile(x+1, y+1, side);
+      if(x-1 >= 0) drawTile(x-1, y+1, side);
    }
 
+   // [-][-][-][x] <- Columna y+2
    if(y+2 < G_mapHTiles) {
       drawTile(x, y+2, side);
       if(x+1 < G_mapWTiles) drawTile(x+1, y+2, side);
+      if(x-1 >= 0) drawTile(x-1, y+2, side);
    }
+}
+
+// Dibuja el mapa completo (Solo debe llamarse al principio de cada nivel)
+void drawMap() {
+   u8 x, y;
+
+   for(y=0; y<G_mapHTiles; y++) {
+      for(x=0; x<G_mapWTiles; x++) {
+         drawTile(x, y, G_left);
+         drawTile(x, y, G_right);
+      }
+   }
+}
+
+// Intercambia los buffers
+void swapBuffers(u8** scrbuffers) {
+   u8* aux; // Auxiliary pointer for making the change
+   
+   // Change what is shown on the screen (present backbuffer (1) is changed to 
+   // front-buffer, so it is shown at the screen)
+   // cpct_setVideoMemoryPage requires the 6 Most Significant bits of the address,
+   // so we have to shift them 10 times to the right (as addresses have 16 bits)
+   //
+   cpct_setVideoMemoryPage( (u16)(scrbuffers[1]) >> 10 );
+   
+   // Once backbuffer is being shown at the screen, we switch our two 
+   // variables to start using (0) as backbuffer and (1) as front-buffer
+   aux = scrbuffers[0];
+   scrbuffers[0] = scrbuffers[1];
+   scrbuffers[1] = aux;
 }
