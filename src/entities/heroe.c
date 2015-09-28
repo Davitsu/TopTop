@@ -39,20 +39,26 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 
 // Actualiza la posicion tile de los sensores del heroe
 void updateSensorHeroe(struct Heroe *heroe) {
-	heroe->sensorLT = byte2tile(heroe->x, heroe->y);
-	heroe->sensorLC = byte2tile(heroe->x, heroe->y + G_heroeH - G_tileSizeH);
-	heroe->sensorLD = byte2tile(heroe->x, heroe->y + G_heroeH - 1);
-	heroe->sensorRT = byte2tile(heroe->x + G_heroeW - 1, heroe->y);
-	heroe->sensorRC = byte2tile(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - G_tileSizeH);
-	heroe->sensorRD = byte2tile(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
-	heroe->sensorTL = byte2tile(heroe->x, heroe->y);
-	heroe->sensorTR = byte2tile(heroe->x + G_heroeW - 1, heroe->y);
-	heroe->sensorDL = byte2tile(heroe->x, heroe->y + G_heroeH - 1);
-	heroe->sensorDR = byte2tile(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
+	heroe->sensorLT = byte2tile1(heroe->x, heroe->y);
+	heroe->sensorLC = byte2tile1(heroe->x, heroe->y + G_heroeH - G_tileSizeH);
+	heroe->sensorLD = byte2tile1(heroe->x, heroe->y + G_heroeH - 1);
+	heroe->sensorRT = byte2tile1(heroe->x + G_heroeW - 1, heroe->y);
+	heroe->sensorRC = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - G_tileSizeH);
+	heroe->sensorRD = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
+	heroe->sensorTL = byte2tile1(heroe->x, heroe->y);
+	heroe->sensorTR = byte2tile1(heroe->x + G_heroeW - 1, heroe->y);
+	heroe->sensorDL = byte2tile1(heroe->x, heroe->y + G_heroeH - 1);
+	heroe->sensorDR = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
 }
 
-// Convierte la posicion en bytes a posicion en tiles
-u8 byte2tile(u8 x, u8 y) {
+// Convierte la posicion en bytes a posicion en tiles (1 dimension)
+u8 byte2tile1(u8 x, u8 y) {
 	u8 res = x / G_tileSizeW + (y / G_tileSizeH) * G_mapWTiles;
 	return res;
+}
+
+// Convierte la posicion en bytes a posicion en tiles (2 dimensiones)
+void byte2tile2(u8 *x, u8 *y) {
+	*x = *x / G_tileSizeW;
+	*y = *y / G_tileSizeH;
 }

@@ -27,8 +27,8 @@
 struct Heroe heroe1;
 struct Heroe heroe2;
 
-u8 map1[152];
-u8 map2[152];
+u8 map1[G_mapHTiles][G_mapWTiles];
+u8 map2[G_mapHTiles][G_mapWTiles];
 
 extern u8* const G_SCR_VMEM = (u8*)0xC000; 
 
@@ -40,16 +40,11 @@ void initGame() {
    for(y=0; y<G_mapHTiles; y++) {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
-         map1[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
-         map2[y*G_mapWTiles+x] = G_map01[y*G_mapWTiles+x];
-
-         // Si el tile es pared... (mejorar este codigo, evitar duplicar los ifs)
-         if(map1[y*G_mapWTiles+x] == 0x00) {
-            drawTile(G_tile01, x, y, G_left);
-         }
-         if(map2[y*G_mapWTiles+x] == 0x00) {
-            drawTile(G_tile01, x, y, G_right);
-         }
+         map1[y][x] = G_map01[y*G_mapWTiles+x];
+         map2[y][x] = G_map01[y*G_mapWTiles+x];
+         // Dibujamos el tile de cada mapa
+         drawTile(x, y, G_left);
+         drawTile(x, y, G_right);
       }
    }
 
@@ -61,6 +56,8 @@ void initGame() {
 u8 updateGame() {
    updateHeroes();
    cpct_waitVSYNC();             // Wait for VSYNC and...
+   repaintBackgroundOverSprite(heroe1.preX, heroe1.preY, G_left);
+   repaintBackgroundOverSprite(heroe2.preX, heroe2.preY, G_right);
    drawHeroes();
    
 	return G_sceneGame;
@@ -111,14 +108,14 @@ void updateHeroes() {
    }
 
    updateSensorHeroe(&heroe1);
-   checkHeroeCollision(&heroe1, map1);
+   checkHeroeCollision(&heroe1, &map1[0][0]);
 
    updateSensorHeroe(&heroe2);
-   checkHeroeCollision(&heroe2, map2);
+   checkHeroeCollision(&heroe2, &map2[0][0]);
 }
 
 // Comprueba las colisiones entre un heroe y tiles
-void checkHeroeCollision(struct Heroe *heroe, u8 map[]) {
+void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    // Colisiones horizontales
    if(map[heroe->sensorLT] == 0x00 || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00 ||
       map[heroe->sensorRT] == 0x00 || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
@@ -135,25 +132,14 @@ void checkHeroeCollision(struct Heroe *heroe, u8 map[]) {
 // Dibuja los personajes
 void drawHeroes() {
    u8* pvideomem;
-   u8 c;
-
-   c = cpct_px2byteM0(0,0);  // Para dibujar el color solido - Colour pattern 0-0 (black-black)
-
-   //Se dibuja el rectangulo negro para borrar el rastro
-   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m1 + heroe1.preX, G_offsetY + heroe1.preY);
-   cpct_drawSolidBox(pvideomem, c, G_heroeW, G_heroeH);
 
    //Se dibuja el sprite del personaje 1
    pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
-   cpct_drawSprite(G_heroR_idle01, pvideomem, G_heroeW, G_heroeH); 
-
-   //Se dibuja el rectangulo negro para borrar el rastro
-   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m2 + heroe2.preX, G_offsetY + heroe2.preY);
-   cpct_drawSolidBox(pvideomem, c, G_heroeW, G_heroeH);
+   cpct_drawSpriteMasked(G_heroR_idle01, pvideomem, G_heroeW, G_heroeH);
 
    //Se dibuja el sprite del personaje 2
    pvideomem = cpct_getScreenPtr(G_SCR_VMEM, G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
-   cpct_drawSprite(G_heroB_idle01, pvideomem, G_heroeW, G_heroeH);
+   cpct_drawSpriteMasked(G_heroB_idle01, pvideomem, G_heroeW, G_heroeH);
 }
 
 // Dibuja el borde del area de juego
@@ -195,15 +181,48 @@ void drawGameBorder() {
 }
 
 // Dibuja un sprite en el tile indicado (coordenadas de tile, no en pixeles)
-void drawTile(u8 *spriteTile, u8 xTile, u8 yTile, u8 side) {
-   u8* pvideomem;
+void drawTile(u8 xTile, u8 yTile, u8 side) {
+   u8 *pvideomem, *map, *sprTile, offSetX, color;
 
-   // Mapa izq (side 0)
-   if(side == G_left) 
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_offsetX_m1, yTile*G_tileSizeH+G_offsetY);
-   // Mapa der (side 1)
-   else      
-      pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_offsetX_m2, yTile*G_tileSizeH+G_offsetY);
-   
-   cpct_drawTileAligned4x8(spriteTile, pvideomem);
+   if(side == G_left) {
+      offSetX = G_offsetX_m1;
+      map = *map1;
+   }
+   else {
+      offSetX = G_offsetX_m2;
+      map = *map2;
+   }
+
+   pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
+
+   if(map[yTile*G_mapWTiles+xTile] == 0xFF) {
+      color = cpct_px2byteM0(0,0);
+      cpct_drawSolidBox(pvideomem, color, 4, 8);
+   }
+   else {
+      if(map[yTile*G_mapWTiles+xTile] == 0x00) {
+         sprTile = (u8*)G_tile01;
+      }
+      else { // Un seguro
+         sprTile = (u8*)G_tile01;
+      }
+      cpct_drawTileAligned4x8_f(sprTile, pvideomem);
+   }
+}
+
+void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
+   byte2tile2(&x, &y);
+
+   drawTile(x, y, side);
+   if(x+1 < G_mapWTiles) drawTile(x+1, y, side);
+
+   if(y+1 < G_mapHTiles) {
+      drawTile(x, y+1, side);
+      if(x+1 < G_mapWTiles) drawTile(x+1, y+1, side);
+   }
+
+   if(y+2 < G_mapHTiles) {
+      drawTile(x, y+2, side);
+      if(x+1 < G_mapWTiles) drawTile(x+1, y+2, side);
+   }
 }

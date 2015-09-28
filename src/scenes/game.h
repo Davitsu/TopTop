@@ -27,16 +27,17 @@ void initGame();
 u8 updateGame();
 void createHeroes();
 void updateHeroes();
-void checkHeroeCollision(struct Heroe *heroe, u8[]);
+void checkHeroeCollision(struct Heroe*, u8*);
 void drawHeroes();
 void drawGameBorder();
-void drawTile(u8*, u8, u8, u8);
+void drawTile(u8, u8, u8);
+void repaintBackgroundOverSprite(u8, u8, u8);
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;
 
-extern u8 map1[G_mapWTiles * G_mapHTiles];
-extern u8 map2[G_mapWTiles * G_mapHTiles];
+extern u8 map1[G_mapHTiles][G_mapWTiles];
+extern u8 map2[G_mapHTiles][G_mapWTiles];
 
 extern u8* const g_SCR_VMEM; 	// Pointer to the start of default video memory screen
 

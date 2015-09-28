@@ -58,6 +58,7 @@ typedef struct Heroe {
 
 void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
 void updateSensorHeroe(struct Heroe *heroe);
-u8 byte2tile(u8, u8);
+u8 byte2tile1(u8, u8);
+void byte2tile2(u8*, u8*);
 
 #endif

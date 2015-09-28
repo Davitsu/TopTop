@@ -41,8 +41,6 @@
 #define G_left 0 			// Izquierda
 #define G_right 1  			// Derecha
 
-
-
 // Offset para dibujar dentro del mapa en bytes
 #define G_offsetX_m1 4 		// Offset X mapa 1 (4 bytes * 1 tile)
 #define G_offsetX_m2 44		// Offset X mapa 2 (4 bytes * 11 tiles)
