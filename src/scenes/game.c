@@ -49,6 +49,7 @@ void initGame() {
    }
 
 	drawGameBorder();
+   drawHUD();
    initHeroes(&heroe1, &heroe2);
 }
 
@@ -85,7 +86,7 @@ void updateHeroes() {
       heroe1.y+=2;
    }
    else {   //si no se pulsa ninguna
-      //estado idle
+
    }
  
    //PLAYER 2
@@ -180,4 +181,93 @@ void drawTile(u8* spriteTile, u8 xTile, u8 yTile, u8 side) {
       pvideomem = cpct_getScreenPtr(G_SCR_VMEM, xTile * G_tileSizeW + G_mapStartRX, yTile*G_tileSizeH+G_mapStartRY);
    
    cpct_drawTileAligned4x8(spriteTile, pvideomem);
+}
+
+// Dibuja el HUD
+void drawHUD() {
+   u8* pvideomem;
+   u8 i;
+
+   //Marco del HUD
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 0, 0);
+   cpct_drawSprite(G_border01, pvideomem, 4, 8); 
+
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 0, 8);
+   cpct_drawSprite(G_border11, pvideomem, 4, 8); 
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 0, 16);
+   cpct_drawSprite(G_border11, pvideomem, 4, 8); 
+
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 0, 24);
+   cpct_drawSprite(G_border10, pvideomem, 4, 8);    
+
+   for(i = 0; i < 7; i++) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4+4, 0);
+      cpct_drawSprite(G_border02, pvideomem, 4, 8); 
+
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4+4, 24);
+      cpct_drawSprite(G_border09, pvideomem, 4, 8); 
+
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4+48, 0);
+      cpct_drawSprite(G_border02, pvideomem, 4, 8); 
+
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, i*4+48, 24);
+      cpct_drawSprite(G_border09, pvideomem, 4, 8); 
+   }
+
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 32, 0);
+   cpct_drawSprite(G_border03, pvideomem, 4, 8); 
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 36, 0);
+   cpct_drawSprite(G_border04, pvideomem, 4, 8); 
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 32, 8);
+   cpct_drawSprite(G_border05, pvideomem, 4, 8); 
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 36, 8);
+   cpct_drawSprite(G_border06, pvideomem, 4, 8); 
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 36, 16);
+   cpct_drawSprite(G_border07, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 32, 24);
+   cpct_drawSprite(G_border09, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 36, 24);
+   cpct_drawSprite(G_border08, pvideomem, 4, 8);
+
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 40, 0);
+   cpct_drawSprite(G_border12, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 44, 0);
+   cpct_drawSprite(G_border13, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 44, 8);
+   cpct_drawSprite(G_border14, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 40, 8);
+   cpct_drawSprite(G_border15, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 76, 0);
+   cpct_drawSprite(G_border16, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 76, 24);
+   cpct_drawSprite(G_border17, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 44, 24); 
+   cpct_drawSprite(G_border09, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 40, 24); 
+   cpct_drawSprite(G_border20, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 40, 16); 
+   cpct_drawSprite(G_border18, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 76, 8); 
+   cpct_drawSprite(G_border19, pvideomem, 4, 8);
+   pvideomem = cpct_getScreenPtr((u8*)0xC000, 76, 16); 
+   cpct_drawSprite(G_border19, pvideomem, 4, 8);
+
+
+   // DIBUJAR CORAZONES
+   //if(heroe1.health == 6) {
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 12, 6); 
+      cpct_drawSprite(G_heartR_full, pvideomem, 4, 8);
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 16, 6); 
+      cpct_drawSprite(G_heartR_full, pvideomem, 4, 8);
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 20, 6); 
+      cpct_drawSprite(G_heartR_full, pvideomem, 4, 8);
+   //}
+
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 64, 6); 
+      cpct_drawSprite(G_heartB_full, pvideomem, 4, 8);
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 60, 6); 
+      cpct_drawSprite(G_heartB_full, pvideomem, 4, 8);
+      pvideomem = cpct_getScreenPtr((u8*)0xC000, 56, 6); 
+      cpct_drawSprite(G_heartB_full, pvideomem, 4, 8);
+
 }

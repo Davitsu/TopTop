@@ -28,6 +28,7 @@ void updatePlayers();
 void drawHeroes();
 void drawGameBorder();
 void drawTile(u8*, u8, u8, u8);
+void drawHUD();
 
 u8 mapLeft[152];
 u8 mapRight[152];

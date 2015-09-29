@@ -27,7 +27,9 @@
 void initHeroes(struct Heroe* heroe1, struct Heroe* heroe2) {
    heroe1->x = 28;
    heroe1->y = 180;
+   heroe1->health = 6;
 
    heroe2->x = 48;
    heroe2->y = 180;
+   heroe2->health = 6;
 }
