@@ -22,10 +22,10 @@
 
 // Animaciones Chica
 const TAnimFrame G_allAniHeroR[4] = {
-   { G_heroR_idle_left01,  12 }, 		// 0// << Idle Left
-   { G_heroR_idle_left02,  12 }, 		// 1// |
-   { G_heroR_idle_right01, 12 }, 		// 2// << Idle Right
-   { G_heroR_idle_right02, 12 }  		// 3// |
+   { G_heroR_idle_left01,  ANI_FPS }, 		// 0// << Idle Left
+   { G_heroR_idle_left02,  ANI_FPS }, 		// 1// |
+   { G_heroR_idle_right01, ANI_FPS }, 		// 2// << Idle Right
+   { G_heroR_idle_right02, ANI_FPS }  		// 3// |
 };
 
 #define A_HR G_allAniHeroR
@@ -41,10 +41,10 @@ TAnimFrame** const g_aniHeroR[1][2] = {
 
 // Animaciones Chico
 const TAnimFrame G_allAniHeroB[4] = {
-   { G_heroB_idle_left01,  12 }, 		// 0// << Idle Left
-   { G_heroB_idle_left02,  12 }, 		// 1// |
-   { G_heroB_idle_right01, 12 }, 		// 2// << Idle Right
-   { G_heroB_idle_right02, 12 }  		// 3// |
+   { G_heroB_idle_left01,  ANI_FPS }, 		// 0// << Idle Left
+   { G_heroB_idle_left02,  ANI_FPS }, 		// 1// |
+   { G_heroB_idle_right01, ANI_FPS }, 		// 2// << Idle Right
+   { G_heroB_idle_right02, ANI_FPS }  		// 3// |
 };
 
 #define A_HB G_allAniHeroB

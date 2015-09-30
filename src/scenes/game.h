@@ -31,10 +31,13 @@ void updateHeroes();
 void checkHeroeCollision(struct Heroe*, u8*);
 void drawHeroes();
 void drawGameBorder();
+void drawHUD();
 void drawTile(u8, u8, u8);
 void repaintBackgroundOverSprite(u8, u8, u8);
 void drawMap();
 void swapBuffers(u8**);
+void drawHUDBorder();
+void drawHearts();
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;

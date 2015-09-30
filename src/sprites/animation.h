@@ -45,6 +45,8 @@ typedef struct {
    TAnimStatus   status;    // Status of the animation
 } TAnimation;
 
+#define ANI_FPS 12
+
 //Animaciones Chica
 extern const TAnimFrame G_allAniHeroR[4];
 
