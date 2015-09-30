@@ -20,17 +20,31 @@
 #define _GAME_H_
 
 #include <types.h>
+#include "../constants.h"
+#include "../entities/heroe.h"
 
 void initGame();
+void firstDraw();
 u8 updateGame();
 void createHeroes();
-void updatePlayers();
+void updateHeroes();
+void checkHeroeCollision(struct Heroe*, u8*);
 void drawHeroes();
 void drawGameBorder();
-void drawTile(u8*, u8, u8, u8);
 void drawHUD();
+void drawTile(u8, u8, u8);
+void repaintBackgroundOverSprite(u8, u8, u8);
+void drawMap();
+void swapBuffers(u8**);
+void drawHUDBorder();
+void drawHearts();
 
-u8 mapLeft[152];
-u8 mapRight[152];
+extern struct Heroe heroe1;
+extern struct Heroe heroe2;
+
+extern u8 map1[G_mapHTiles][G_mapWTiles];
+extern u8 map2[G_mapHTiles][G_mapWTiles];
+
+extern u8* const g_SCR_VMEM; 	// Pointer to the start of default video memory screen
 
 #endif

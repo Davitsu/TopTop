@@ -25,15 +25,13 @@
 #define G_sceneMenu 0   	// Escena del menu principal
 #define G_sceneGame 1   	// Escena del juego
 
-// Coordenadas de la esquina superior izquierda de cada mapa
-#define G_mapStartLX 4 	// Posicion X inicial mapa izq (4 bytes * 1 tile)
-#define G_mapStartLY 40 	// Posicion Y inicial mapa izq (8 bytes * 4 tiles)
-#define G_mapStartRX 44	// Posicion X inicial mapa der (4 bytes * 11 tiles)
-#define G_mapStartRY 40	// Posicion Y inicial mapa der (8 bytes * 4 tiles)
+// Tamano de un mapa en tiles
+#define G_mapWTiles 8 		// Ancho de un mapa en tiles
+#define G_mapHTiles 19 		// Alto de un mapa en tiles
 
-// Tamano de un mapa
-#define G_mapW 8 			// Ancho de un mapa
-#define G_mapH 19 			// Alto de un mapa
+// Tamaño de un mapa en pixeles (bytes)
+#define G_mapWBytes 32 		// Ancho de un mapa en bytes
+#define G_mapHBytes 152 	// Ancho de un mapa en bytes
 
 // Tamano de un tile
 #define G_tileSizeW 4 		// Ancho de tile en bytes
@@ -43,7 +41,18 @@
 #define G_left 0 			// Izquierda
 #define G_right 1  			// Derecha
 
-u8* const G_SCR_VMEM = (u8*)0xC000; // Pointer to the start of default video memory screen
+// Offset para dibujar dentro del mapa en bytes
+#define G_offsetX_m1 4 		// Offset X mapa 1 (4 bytes * 1 tile)
+#define G_offsetX_m2 44		// Offset X mapa 2 (4 bytes * 11 tiles)
+#define G_offsetY 40 		// Offset Y (ambos mapas) (8 bytes * 4 tiles)
+
+// ID de los Heroes
+#define G_heroe1 1
+#define G_heroe2 2
+
+// Tamano del heroe en bytes
+#define G_heroeW 4 			
+#define G_heroeH 12
 
 #define G_maxHealth 6	// Vida maxima de los personajes
 

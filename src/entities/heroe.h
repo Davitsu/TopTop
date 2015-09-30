@@ -38,13 +38,27 @@ typedef enum HeroeState {
 
 //Entidad heroe
 typedef struct Heroe {
+	u8 id;
 	u8 x;
 	u8 y;
 	u8 preX;
 	u8 preY;
 	u8 health;
+	u8 sensorLT; 	// Sensor Left Top
+	u8 sensorLC; 	// Sensor Left Center
+	u8 sensorLD;	// Sensor Left Down
+	u8 sensorRT; 	// Sensor Right Top
+	u8 sensorRC; 	// Sensor Right Center
+	u8 sensorRD; 	// Sensor Right Down
+	u8 sensorTL; 	// Sensor Top Left
+	u8 sensorTR; 	// Sensor Top Right
+	u8 sensorDL; 	// Sensor Down Left
+	u8 sensorDR; 	// Sensor Down Right
 };
 
-void initHeroes(struct Heroe* heroe1, struct Heroe* heroe2);
+void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
+void updateSensorHeroe(struct Heroe *heroe);
+u8 byte2tile1(u8, u8);
+void byte2tile2(u8*, u8*);
 
 #endif

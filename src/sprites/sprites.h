@@ -22,9 +22,9 @@ extern const u8 G_palette[16];
 // =											 =
 // ===============================================
 
-extern const u8 G_heroR_idle01[48];
+extern const u8 G_heroR_idle01[96];
 extern const u8 G_heroR_idle02[48];
-extern const u8 G_heroB_idle01[48];
+extern const u8 G_heroB_idle01[96];
 
 // ===============================================
 // =											 =
@@ -36,6 +36,7 @@ extern const u8 G_tile01[32];
 extern const u8 G_tile02[32];
 extern const u8 G_tile03[32];
 extern const u8 G_tile04[32];
+extern const u8 G_tileBlack[32];
 
 // ===============================================
 // =											 =
