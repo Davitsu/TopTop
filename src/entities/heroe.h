@@ -44,6 +44,7 @@ typedef struct Heroe {
 	u8 preX;
 	u8 preY;
 	u8 health;
+	TAnimation anim;
 	u8 sensorLT; 	// Sensor Left Top
 	u8 sensorLC; 	// Sensor Left Center
 	u8 sensorLD;	// Sensor Left Down

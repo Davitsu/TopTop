@@ -126,9 +126,11 @@ void updateHeroes() {
 
    updateSensorHeroe(&heroe1);
    checkHeroeCollision(&heroe1, &map1[0][0]);
+   updateAnimation(&heroe1.anim, 0, 0);
 
    updateSensorHeroe(&heroe2);
    checkHeroeCollision(&heroe2, &map2[0][0]);
+   updateAnimation(&heroe2.anim, 0, 0);
 }
 
 // Comprueba las colisiones entre un heroe y tiles
@@ -152,11 +154,11 @@ void drawHeroes() {
 
    //Se dibuja el sprite del personaje 1
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
-   cpct_drawSpriteMasked(G_heroR_idle01, pvideomem, G_heroeW, G_heroeH);
+   cpct_drawSpriteMasked(heroe1.anim.frames[heroe1.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
 
    //Se dibuja el sprite del personaje 2
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
-   cpct_drawSpriteMasked(G_heroB_idle01, pvideomem, G_heroeW, G_heroeH);
+   cpct_drawSpriteMasked(heroe2.anim.frames[heroe2.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
 }
 
 // Dibuja el borde del area de juego
