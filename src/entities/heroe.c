@@ -30,12 +30,20 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->x = 24;
 	heroe1->y = 140;
 	heroe1->health = 6;
+	heroe1->anim.frames = (TAnimFrame**)G_aniHeroR_idle_left;
+	heroe1->anim.frame_id = 0;
+	heroe1->anim.time = ANI_FPS;
+	heroe1->anim.status = as_cycle;
 	updateSensorHeroe(heroe1);
 
 	heroe2->id = G_heroe2;
 	heroe2->x = 24;
 	heroe2->y = 140;
 	heroe2->health = 6;
+	heroe2->anim.frames = (TAnimFrame**)G_aniHeroB_idle_left;
+	heroe2->anim.frame_id = 0;
+	heroe2->anim.time = ANI_FPS;
+	heroe2->anim.status = as_cycle;
 	updateSensorHeroe(heroe2);
 }
 

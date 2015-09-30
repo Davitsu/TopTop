@@ -18,6 +18,45 @@
 
 #include <cpctelera.h>
 #include "animation.h"
+#include "../sprites/sprites.h"
+
+// Animaciones Chica
+const TAnimFrame G_allAniHeroR[4] = {
+   { G_heroR_idle_left01,  ANI_FPS }, 		// 0// << Idle Left
+   { G_heroR_idle_left02,  ANI_FPS }, 		// 1// |
+   { G_heroR_idle_right01, ANI_FPS }, 		// 2// << Idle Right
+   { G_heroR_idle_right02, ANI_FPS }  		// 3// |
+};
+
+#define A_HR G_allAniHeroR
+
+TAnimFrame*  const G_aniHeroR_idle_left[3]  = { &A_HR[0], &A_HR[1], 0 };
+TAnimFrame*  const G_aniHeroR_idle_right[3]  = { &A_HR[2], &A_HR[3], 0 };
+
+TAnimFrame** const g_aniHeroR[1][2] = {
+   {  G_aniHeroR_idle_left, G_aniHeroR_idle_right  } // STATE 0 = IDLE
+};
+
+#undef A_HR
+
+// Animaciones Chico
+const TAnimFrame G_allAniHeroB[4] = {
+   { G_heroB_idle_left01,  ANI_FPS }, 		// 0// << Idle Left
+   { G_heroB_idle_left02,  ANI_FPS }, 		// 1// |
+   { G_heroB_idle_right01, ANI_FPS }, 		// 2// << Idle Right
+   { G_heroB_idle_right02, ANI_FPS }  		// 3// |
+};
+
+#define A_HB G_allAniHeroB
+
+TAnimFrame*  const G_aniHeroB_idle_left[3]  = { &A_HB[0], &A_HB[1], 0 };
+TAnimFrame*  const G_aniHeroB_idle_right[3]  = { &A_HB[2], &A_HB[3], 0 };
+
+TAnimFrame** const g_aniHeroB[1][2] = {
+   {  G_aniHeroB_idle_left, G_aniHeroB_idle_right  } // STATE 0 = IDLE
+};
+
+#undef A_HB
 
 i8 updateAnimation(TAnimation* anim, TAnimFrame** newAnim, TAnimStatus newStatus) {
 	i8 newframe = 0;

@@ -33,7 +33,6 @@ typedef enum {
 // Description of an animation frame
 typedef struct {
    u8* sprite;        // Sprite associated to this frame
-   u8  width, height; // Sprite dimensions in bytes
    u8  time;          // Time that the sprite should be shown
 } TAnimFrame;
 
@@ -45,8 +44,28 @@ typedef struct {
    u8            time;      // Remaining time for this frame
    TAnimStatus   status;    // Status of the animation
 } TAnimation;
+
+#define ANI_FPS 12
+
+//Animaciones Chica
+extern const TAnimFrame G_allAniHeroR[4];
+
+extern TAnimFrame* const G_aniHeroR_idle_left[3];
+extern TAnimFrame* const G_aniHeroR_idle_right[3];
+
+extern TAnimFrame** const g_aniHeroR[1][2];
+
+//Animaciones Chico
+extern const TAnimFrame G_allAniHeroB[4];
+
+extern TAnimFrame* const G_aniHeroB_idle_left[3];
+extern TAnimFrame* const G_aniHeroB_idle_right[3];
+
+extern TAnimFrame** const g_aniHeroB[1][2];
  
 // UTILITY FUNCTIONS
 i8 updateAnimation(TAnimation* anim, TAnimFrame** newAnim, TAnimStatus newStatus);
+
+
 
 #endif
