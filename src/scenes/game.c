@@ -306,7 +306,7 @@ void drawHUD() {
 
 // DIBUJAR CORAZONES
 void drawHearts() {
-   u8* pvideomem1, pvideomem2, pvideomem3;
+   u8 *pvideomem1, *pvideomem2, *pvideomem3;
    
    pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 12, 8);
    pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 16, 8);
@@ -358,39 +358,39 @@ void drawHearts() {
    //HEROE 2
    switch(heroe2.health) {
       case 6:
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem3);
       break;
       case 5:
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem3);
       break;
       case 4:
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 3:
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 2:
-         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 1:
-         cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 0:
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
    }
 }
