@@ -25,7 +25,7 @@
 typedef enum {
    as_null = 0, 	  // We require this to represent a null status
    as_play = 1, 	  // Playing till the last frame
-   as_cycle,   	 	  // Playing continuosly
+   as_cycle,   	  // Playing continuosly
    as_pause,    	  // Paused, waiting to continue
    as_end       	  // Animation has ended
 } TAnimStatus;
@@ -46,22 +46,27 @@ typedef struct {
 } TAnimation;
 
 #define ANI_FPS 12
+#define ANI_FPS_RUN 5
 
 //Animaciones Chica
-extern const TAnimFrame G_allAniHeroR[4];
+extern const TAnimFrame G_allAniHeroR[12];             // guarda todos los frames de todas las animaciones
 
-extern TAnimFrame* const G_aniHeroR_idle_left[3];
+extern TAnimFrame* const G_aniHeroR_idle_left[3];     // declaramos las animaciones, se le pasa el numero de frames + 1(null)   
 extern TAnimFrame* const G_aniHeroR_idle_right[3];
+extern TAnimFrame* const G_aniHeroR_run_left[5];
+extern TAnimFrame* const G_aniHeroR_run_right[5];
 
-extern TAnimFrame** const g_aniHeroR[1][2];
+extern TAnimFrame** const g_aniHeroR[2][2];           // primer valor que se le pasa -> numero de animaciones, segundo valor -> numero de lados (siempre 2: izquierda y derecha)
 
 //Animaciones Chico
-extern const TAnimFrame G_allAniHeroB[4];
+extern const TAnimFrame G_allAniHeroB[12];
 
 extern TAnimFrame* const G_aniHeroB_idle_left[3];
 extern TAnimFrame* const G_aniHeroB_idle_right[3];
+extern TAnimFrame* const G_aniHeroB_run_left[5];
+extern TAnimFrame* const G_aniHeroB_run_right[5];
 
-extern TAnimFrame** const g_aniHeroB[1][2];
+extern TAnimFrame** const g_aniHeroB[2][2];
  
 // UTILITY FUNCTIONS
 i8 updateAnimation(TAnimation* anim, TAnimFrame** newAnim, TAnimStatus newStatus);
