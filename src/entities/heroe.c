@@ -24,11 +24,19 @@
 #include "../sprites/sprites.h"
 #include "../constants.h"
 
+const u8 jumpValues[G_jumpSize] = {4, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1, 0}; 	// Valores de la velocidad de salto/caida en cada frame
+
 // Crea a los personajes
 void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->id = G_heroe1;
 	heroe1->x = 24;
 	heroe1->y = 140;
+	heroe1->preX[0] = heroe1->x;
+	heroe1->preX[1] = heroe1->x;
+	heroe1->preY[0] = heroe1->y;
+	heroe1->preY[1] = heroe1->y;
+	heroe1->stateY = sy_land;
+	heroe1->jumpPressed = 0;
 	heroe1->health = 6;
 	heroe1->anim.frames = (TAnimFrame**)G_aniHeroR_idle_left;
 	heroe1->anim.frame_id = 0;
@@ -39,6 +47,12 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->id = G_heroe2;
 	heroe2->x = 24;
 	heroe2->y = 140;
+	heroe2->preX[0] = heroe2->x;
+	heroe2->preX[1] = heroe2->x;
+	heroe2->preY[0] = heroe2->y;
+	heroe2->preY[1] = heroe2->y;
+	heroe2->stateY = sy_land;
+	heroe2->jumpPressed = 0;
 	heroe2->health = 6;
 	heroe2->anim.frames = (TAnimFrame**)G_aniHeroB_idle_left;
 	heroe2->anim.frame_id = 0;
@@ -47,18 +61,56 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	updateSensorHeroe(heroe2);
 }
 
+// Actualiza el salto del heroe
+void updateJump(struct Heroe *heroe) {
+	if(heroe->stateY == sy_jump) {
+		// Actualiza el salto
+		heroe->y -= jumpValues[heroe->jumpFactor];
+
+		if(heroe->jumpFactor < G_jumpSize-1) { 	// Si el salto no ha terminado seguimos subiendo
+			heroe->jumpFactor++;
+		}
+		else { 									// Si ha terminado pasamos a caer
+			heroe->stateY = sy_fall;
+		}
+	}
+	else if(heroe->stateY == sy_fall) {
+		// Actualiza la caida
+		heroe->y += jumpValues[heroe->jumpFactor];
+
+		if(heroe->jumpFactor > 6) { 			// Aceleramos hasta la posicion 6 del array
+			heroe->jumpFactor--;
+		}
+	}
+}
+
 // Actualiza la posicion tile de los sensores del heroe
 void updateSensorHeroe(struct Heroe *heroe) {
-	heroe->sensorLT = byte2tile1(heroe->x, heroe->y);
+	heroe->sensorLT = byte2tile1(heroe->x, heroe->y + 2);
 	heroe->sensorLC = byte2tile1(heroe->x, heroe->y + G_heroeH - G_tileSizeH);
-	heroe->sensorLD = byte2tile1(heroe->x, heroe->y + G_heroeH - 1);
-	heroe->sensorRT = byte2tile1(heroe->x + G_heroeW - 1, heroe->y);
+	heroe->sensorLD = byte2tile1(heroe->x, heroe->y + G_heroeH - 3);
+	heroe->sensorRT = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + 2);
 	heroe->sensorRC = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - G_tileSizeH);
-	heroe->sensorRD = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
-	heroe->sensorTL = byte2tile1(heroe->x, heroe->y);
-	heroe->sensorTR = byte2tile1(heroe->x + G_heroeW - 1, heroe->y);
-	heroe->sensorDL = byte2tile1(heroe->x, heroe->y + G_heroeH - 1);
-	heroe->sensorDR = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 1);
+	heroe->sensorRD = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 3);
+	heroe->sensorTL = byte2tile1(heroe->x + 1, heroe->y+1);
+	heroe->sensorTR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y+1);
+	heroe->sensorDL = byte2tile1(heroe->x + 1, heroe->y + G_heroeH - 1);
+	heroe->sensorDR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + G_heroeH - 1);
+}
+
+// Intercambia  las posiciones previas del heroe
+// Se almacenan dos para saber donde se dibujo por ultima vez
+// en cada uno de los dos buffer
+void swapPrePos(struct Heroe *heroe) {
+	u8 prePos;
+
+	prePos = heroe->preX[0];
+	heroe->preX[0] = heroe->preX[1];
+	heroe->preX[1] = prePos;
+
+	prePos = heroe->preY[0];
+	heroe->preY[0] = heroe->preY[1];
+	heroe->preY[1] = prePos;
 }
 
 // Convierte la posicion en bytes a posicion en tiles (1 dimension)

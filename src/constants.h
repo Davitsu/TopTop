@@ -50,6 +50,9 @@
 #define G_heroe1 1
 #define G_heroe2 2
 
+// Salto
+#define G_jumpSize 13
+
 // Tamano del heroe en bytes
 #define G_heroeW 4 			
 #define G_heroeH 12

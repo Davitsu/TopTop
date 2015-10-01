@@ -21,28 +21,31 @@
 
 #include <types.h>
 #include "../sprites/animation.h"
+#include "../constants.h"
 
 // Expected Frames per Second drawing Ratio   
 #define FPS      50
 
 // Los estados del personaje
-typedef enum HeroeState {
-	idle = 0, 
-	running, 
-	jumping, 
-	falling, 
-	hurt, 
-	duckingIdle, 
-	ducking 
+typedef enum StateY {
+	sy_land, 
+	sy_jump,
+	sy_fall, 
+	sy_duck
 };
+
+extern const u8 jumpValues[G_jumpSize];
 
 //Entidad heroe
 typedef struct Heroe {
 	u8 id;
 	u8 x;
 	u8 y;
-	u8 preX;
-	u8 preY;
+	u8 preX[2];
+	u8 preY[2];
+	enum StateY stateY;
+	u8 jumpFactor;
+	u8 jumpPressed;
 	u8 health;
 	TAnimation anim;
 	u8 sensorLT; 	// Sensor Left Top
@@ -58,7 +61,9 @@ typedef struct Heroe {
 };
 
 void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
+void updateJump(struct Heroe *heroe);
 void updateSensorHeroe(struct Heroe *heroe);
+void swapPrePos(struct Heroe *heroe);
 u8 byte2tile1(u8, u8);
 void byte2tile2(u8*, u8*);
 

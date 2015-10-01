@@ -27,7 +27,7 @@ void initGame();
 void firstDraw();
 u8 updateGame();
 void createHeroes();
-void updateHeroes();
+void updateHeroe(struct Heroe*);
 void checkHeroeCollision(struct Heroe*, u8*);
 void drawHeroes();
 void drawGameBorder();

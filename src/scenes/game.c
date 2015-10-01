@@ -71,88 +71,131 @@ void firstDraw() {
 
 // Update del menu
 u8 updateGame() {
-   updateHeroes();
+   updateHeroe(&heroe1);
+   updateHeroe(&heroe2);
    
    cpct_waitVSYNC();
    swapBuffers(g_scrbuffers);
 
-   repaintBackgroundOverSprite(heroe1.preX, heroe1.preY, G_left);
-   repaintBackgroundOverSprite(heroe2.preX, heroe2.preY, G_right);
+   repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left);
+   repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right);
    drawHeroes();
    
 	return G_sceneGame;
 }
 
-void updateHeroes() {
-   heroe1.preX = heroe1.x;
-   heroe1.preY = heroe1.y;
-
-   heroe2.preX = heroe2.x;
-   heroe2.preY = heroe2.y;
+void updateHeroe(struct Heroe *heroe) {
+   // Cambiamos la variable en la que guardamos la posicion previa.
+   // Usamos dos variables para saber donde limpiar el rastro en cada buffer
+   swapPrePos(heroe);
+   heroe->preX[1] = heroe->x;
+   heroe->preY[1] = heroe->y;
 
    // Scan Keyboard
    cpct_scanKeyboard_f();
 
-   //PLAYER 1
-   if (cpct_isKeyPressed(Key_A) && heroe1.x > 0) {  //izquierda
-      heroe1.x--;
-      //heroe1.health--;
-      //drawHearts();
+   // Correr
+   if (((cpct_isKeyPressed(Key_A) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorLeft) && heroe->id == G_heroe2)) && heroe->x > 0) {
+      // Izquierda
+      heroe->x--;
    }
-   else if (cpct_isKeyPressed(Key_D) && heroe1.x < G_mapWBytes - G_heroeW) {  //derecha
-      heroe1.x++;
-   }
-   else if (cpct_isKeyPressed(Key_W) && heroe1.y > 0) {  //arriba
-      heroe1.y-=2;
-   }
-   else if (cpct_isKeyPressed(Key_S) && heroe1.y < G_mapHBytes - G_heroeH) { //abajo
-      heroe1.y+=2;
-   }
-   else {   //si no se pulsa ninguna
-
-   }
- 
-   //PLAYER 2
-   if (cpct_isKeyPressed(Key_CursorLeft) && heroe2.x > 0) {  //izquierda
-      heroe2.x--;
-      //heroe2.health--;
-      //drawHearts();
-   }
-   else if (cpct_isKeyPressed(Key_CursorRight) && heroe2.x < G_mapWBytes - G_heroeW) {  //derecha
-      heroe2.x++;
-   }
-   else if (cpct_isKeyPressed(Key_CursorUp) && heroe2.y > 0) {  //arriba
-      heroe2.y-=2;
-   }
-   else if (cpct_isKeyPressed(Key_CursorDown) && heroe2.y < G_mapHBytes - G_heroeH) { //abajo
-      heroe2.y+=2;
-   }
-   else {   //si no se pulsa ninguna
-      //estado idle
+   else if (((cpct_isKeyPressed(Key_D) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorRight) && heroe->id == G_heroe2)) && heroe->x < G_mapWBytes - G_heroeW) {
+      // Derecha
+      heroe->x++;
    }
 
-   updateSensorHeroe(&heroe1);
-   checkHeroeCollision(&heroe1, &map1[0][0]);
-   updateAnimation(&heroe1.anim, 0, 0);
+   // Saltar
+   if ((cpct_isKeyPressed(Key_F) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_P) && heroe->id == G_heroe2)) {
+      if(heroe->jumpPressed == 0) {
+         heroe->jumpPressed = 1;
+         // Si estaba en el suelo, salta
+         if(heroe->stateY == sy_land) {
+            heroe->stateY = sy_jump;
+            heroe->jumpFactor = 0;
+         }
+      }
+   }
+   else {
+      heroe->jumpPressed = 0;
+      // Si estaba saltando, cae
+      if(heroe->stateY == sy_jump && heroe->jumpFactor < 7) {
+         heroe->jumpFactor = 7;
+      }
+   }
 
-   updateSensorHeroe(&heroe2);
-   checkHeroeCollision(&heroe2, &map2[0][0]);
-   updateAnimation(&heroe2.anim, 0, 0);
+   updateJump(heroe);
+   checkHeroeCollision(heroe, &map1[0][0]);
+   updateAnimation(&heroe->anim, 0, 0);
 }
 
 // Comprueba las colisiones entre un heroe y tiles
 void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
-   // Colisiones horizontales
-   if(map[heroe->sensorLT] == 0x00 || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00 ||
-      map[heroe->sensorRT] == 0x00 || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
-      heroe->x = heroe->preX;
+   u8 isColliding;
+
+   // -- Colisiones Verticales
+   // Se comprueban hasta que deje de colisionar
+   do {
+      isColliding = 0;
+      updateSensorHeroe(heroe);
+      // Colisiones con tiles superiores
+      if(map[heroe->sensorTL] == 0x00 || map[heroe->sensorTR] == 0x00) {
+         if(heroe->stateY == sy_jump) { 
+            isColliding = 1;
+            heroe->y = (heroe->sensorTL / G_mapWTiles) * G_tileSizeH + G_tileSizeH-1;
+            heroe->jumpFactor = G_jumpSize-1;
+            heroe->stateY = sy_fall;
+         }
+      }
+
+      // Colision con el limite superior del mapa
+      if(heroe->y > 200) {
+         isColliding = 1;
+         heroe->y = 0;
+         heroe->jumpFactor = G_jumpSize-1;
+         heroe->stateY = sy_fall;
+      }
+
+      // Colisiones con tiles inferiores
+      if(map[heroe->sensorDL] == 0x00 || map[heroe->sensorDR] == 0x00) {
+         if(heroe->stateY != sy_jump) {
+            isColliding = 1;
+            heroe->y = (heroe->sensorDL / G_mapWTiles) * G_tileSizeH - G_heroeH;
+            heroe->stateY = sy_land;
+         }
+      }
+
+      // Colisiones con el limite inferior del mapa
+      if(heroe->y > G_mapHTiles * G_tileSizeH - G_heroeH) {
+         isColliding = 1;
+         heroe->y = G_mapHTiles * G_tileSizeH - G_heroeH;
+         if(heroe->stateY == sy_fall) {
+            heroe->stateY = sy_land;
+         }
+      }
+   } while(isColliding != 0);
+
+   // Detectamos si hay suelo debajo nuestra para caer o no
+   if(map[heroe->sensorDL+8] != 0x00 && map[heroe->sensorDR+8] != 0x00) {
+      if(heroe->y < G_mapHTiles * G_tileSizeH - G_heroeH) {
+         if(heroe->stateY != sy_jump && heroe->stateY != sy_fall) {
+            heroe->stateY = sy_fall;
+            heroe->jumpFactor = G_jumpSize - 1;
+         }
+      }
    }
 
-   // Colisiones verticales
-   if(map[heroe->sensorTL] == 0x00 || map[heroe->sensorTR] == 0x00 ||
-      map[heroe->sensorDL] == 0x00 || map[heroe->sensorDR] == 0x00) {
-      heroe->y = heroe->preY;
+   // -- Colisiones Horizontales
+   // Colisiones con tiles a la izquierda
+   if(map[heroe->sensorLT] == 0x00 || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00) {
+      heroe->x = ((heroe->sensorLC - ((heroe->sensorLC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) + G_tileSizeW;
    }
+
+   // Colisiones con tiles a la derecha
+   if(map[heroe->sensorRT] == 0x00 || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
+      heroe->x = ((heroe->sensorRC - ((heroe->sensorRC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) - G_tileSizeW;
+   }
+
+   
 }
 
 // Dibuja los personajes
@@ -236,31 +279,21 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
 void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
    byte2tile2(&x, &y);
 
-   // Ahora limpiamos el area de tiles adyacentes al jugador (3x4 tiles)
-   // Siendo sprites de 8x12 pixeles puede parecer que solo necesitamos 2x3 tiles,
-   // pero al usar el doble buffer, tambien hace falta limpiar los tiles de la izquierda
-   // y arriba. Vamos limpiando columnas de 1x4 hasta completar todos los tiles: 
+   // Ahora limpiamos el area de tiles adyacentes al jugador (2x3 tiles)
 
-   // [x][-][-][-] <- Columna y-1
-   if(y-1 >= 0) {
-      drawTile(x, y-1, side);
-      if(x+1 < G_mapWTiles) drawTile(x+1, y-1, side);
-      if(x-1 >= 0) drawTile(x-1, y-1, side);
-   }
-
-   // [-][x][-][-] <- Columna y
+   // [x][-][-] <- Columna y
    drawTile(x, y, side);
    if(x+1 < G_mapWTiles) drawTile(x+1, y, side);
    if(x-1 >= 0) drawTile(x-1, y, side);
 
-   // [-][-][x][-] <- Columna y+1
+   // [-][x][-] <- Columna y+1
    if(y+1 < G_mapHTiles) {
       drawTile(x, y+1, side);
       if(x+1 < G_mapWTiles) drawTile(x+1, y+1, side);
       if(x-1 >= 0) drawTile(x-1, y+1, side);
    }
 
-   // [-][-][-][x] <- Columna y+2
+   // [-][-][x] <- Columna y+2
    if(y+2 < G_mapHTiles) {
       drawTile(x, y+2, side);
       if(x+1 < G_mapWTiles) drawTile(x+1, y+2, side);
