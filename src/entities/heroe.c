@@ -38,9 +38,9 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->stateY = sy_land;
 	heroe1->jumpPressed = 0;
 	heroe1->health = 6;
-	heroe1->anim.frames = (TAnimFrame**)G_aniHeroR_idle_left;
+	heroe1->anim.frames = (TAnimFrame**)G_aniHeroR_run_right;
 	heroe1->anim.frame_id = 0;
-	heroe1->anim.time = ANI_FPS;
+	heroe1->anim.time = ANI_FPS_RUN;
 	heroe1->anim.status = as_cycle;
 	updateSensorHeroe(heroe1);
 
@@ -54,9 +54,9 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->stateY = sy_land;
 	heroe2->jumpPressed = 0;
 	heroe2->health = 6;
-	heroe2->anim.frames = (TAnimFrame**)G_aniHeroB_idle_left;
+	heroe2->anim.frames = (TAnimFrame**)G_aniHeroB_run_left;
 	heroe2->anim.frame_id = 0;
-	heroe2->anim.time = ANI_FPS;
+	heroe2->anim.time = ANI_FPS_RUN;
 	heroe2->anim.status = as_cycle;
 	updateSensorHeroe(heroe2);
 }
