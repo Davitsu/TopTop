@@ -306,124 +306,90 @@ void drawHUD() {
 
 // DIBUJAR CORAZONES
 void drawHearts() {
-   u8* pvideomem;
+   u8* pvideomem1, pvideomem2, pvideomem3;
    
+   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 12, 8);
+   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 16, 8);
+   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 20, 8);
+
    //HEROE 1
    switch(heroe1.health) {
       case 6:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 12, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem2); 
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem3);
       break;
       case 5:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 12, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_half, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heartR_half, pvideomem3);
       break;
-      case 4:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 12, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+      case 4: 
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 3:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 12, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_half, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heartR_half, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 2:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 12, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartR_full, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 1:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 12, 8); 
-         cpct_drawTileAligned4x8_f(G_heartR_half, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heartR_half, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
       case 0:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 12, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 8); 
-         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem1);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem2);
+         cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem3);
       break;
    }
+
+   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 64, 8);
+   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 60, 8);
+   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 56, 8);
 
    //HEROE 2
    switch(heroe2.health) {
       case 6:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 64, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 60, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 56, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
       break;
       case 5:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 64, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 60, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 56, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem);
       break;
       case 4:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 64, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 60, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 56, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
       break;
       case 3:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 64, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 60, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 56, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
       break;
       case 2:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 64, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_full, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 60, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 56, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
       break;
       case 1:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 64, 8); 
          cpct_drawTileAligned4x8_f(G_heartB_half, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 60, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 56, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
       break;
       case 0:
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 64, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 60, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 56, 8); 
          cpct_drawTileAligned4x8_f(G_heart_empty, pvideomem);
       break;
    }
