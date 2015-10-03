@@ -47,7 +47,9 @@ typedef struct Heroe {
 	u8 jumpFactor;
 	u8 jumpPressed;
 	u8 health;
+	u8 side;
 	TAnimation anim;
+	TAnimFrame** nextAnim;
 	u8 sensorLT; 	// Sensor Left Top
 	u8 sensorLC; 	// Sensor Left Center
 	u8 sensorLD;	// Sensor Left Down
@@ -66,5 +68,6 @@ void updateSensorHeroe(struct Heroe *heroe);
 void swapPrePos(struct Heroe *heroe);
 u8 byte2tile1(u8, u8);
 void byte2tile2(u8*, u8*);
+void setAniHeroe(struct Heroe*, u8);
 
 #endif

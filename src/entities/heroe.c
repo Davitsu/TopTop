@@ -38,10 +38,12 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->stateY = sy_land;
 	heroe1->jumpPressed = 0;
 	heroe1->health = 6;
-	heroe1->anim.frames = (TAnimFrame**)G_aniHeroR_run_left;
+	heroe1->side = G_left;
+	heroe1->anim.frames = (TAnimFrame**)g_aniHeroR[0][heroe1->side];
 	heroe1->anim.frame_id = 0;
 	heroe1->anim.time = ANI_FPS_RUN;
 	heroe1->anim.status = as_cycle;
+	heroe1->nextAnim = heroe1->anim.frames;
 	updateSensorHeroe(heroe1);
 
 	heroe2->id = G_heroe2;
@@ -54,10 +56,12 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->stateY = sy_land;
 	heroe2->jumpPressed = 0;
 	heroe2->health = 6;
-	heroe2->anim.frames = (TAnimFrame**)G_aniHeroB_run_left;
+	heroe2->side = G_left;
+	heroe2->anim.frames = (TAnimFrame**)g_aniHeroB[0][heroe2->side];
 	heroe2->anim.frame_id = 0;
 	heroe2->anim.time = ANI_FPS_RUN;
 	heroe2->anim.status = as_cycle;
+	heroe2->nextAnim = heroe2->anim.frames;
 	updateSensorHeroe(heroe2);
 }
 
@@ -123,4 +127,14 @@ u8 byte2tile1(u8 x, u8 y) {
 void byte2tile2(u8 *x, u8 *y) {
 	*x = *x / G_tileSizeW;
 	*y = *y / G_tileSizeH;
+}
+
+// Prepara la siguiente animacion
+void setAniHeroe(struct Heroe *heroe, u8 idAni) {
+	if(heroe->id == G_heroe1) {
+		heroe->nextAnim = (TAnimFrame**)g_aniHeroR[idAni][heroe->side];
+	}
+	else {
+		heroe->nextAnim = (TAnimFrame**)g_aniHeroB[idAni][heroe->side];
+	}
 }

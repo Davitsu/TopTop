@@ -104,7 +104,7 @@ i8 updateAnimation(TAnimation* anim, TAnimFrame** newAnim, TAnimStatus newStatus
 	i8 newframe = 0;
 
 	// If new animation, set it!
-	if(newAnim) {
+	if(anim->frames != newAnim) {
 		anim->frames = newAnim;    // Sets the new animation to the entity
 		anim->frame_id = 0;        // First frame of the animation
 

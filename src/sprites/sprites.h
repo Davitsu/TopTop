@@ -95,8 +95,8 @@ extern const u8 G_yellowPotion[32];
 // =											 =
 // ===============================================
 
-extern const u8 G_portraitR[128];
-extern const u8 G_portraitB[128];
+extern const u8 G_portraitR[300];
+extern const u8 G_portraitB[300];
 
 // ===============================================
 // =											 =

@@ -100,10 +100,26 @@ void updateHeroe(struct Heroe *heroe) {
    if (((cpct_isKeyPressed(Key_A) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorLeft) && heroe->id == G_heroe2)) && heroe->x > 0) {
       // Izquierda
       heroe->x--;
+      heroe->side = G_left;
+      if(heroe->stateY == sy_land) {
+         // Ani Run
+         setAniHeroe(heroe, 1);
+      }
    }
    else if (((cpct_isKeyPressed(Key_D) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorRight) && heroe->id == G_heroe2)) && heroe->x < G_mapWBytes - G_heroeW) {
       // Derecha
       heroe->x++;
+      heroe->side = G_right;
+      if(heroe->stateY == sy_land) {
+         // Ani Run
+         setAniHeroe(heroe, 1);
+      }
+   }
+   else {
+      if(heroe->stateY == sy_land) {
+         // Ani Idle
+         setAniHeroe(heroe, 0);
+      }
    }
 
    // Saltar
@@ -126,8 +142,18 @@ void updateHeroe(struct Heroe *heroe) {
    } 
 
    updateJump(heroe);
+
+   if(heroe->stateY == sy_jump) {
+      // Ani Jump
+      setAniHeroe(heroe, 2);
+   }
+   else if(heroe->stateY == sy_fall) {
+      // Ani Fall
+      setAniHeroe(heroe, 3);
+   }
+
    checkHeroeCollision(heroe, &map1[0][0]);
-   updateAnimation(&heroe->anim, 0, 0);
+   updateAnimation(&heroe->anim, heroe->nextAnim, 0);
 }
 
 // Comprueba las colisiones entre un heroe y tiles
@@ -190,11 +216,19 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    // Colisiones con tiles a la izquierda
    if(map[heroe->sensorLT] == 0x00 || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00) {
       heroe->x = ((heroe->sensorLC - ((heroe->sensorLC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) + G_tileSizeW;
+      if(heroe->stateY == sy_land) {
+         // Ani Idle
+         setAniHeroe(heroe, 0);
+      }
    }
 
    // Colisiones con tiles a la derecha
    if(map[heroe->sensorRT] == 0x00 || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
       heroe->x = ((heroe->sensorRC - ((heroe->sensorRC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) - G_tileSizeW;
+      if(heroe->stateY == sy_land) {
+         // Ani Idle
+         setAniHeroe(heroe, 0);
+      }
    }
 }
 
@@ -351,11 +385,11 @@ void drawLevel() {
 void drawPortraits() {
    u8 *pvideomem;
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 4, 8);
-   cpct_drawSprite(G_portraitR, pvideomem, 8, 16);          // Retrato chica
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 2, 3);
+   cpct_drawSprite(G_portraitR, pvideomem, 12, 25);          // Retrato chica
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 68, 8);
-   cpct_drawSprite(G_portraitB, pvideomem, 8, 16);          // Retrato chico
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 66, 3);
+   cpct_drawSprite(G_portraitB, pvideomem, 12, 25);          // Retrato chico
 }
 
 // DIBUJAR CORAZONES
