@@ -74,10 +74,38 @@ extern const u8 G_tileBlack[32];
 // =											 =
 // ===============================================
 
-extern const u8 G_door01R[128];
-extern const u8 G_door01B[128];
-extern const u8 G_door02R[128];
-extern const u8 G_door02B[128];
+extern const u8 G_doorR_levelLocked_01[32];
+extern const u8 G_doorR_levelLocked_02[32];
+extern const u8 G_doorR_levelLocked_03[32];
+extern const u8 G_doorR_levelLocked_04[32];
+extern const u8 G_doorB_levelLocked_01[32];
+extern const u8 G_doorB_levelLocked_02[32];
+extern const u8 G_doorB_levelLocked_03[32];
+extern const u8 G_doorB_levelLocked_04[32];
+extern const u8 G_doorR_levelOpen01[32];
+extern const u8 G_doorR_levelOpen02[32];
+extern const u8 G_doorR_levelOpen03[32];
+extern const u8 G_doorR_levelOpen04[32];
+extern const u8 G_doorB_levelOpen01[32];
+extern const u8 G_doorB_levelOpen02[32];
+extern const u8 G_doorB_levelOpen03[32];
+extern const u8 G_doorB_levelOpen04[32];
+extern const u8 G_doorR_init01[32];
+extern const u8 G_doorR_init02[32];
+extern const u8 G_doorR_init03[32];
+extern const u8 G_doorR_init04[32];
+extern const u8 G_doorB_init01[32];
+extern const u8 G_doorB_init02[32];
+extern const u8 G_doorB_init03[32];
+extern const u8 G_doorB_init04[32];
+extern const u8 G_doorR_open01[32];
+extern const u8 G_doorR_open02[32];
+extern const u8 G_doorR_open03[32];
+extern const u8 G_doorR_open04[32];
+extern const u8 G_doorB_open01[32];
+extern const u8 G_doorB_open02[32];
+extern const u8 G_doorB_open03[32];
+extern const u8 G_doorB_open04[32];
 
 // ===============================================
 // =											 =

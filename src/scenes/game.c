@@ -103,7 +103,7 @@ void updateHeroe(struct Heroe *heroe) {
       heroe->side = G_left;
       if(heroe->stateY == sy_land) {
          // Ani Run
-         setAniHeroe(heroe, 1);
+         setAniHeroe(heroe, 1); 
       }
    }
    else if (((cpct_isKeyPressed(Key_D) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorRight) && heroe->id == G_heroe2)) && heroe->x < G_mapWBytes - G_heroeW) {
@@ -301,6 +301,39 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    // Comprobamos el tipo del tile saber que grafico dibujar
    if(map[yTile*G_mapWTiles+xTile] == 0x00) {
       sprTile = (u8*)G_tile01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x0A) {    // POCION ROJA
+      sprTile = (u8*)G_redPotion;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x0B) {    // POCION AZUL
+      sprTile = (u8*)G_bluePotion;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x0C) {    // POCION AMARILLA
+      sprTile = (u8*)G_yellowPotion;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x14) {    // PUERTA INICIO ROJA 01
+      sprTile = (u8*)G_doorR_init01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x15) {    // PUERTA INICIO ROJA 02
+      sprTile = (u8*)G_doorR_init02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x16) {    // PUERTA INICIO ROJA 03
+      sprTile = (u8*)G_doorR_init03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x17) {    // PUERTA INICIO ROJA 04
+      sprTile = (u8*)G_doorR_init04;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1C) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 01
+      sprTile = (u8*)G_doorR_levelLocked_01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1D) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 02
+      sprTile = (u8*)G_doorR_levelLocked_02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1E) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 03
+      sprTile = (u8*)G_doorR_levelLocked_03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1F) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 04
+      sprTile = (u8*)G_doorR_levelLocked_04;
    }
    else {
       sprTile = (u8*)G_tileBlack;
