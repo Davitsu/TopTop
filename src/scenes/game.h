@@ -38,6 +38,8 @@ void drawMap();
 void swapBuffers(u8**);
 void drawHUDBorder();
 void drawHearts();
+void drawLevel();
+void drawPortraits();
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;

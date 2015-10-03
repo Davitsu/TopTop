@@ -38,7 +38,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->stateY = sy_land;
 	heroe1->jumpPressed = 0;
 	heroe1->health = 6;
-	heroe1->anim.frames = (TAnimFrame**)G_aniHeroR_run_right;
+	heroe1->anim.frames = (TAnimFrame**)G_aniHeroR_run_left;
 	heroe1->anim.frame_id = 0;
 	heroe1->anim.time = ANI_FPS_RUN;
 	heroe1->anim.status = as_cycle;

@@ -34,6 +34,10 @@ extern const u8 G_heroR_run_right01[96];
 extern const u8 G_heroR_run_right02[96];
 extern const u8 G_heroR_run_right03[96];
 extern const u8 G_heroR_run_right04[96];
+extern const u8 G_heroR_jump_left01[96];
+extern const u8 G_heroR_jump_right01[96];
+extern const u8 G_heroR_fall_left01[96];
+extern const u8 G_heroR_fall_right01[96];
 
 extern const u8 G_heroB_idle_left01[96];
 extern const u8 G_heroB_idle_left02[96];
@@ -47,6 +51,10 @@ extern const u8 G_heroB_run_right01[96];
 extern const u8 G_heroB_run_right02[96];
 extern const u8 G_heroB_run_right03[96];
 extern const u8 G_heroB_run_right04[96];
+extern const u8 G_heroB_jump_left01[96];
+extern const u8 G_heroB_jump_right01[96];
+extern const u8 G_heroB_fall_left01[96];
+extern const u8 G_heroB_fall_right01[96];
 
 // ===============================================
 // =											 =
@@ -80,6 +88,15 @@ extern const u8 G_door02B[128];
 extern const u8 G_redPotion[32];
 extern const u8 G_bluePotion[32];
 extern const u8 G_yellowPotion[32];
+
+// ===============================================
+// =											 =
+// = 				 RETRATOS					 =
+// =											 =
+// ===============================================
+
+extern const u8 G_portraitR[128];
+extern const u8 G_portraitB[128];
 
 // ===============================================
 // =											 =

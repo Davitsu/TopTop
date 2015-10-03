@@ -34,6 +34,8 @@ extern u8* const G_SCR_VMEM = (u8*)0xC000;
 
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
+u8 level = 0;
+
 // Inicializa el menu
 void initGame() {
    u8 x, y;
@@ -121,7 +123,7 @@ void updateHeroe(struct Heroe *heroe) {
       if(heroe->stateY == sy_jump && heroe->jumpFactor < 7) {
          heroe->jumpFactor = 7;
       }
-   }
+   } 
 
    updateJump(heroe);
    checkHeroeCollision(heroe, &map1[0][0]);
@@ -194,8 +196,6 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    if(map[heroe->sensorRT] == 0x00 || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
       heroe->x = ((heroe->sensorRC - ((heroe->sensorRC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) - G_tileSizeW;
    }
-
-   
 }
 
 // Dibuja los personajes
@@ -335,15 +335,36 @@ void swapBuffers(u8** scrbuffers) {
 void drawHUD() {
    drawHUDBorder();
    drawHearts();
+   drawLevel();
+   drawPortraits();
+}
+
+// DIBUJA EL NIVEL EN EL HUD
+void drawLevel() {
+   u8 *pvideomem;
+
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 34, 8);  
+   cpct_drawStringM0("N00", pvideomem, 4, 0);
+}
+
+//DIBUJAR RETRATOS
+void drawPortraits() {
+   u8 *pvideomem;
+
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 4, 8);
+   cpct_drawSprite(G_portraitR, pvideomem, 8, 16);          // Retrato chica
+
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 68, 8);
+   cpct_drawSprite(G_portraitB, pvideomem, 8, 16);          // Retrato chico
 }
 
 // DIBUJAR CORAZONES
 void drawHearts() {
    u8 *pvideomem1, *pvideomem2, *pvideomem3;
    
-   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 12, 8);
-   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 16, 8);
-   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 20, 8);
+   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 16, 8);
+   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 20, 8);
+   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 24, 8);
 
    //HEROE 1
    switch(heroe1.health) {
@@ -384,9 +405,9 @@ void drawHearts() {
       break;
    }
 
-   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 64, 8);
-   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 60, 8);
-   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 56, 8);
+   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 60, 8);
+   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 56, 8);
+   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 52, 8);
 
    //HEROE 2
    switch(heroe2.health) {
