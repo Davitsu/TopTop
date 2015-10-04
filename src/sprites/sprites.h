@@ -177,4 +177,47 @@ extern const u8 G_border18[32];
 extern const u8 G_border19[32];
 extern const u8 G_border20[32];
 
+// ===============================================
+// =											 =
+// = 			     DISPAROS					 =
+// =											 =
+// ===============================================
+
+extern const u8 G_shootR_left1_01[8];
+extern const u8 G_shootR_right1_01[8];
+extern const u8 G_shootR_left1_02[8];
+extern const u8 G_shootR_right1_02[8];
+extern const u8 G_shootR_up1_01[16];
+extern const u8 G_shootR_up1_02[16];
+extern const u8 G_shoorR_left2_01[40];
+extern const u8 G_shoorR_right2_01[40];
+extern const u8 G_shootR_left2_02[40];
+extern const u8 G_shootR_right2_02[40];
+extern const u8 G_shootR_up2_01[48];
+extern const u8 G_shootR_up2_02[48];
+extern const u8 G_shootR_left3_01[56];
+extern const u8 G_shootR_right3_01[56];
+extern const u8 G_shootR_left3_02[56];
+extern const u8 G_shootR_right3_02[56];
+extern const u8 G_shootR_up3_01[64];
+extern const u8 G_shootR_up3_02[64];
+extern const u8 G_shootB_left1_01[8];
+extern const u8 G_shootB_right1_01[8];
+extern const u8 G_shootB_left1_02[8];
+extern const u8 G_shootB_right1_02[8];
+extern const u8 G_shootB_up1_01[16];
+extern const u8 G_shootB_up1_02[16];
+extern const u8 G_shootB_left2_01[40];
+extern const u8 G_shootB_right2_01[40];
+extern const u8 G_shootB_left2_02[40];
+extern const u8 G_shootB_right2_02[40];
+extern const u8 G_shootB_up2_01[48];
+extern const u8 G_shootB_up2_02[48];
+extern const u8 G_shootB_left3_01[56];
+extern const u8 G_shootB_right3_01[56];
+extern const u8 G_shootB_left3_02[56];
+extern const u8 G_shootB_right3_02[56];
+extern const u8 G_shootB_up3_01[64];
+extern const u8 G_shootB_up3_02[64];
+
 #endif

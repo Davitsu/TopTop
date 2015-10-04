@@ -303,15 +303,13 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
 
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
 
-   // Comprobamos el tipo del tile saber que grafico dibujar
-   if(map[yTile*G_mapWTiles+xTile] != 0xFF) {
-
-   if(map[yTile*G_mapWTiles+xTile] == 0x00) {
+   // Comprobamos el tipo del tile para saber que grafico dibujar
+   if(map[yTile*G_mapWTiles+xTile] == 0xFF) {
+      sprTile = (u8*)G_tileBlack;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x00) {
       sprTile = (u8*)G_tile01;
    }
-   /*else if (map[yTile*G_mapWTiles+xTile] == 0xFF) {
-      sprTile = (u8*)G_tileBlack;
-   }*/
    else if(map[yTile*G_mapWTiles+xTile] == 0x01) {    // PIEDRA ROMPIBLE 01
       sprTile = (u8*)G_tile02;
    }
@@ -452,13 +450,10 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    else if(map[yTile*G_mapWTiles+xTile] == 0x9B || map[yTile*G_mapWTiles+xTile] == 0x9D || map[yTile*G_mapWTiles+xTile] == 0x9F || map[yTile*G_mapWTiles+xTile] == 0xA1) {    // INTERRUPTOR ACTIVO AZUL
       sprTile = (u8*)G_buttonB_pressed;
    }
-
-
-   }
-   //FONDO NEGRO
    else {
       sprTile = (u8*)G_tileBlack;
    }
+   
    // Lo dibujamos
    cpct_drawTileAligned4x8_f(sprTile, pvideomem);
 }
