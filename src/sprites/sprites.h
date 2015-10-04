@@ -116,6 +116,18 @@ extern const u8 G_doorB_open04[32];
 extern const u8 G_redPotion[32];
 extern const u8 G_bluePotion[32];
 extern const u8 G_yellowPotion[32];
+extern const u8 G_key[32];
+
+// ===============================================
+// =											 =
+// = 				   BUTTONS					 =
+// =											 =
+// ===============================================
+
+extern const u8 G_buttonR_normal[32];
+extern const u8 G_buttonR_pressed[32]; 
+extern const u8 G_buttonB_normal[32];
+extern const u8 G_buttonB_pressed[32];
 
 // ===============================================
 // =											 =

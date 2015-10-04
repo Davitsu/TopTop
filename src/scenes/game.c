@@ -45,7 +45,7 @@ void initGame() {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
          map1[y][x] = G_map01[y*G_mapWTiles+x];
-         map2[y][x] = G_map01[y*G_mapWTiles+x];
+         map2[y][x] = G_map02[y*G_mapWTiles+x];
       }
    }
 
@@ -123,7 +123,7 @@ void updateHeroe(struct Heroe *heroe) {
    }
 
    // Saltar
-   if ((cpct_isKeyPressed(Key_F) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_P) && heroe->id == G_heroe2)) {
+   if ((cpct_isKeyPressed(/*Key_F*/Key_W) && heroe->id == G_heroe1) || (cpct_isKeyPressed(/*Key_P*/Key_CursorUp) && heroe->id == G_heroe2)) {
       if(heroe->jumpPressed == 0) {
          heroe->jumpPressed = 1;
          // Si estaba en el suelo, salta
@@ -152,7 +152,12 @@ void updateHeroe(struct Heroe *heroe) {
       setAniHeroe(heroe, 3);
    }
 
-   checkHeroeCollision(heroe, &map1[0][0]);
+   if(heroe->id == G_heroe1) {
+      checkHeroeCollision(heroe, &map1[0][0]);
+   }
+   else {
+      checkHeroeCollision(heroe, &map2[0][0]);
+   }
    updateAnimation(&heroe->anim, heroe->nextAnim, 0);
 }
 
@@ -299,8 +304,22 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
 
    // Comprobamos el tipo del tile saber que grafico dibujar
+   if(map[yTile*G_mapWTiles+xTile] != 0xFF) {
+
    if(map[yTile*G_mapWTiles+xTile] == 0x00) {
       sprTile = (u8*)G_tile01;
+   }
+   /*else if (map[yTile*G_mapWTiles+xTile] == 0xFF) {
+      sprTile = (u8*)G_tileBlack;
+   }*/
+   else if(map[yTile*G_mapWTiles+xTile] == 0x01) {    // PIEDRA ROMPIBLE 01
+      sprTile = (u8*)G_tile02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x02) {    // PIEDRA ROMPIBLE 02
+      sprTile = (u8*)G_tile03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x03) {    // PIEDRA ROMPIBLE 03
+      sprTile = (u8*)G_tile04;
    }
    else if(map[yTile*G_mapWTiles+xTile] == 0x0A) {    // POCION ROJA
       sprTile = (u8*)G_redPotion;
@@ -310,6 +329,12 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    }
    else if(map[yTile*G_mapWTiles+xTile] == 0x0C) {    // POCION AMARILLA
       sprTile = (u8*)G_yellowPotion;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x0D) {    // LLAVE HEROE ROJO
+      sprTile = (u8*)G_key;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x0E) {    // LLAVE HEROE AZUL
+      sprTile = (u8*)G_key;
    }
    else if(map[yTile*G_mapWTiles+xTile] == 0x14) {    // PUERTA INICIO ROJA 01
       sprTile = (u8*)G_doorR_init01;
@@ -323,6 +348,18 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    else if(map[yTile*G_mapWTiles+xTile] == 0x17) {    // PUERTA INICIO ROJA 04
       sprTile = (u8*)G_doorR_init04;
    }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x18) {    // PUERTA INICIO AZUL 01
+      sprTile = (u8*)G_doorB_init01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x19) {    // PUERTA INICIO AZUL 02
+      sprTile = (u8*)G_doorB_init02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1A) {    // PUERTA INICIO AZUL 03
+      sprTile = (u8*)G_doorB_init03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1B) {    // PUERTA INICIO AZUL 04
+      sprTile = (u8*)G_doorB_init04;
+   }
    else if(map[yTile*G_mapWTiles+xTile] == 0x1C) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 01
       sprTile = (u8*)G_doorR_levelLocked_01;
    }
@@ -335,6 +372,90 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    else if(map[yTile*G_mapWTiles+xTile] == 0x1F) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 04
       sprTile = (u8*)G_doorR_levelLocked_04;
    }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x20) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 01
+      sprTile = (u8*)G_doorB_levelLocked_01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x21) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 02
+      sprTile = (u8*)G_doorB_levelLocked_02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x22) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 03
+      sprTile = (u8*)G_doorB_levelLocked_03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x23) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 04
+      sprTile = (u8*)G_doorB_levelLocked_04;
+   }
+   //PUERTAS INTERMEDIAS CERRADAS ROJAS
+   else if(map[yTile*G_mapWTiles+xTile] == 0x30 || map[yTile*G_mapWTiles+xTile] == 0x38 || map[yTile*G_mapWTiles+xTile] == 0x40 || map[yTile*G_mapWTiles+xTile] == 0x48) {    // PUERTA ROJA CERRADA 01
+      sprTile = (u8*)G_doorR_init01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x31 || map[yTile*G_mapWTiles+xTile] == 0x39 || map[yTile*G_mapWTiles+xTile] == 0x41 || map[yTile*G_mapWTiles+xTile] == 0x49) {    // PUERTA ROJA CERRADA 02
+      sprTile = (u8*)G_doorR_init02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x32 || map[yTile*G_mapWTiles+xTile] == 0x3A || map[yTile*G_mapWTiles+xTile] == 0x42 || map[yTile*G_mapWTiles+xTile] == 0x4A) {    // PUERTA ROJA CERRADA 03
+      sprTile = (u8*)G_doorR_init03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x33 || map[yTile*G_mapWTiles+xTile] == 0x3B || map[yTile*G_mapWTiles+xTile] == 0x43 || map[yTile*G_mapWTiles+xTile] == 0x4B) {    // PUERTA ROJA CERRADA 04
+      sprTile = (u8*)G_doorR_init04;
+   }
+   //PUERTAS INTERMEDIAS ABIERTAS ROJAS
+   else if(map[yTile*G_mapWTiles+xTile] == 0x34 || map[yTile*G_mapWTiles+xTile] == 0x3C || map[yTile*G_mapWTiles+xTile] == 0x44 || map[yTile*G_mapWTiles+xTile] == 0x4C) {    // PUERTA ROJA ABIERTA 01
+      sprTile = (u8*)G_doorR_init01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x35 || map[yTile*G_mapWTiles+xTile] == 0x3D || map[yTile*G_mapWTiles+xTile] == 0x45 || map[yTile*G_mapWTiles+xTile] == 0x4D) {    // PUERTA ROJA ABIERTA 02
+      sprTile = (u8*)G_doorR_init02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x36 || map[yTile*G_mapWTiles+xTile] == 0x3E || map[yTile*G_mapWTiles+xTile] == 0x46 || map[yTile*G_mapWTiles+xTile] == 0x4E) {    // PUERTA ROJA ABIERTA 03
+      sprTile = (u8*)G_doorR_init03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x37 || map[yTile*G_mapWTiles+xTile] == 0x3F || map[yTile*G_mapWTiles+xTile] == 0x47 || map[yTile*G_mapWTiles+xTile] == 0x4F) {    // PUERTA ROJA ABIERTA 04
+      sprTile = (u8*)G_doorR_init04;
+   }
+   //PUERTAS INTERMEDIAS CERRADAS AZULES
+   else if(map[yTile*G_mapWTiles+xTile] == 0x58 || map[yTile*G_mapWTiles+xTile] == 0x60 || map[yTile*G_mapWTiles+xTile] == 0x68 || map[yTile*G_mapWTiles+xTile] == 0x70) {    // PUERTA AZUL CERRADA 01
+      sprTile = (u8*)G_doorB_init01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x59 || map[yTile*G_mapWTiles+xTile] == 0x61 || map[yTile*G_mapWTiles+xTile] == 0x69 || map[yTile*G_mapWTiles+xTile] == 0x71) {    // PUERTA AZUL CERRADA 02
+      sprTile = (u8*)G_doorB_init02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x5A || map[yTile*G_mapWTiles+xTile] == 0x62 || map[yTile*G_mapWTiles+xTile] == 0x6A || map[yTile*G_mapWTiles+xTile] == 0x72) {    // PUERTA AZUL CERRADA 03
+      sprTile = (u8*)G_doorB_init03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x5B || map[yTile*G_mapWTiles+xTile] == 0x63 || map[yTile*G_mapWTiles+xTile] == 0x6B || map[yTile*G_mapWTiles+xTile] == 0x73) {    // PUERTA AZUL CERRADA 04
+      sprTile = (u8*)G_doorB_init04;
+   }
+   //PUERTAS INTERMEDIAS ABIERTAS AZULES
+   else if(map[yTile*G_mapWTiles+xTile] == 0x5C || map[yTile*G_mapWTiles+xTile] == 0x64 || map[yTile*G_mapWTiles+xTile] == 0x6C || map[yTile*G_mapWTiles+xTile] == 0x74) {    // PUERTA AZUL ABIERTA 01
+      sprTile = (u8*)G_doorB_init01;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x5D || map[yTile*G_mapWTiles+xTile] == 0x65 || map[yTile*G_mapWTiles+xTile] == 0x6D || map[yTile*G_mapWTiles+xTile] == 0x75) {    // PUERTA AZUL ABIERTA 02
+      sprTile = (u8*)G_doorB_init02;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x5E || map[yTile*G_mapWTiles+xTile] == 0x66 || map[yTile*G_mapWTiles+xTile] == 0x6E || map[yTile*G_mapWTiles+xTile] == 0x76) {    // PUERTA AZUL ABIERTA 03
+      sprTile = (u8*)G_doorB_init03;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x5F || map[yTile*G_mapWTiles+xTile] == 0x67 || map[yTile*G_mapWTiles+xTile] == 0x6F || map[yTile*G_mapWTiles+xTile] == 0x77) {    // PUERTA AZUL ABIERTA 04
+      sprTile = (u8*)G_doorB_init04;
+   }
+   // INTERRUPTOR NORMAL ROJO
+   else if(map[yTile*G_mapWTiles+xTile] == 0x90 || map[yTile*G_mapWTiles+xTile] == 0x92 || map[yTile*G_mapWTiles+xTile] == 0x94 || map[yTile*G_mapWTiles+xTile] == 0x96) {    // INTERRUPTOR NORMAL ROJO
+      sprTile = (u8*)G_buttonR_normal;
+   }
+   //INTERRUPTOR ACTIVO ROJO
+   else if(map[yTile*G_mapWTiles+xTile] == 0x91 || map[yTile*G_mapWTiles+xTile] == 0x93 || map[yTile*G_mapWTiles+xTile] == 0x95 || map[yTile*G_mapWTiles+xTile] == 0x97) {    // INTERRUPTOR ACTIVO ROJO
+      sprTile = (u8*)G_buttonR_pressed;
+   }
+   // INTERRUPTOR NORMAL AZUL
+   else if(map[yTile*G_mapWTiles+xTile] == 0x9A || map[yTile*G_mapWTiles+xTile] == 0x9C || map[yTile*G_mapWTiles+xTile] == 0x9E || map[yTile*G_mapWTiles+xTile] == 0xA0) {    // INTERRUPTOR NORMAL AZUL
+      sprTile = (u8*)G_buttonB_normal;
+   }
+   //INTERRUPTOR ACTIVO AZUL
+   else if(map[yTile*G_mapWTiles+xTile] == 0x9B || map[yTile*G_mapWTiles+xTile] == 0x9D || map[yTile*G_mapWTiles+xTile] == 0x9F || map[yTile*G_mapWTiles+xTile] == 0xA1) {    // INTERRUPTOR ACTIVO AZUL
+      sprTile = (u8*)G_buttonB_pressed;
+   }
+
+
+   }
+   //FONDO NEGRO
    else {
       sprTile = (u8*)G_tileBlack;
    }

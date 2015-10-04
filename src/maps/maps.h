@@ -22,5 +22,6 @@
 #include <types.h>
 
 extern const u8 G_map01[152];
+extern const u8 G_map02[152];
 
 #endif
