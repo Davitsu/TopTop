@@ -21,7 +21,7 @@
 #include "../sprites/sprites.h"
 
 // Animaciones Chica
-const TAnimFrame G_allAniHeroR[16] = {
+const TAnimFrame G_allAniHeroR[28] = {
 	{ G_heroR_idle_left01,  ANI_FPS }, 			// 0// << Idle Left
 	{ G_heroR_idle_left02,  ANI_FPS }, 			// 1// |
 	{ G_heroR_idle_right01, ANI_FPS }, 			// 2// << Idle Right
@@ -37,31 +37,49 @@ const TAnimFrame G_allAniHeroR[16] = {
 	{ G_heroR_jump_left01, ANI_FPS },  			//12// << Jump Left
 	{ G_heroR_jump_right01, ANI_FPS },  		//13// << Jump Right
 	{ G_heroR_fall_left01, ANI_FPS },  			//14// << Fall Left
-	{ G_heroR_fall_right01, ANI_FPS }	  		//15// << Fall Right
+	{ G_heroR_fall_right01, ANI_FPS },	  		//15// << Fall Right
+	{ G_heroR_duck_left01, ANI_FPS },	  		//16// << Duck Left
+	{ G_heroR_duck_left02, ANI_FPS },	  		//17// |
+	{ G_heroR_duck_right01, ANI_FPS },	  		//18// << Duck Right
+	{ G_heroR_duck_right02, ANI_FPS },	  		//19// |
+	{ G_heroR_duckrun_left01, ANI_FPS },	  	//20// << DuckRun Left
+	{ G_heroR_duckrun_left02, ANI_FPS },	  	//21// |
+	{ G_heroR_duckrun_left03, ANI_FPS },	  	//22// |
+	{ G_heroR_duckrun_left04, ANI_FPS },	  	//23// |
+	{ G_heroR_duckrun_right01, ANI_FPS },	  	//24// << DuckRun Right
+	{ G_heroR_duckrun_right02, ANI_FPS },	  	//25// |
+	{ G_heroR_duckrun_right03, ANI_FPS },	  	//26// |
+	{ G_heroR_duckrun_right04, ANI_FPS },	  	//27// |
 };
 
 #define A_HR G_allAniHeroR
 
-TAnimFrame*  const G_aniHeroR_idle_left[3]    = { &A_HR[0], &A_HR[1], 0 };
-TAnimFrame*  const G_aniHeroR_idle_right[3]   = { &A_HR[2], &A_HR[3], 0 };
-TAnimFrame*  const G_aniHeroR_run_left[5]     = { &A_HR[4], &A_HR[5], &A_HR[6], &A_HR[7], 0 };
-TAnimFrame*  const G_aniHeroR_run_right[5]    = { &A_HR[8], &A_HR[9], &A_HR[10], &A_HR[11], 0 };
-TAnimFrame*  const G_aniHeroR_jump_left[2]    = { &A_HR[12], 0 };
-TAnimFrame*  const G_aniHeroR_jump_right[2]   = { &A_HR[13], 0 };
-TAnimFrame*  const G_aniHeroR_fall_left[2]    = { &A_HR[14], 0 };
-TAnimFrame*  const G_aniHeroR_fall_right[2]   = { &A_HR[15], 0 };
+TAnimFrame*  const G_aniHeroR_idle_left[3]    	= { &A_HR[0], &A_HR[1], 0 };
+TAnimFrame*  const G_aniHeroR_idle_right[3]   	= { &A_HR[2], &A_HR[3], 0 };
+TAnimFrame*  const G_aniHeroR_run_left[5]     	= { &A_HR[4], &A_HR[5], &A_HR[6], &A_HR[7], 0 };
+TAnimFrame*  const G_aniHeroR_run_right[5]    	= { &A_HR[8], &A_HR[9], &A_HR[10], &A_HR[11], 0 };
+TAnimFrame*  const G_aniHeroR_jump_left[2]    	= { &A_HR[12], 0 };
+TAnimFrame*  const G_aniHeroR_jump_right[2]   	= { &A_HR[13], 0 };
+TAnimFrame*  const G_aniHeroR_fall_left[2]    	= { &A_HR[14], 0 };
+TAnimFrame*  const G_aniHeroR_fall_right[2]   	= { &A_HR[15], 0 };
+TAnimFrame*  const G_aniHeroR_duck_left[3]    	= { &A_HR[16], &A_HR[17], 0 };
+TAnimFrame*  const G_aniHeroR_duck_right[3]   	= { &A_HR[18], &A_HR[19], 0 };
+TAnimFrame*  const G_aniHeroR_duckrun_left[5]   = { &A_HR[20], &A_HR[21], &A_HR[22], &A_HR[23], 0 };
+TAnimFrame*  const G_aniHeroR_duckrun_right[5]  = { &A_HR[24], &A_HR[25], &A_HR[26], &A_HR[27], 0 };
 
-TAnimFrame** const g_aniHeroR[4][2] = {
+TAnimFrame** const g_aniHeroR[6][2] = {
    {  G_aniHeroR_idle_left, G_aniHeroR_idle_right  }, 		// STATE 0 = IDLE
    {  G_aniHeroR_run_left,  G_aniHeroR_run_right   },  		// STATE 1 = RUN
    {  G_aniHeroR_jump_left,  G_aniHeroR_jump_right },  		// STATE 2 = JUMP
-   {  G_aniHeroR_fall_left,  G_aniHeroR_fall_right } 		// STATE 3 = FALL
+   {  G_aniHeroR_fall_left,  G_aniHeroR_fall_right }, 		// STATE 3 = FALL
+   {  G_aniHeroR_duck_left,  G_aniHeroR_duck_right }, 		// STATE 4 = DUCK
+   {  G_aniHeroR_duckrun_left,  G_aniHeroR_duckrun_right }  // STATE 5 = DUCKRUN
 };
 
 #undef A_HR
 
 // Animaciones Chico
-const TAnimFrame G_allAniHeroB[16] = {
+const TAnimFrame G_allAniHeroB[28] = {
     { G_heroB_idle_left01,  ANI_FPS }, 			// 0// << Idle Left
     { G_heroB_idle_left02,  ANI_FPS }, 			// 1// |
     { G_heroB_idle_right01, ANI_FPS }, 			// 2// << Idle Right
@@ -77,25 +95,43 @@ const TAnimFrame G_allAniHeroB[16] = {
 	{ G_heroB_jump_left01, ANI_FPS },  			//12// << Jump Left
 	{ G_heroB_jump_right01, ANI_FPS },  		//13// << Jump Right
 	{ G_heroB_fall_left01, ANI_FPS },  			//14// << Fall Left
-	{ G_heroB_fall_right01, ANI_FPS }  			//15// << Fall Right
+	{ G_heroB_fall_right01, ANI_FPS },  		//15// << Fall Right
+	{ G_heroB_duck_left01, ANI_FPS },	  		//16// << Duck Left
+	{ G_heroB_duck_left02, ANI_FPS },	  		//17// |
+	{ G_heroB_duck_right01, ANI_FPS },	  		//18// << Duck Right
+	{ G_heroB_duck_right02, ANI_FPS },	  		//19// |
+	{ G_heroB_duckrun_left01, ANI_FPS },	  	//20// << DuckRun Left
+	{ G_heroB_duckrun_left02, ANI_FPS },	  	//21// |
+	{ G_heroB_duckrun_left03, ANI_FPS },	  	//22// |
+	{ G_heroB_duckrun_left04, ANI_FPS },	  	//23// |
+	{ G_heroB_duckrun_right01, ANI_FPS },	  	//24// << DuckRun Right
+	{ G_heroB_duckrun_right02, ANI_FPS },	  	//25// |
+	{ G_heroB_duckrun_right03, ANI_FPS },	  	//26// |
+	{ G_heroB_duckrun_right04, ANI_FPS },	  	//27// |
 };
 
 #define A_HB G_allAniHeroB
 
-TAnimFrame*  const G_aniHeroB_idle_left[3]    = { &A_HB[0], &A_HB[1], 0 };
-TAnimFrame*  const G_aniHeroB_idle_right[3]   = { &A_HB[2], &A_HB[3], 0 };
-TAnimFrame*  const G_aniHeroB_run_left[5]     = { &A_HB[4], &A_HB[5], &A_HB[6], &A_HB[7], 0 };
-TAnimFrame*  const G_aniHeroB_run_right[5]    = { &A_HB[8], &A_HB[9], &A_HB[10], &A_HB[11], 0 };
-TAnimFrame*  const G_aniHeroB_jump_left[2]    = { &A_HB[12], 0 };
-TAnimFrame*  const G_aniHeroB_jump_right[2]   = { &A_HB[13], 0 };
-TAnimFrame*  const G_aniHeroB_fall_left[2]    = { &A_HB[14], 0 };
-TAnimFrame*  const G_aniHeroB_fall_right[2]   = { &A_HB[15], 0 };
+TAnimFrame*  const G_aniHeroB_idle_left[3]    	= { &A_HB[0], &A_HB[1], 0 };
+TAnimFrame*  const G_aniHeroB_idle_right[3]   	= { &A_HB[2], &A_HB[3], 0 };
+TAnimFrame*  const G_aniHeroB_run_left[5]     	= { &A_HB[4], &A_HB[5], &A_HB[6], &A_HB[7], 0 };
+TAnimFrame*  const G_aniHeroB_run_right[5]    	= { &A_HB[8], &A_HB[9], &A_HB[10], &A_HB[11], 0 };
+TAnimFrame*  const G_aniHeroB_jump_left[2]    	= { &A_HB[12], 0 };
+TAnimFrame*  const G_aniHeroB_jump_right[2]   	= { &A_HB[13], 0 };
+TAnimFrame*  const G_aniHeroB_fall_left[2]    	= { &A_HB[14], 0 };
+TAnimFrame*  const G_aniHeroB_fall_right[2]   	= { &A_HB[15], 0 };
+TAnimFrame*  const G_aniHeroB_duck_left[3]    	= { &A_HB[16], &A_HB[17], 0 };
+TAnimFrame*  const G_aniHeroB_duck_right[3]   	= { &A_HB[18], &A_HB[19], 0 };
+TAnimFrame*  const G_aniHeroB_duckrun_left[5]   = { &A_HB[20], &A_HB[21], &A_HB[22], &A_HB[23], 0 };
+TAnimFrame*  const G_aniHeroB_duckrun_right[5]  = { &A_HB[24], &A_HB[25], &A_HB[26], &A_HB[27], 0 };
 
-TAnimFrame** const g_aniHeroB[4][2] = {
+TAnimFrame** const g_aniHeroB[6][2] = {
    {  G_aniHeroB_idle_left, G_aniHeroB_idle_right  }, 		// STATE 0 = IDLE
    {  G_aniHeroB_run_left,  G_aniHeroB_run_right   },  		// STATE 1 = RUN
    {  G_aniHeroB_jump_left,  G_aniHeroB_jump_right },  		// STATE 2 = JUMP
-   {  G_aniHeroB_fall_left,  G_aniHeroB_fall_right }		// STATE 3 = FALL
+   {  G_aniHeroB_fall_left,  G_aniHeroB_fall_right },		// STATE 3 = FALL
+   {  G_aniHeroB_duck_left,  G_aniHeroB_duck_right }, 		// STATE 4 = DUCK
+   {  G_aniHeroB_duckrun_left,  G_aniHeroB_duckrun_right }  // STATE 5 = DUCKRUN
 };
 
 #undef A_HB
