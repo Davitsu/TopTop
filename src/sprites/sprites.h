@@ -38,6 +38,18 @@ extern const u8 G_heroR_jump_left01[96];
 extern const u8 G_heroR_jump_right01[96];
 extern const u8 G_heroR_fall_left01[96];
 extern const u8 G_heroR_fall_right01[96];
+extern const u8 G_heroR_duck_left01[96];
+extern const u8 G_heroR_duck_left02[96];
+extern const u8 G_heroR_duck_right01[96];
+extern const u8 G_heroR_duck_right02[96];
+extern const u8 G_heroR_duckrun_left01[96];
+extern const u8 G_heroR_duckrun_left02[96];
+extern const u8 G_heroR_duckrun_left03[96];
+extern const u8 G_heroR_duckrun_left04[96];
+extern const u8 G_heroR_duckrun_right01[96];
+extern const u8 G_heroR_duckrun_right02[96];
+extern const u8 G_heroR_duckrun_right03[96];
+extern const u8 G_heroR_duckrun_right04[96];
 
 extern const u8 G_heroB_idle_left01[96];
 extern const u8 G_heroB_idle_left02[96];
@@ -55,6 +67,18 @@ extern const u8 G_heroB_jump_left01[96];
 extern const u8 G_heroB_jump_right01[96];
 extern const u8 G_heroB_fall_left01[96];
 extern const u8 G_heroB_fall_right01[96];
+extern const u8 G_heroB_duck_left01[96];
+extern const u8 G_heroB_duck_right01[96];
+extern const u8 G_heroB_duck_left02[96];
+extern const u8 G_heroB_duck_right02[96];
+extern const u8 G_heroB_duckrun_left01[96];
+extern const u8 G_heroB_duckrun_right01[96];
+extern const u8 G_heroB_duckrun_left02[96];
+extern const u8 G_heroB_duckrun_right02[96];
+extern const u8 G_heroB_duckrun_left03[96];
+extern const u8 G_heroB_duckrun_right03[96];
+extern const u8 G_heroB_duckrun_left04[96];
+extern const u8 G_heroB_duckrun_right04[96];
 
 // ===============================================
 // =											 =
