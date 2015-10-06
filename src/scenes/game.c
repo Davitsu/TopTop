@@ -35,6 +35,7 @@ extern u8* const G_SCR_VMEM = (u8*)0xC000;
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
 u8 level = 0;
+u8 gotItem = 0;
 
 // Inicializa el menu
 void initGame() {
@@ -123,7 +124,7 @@ void updateHeroe(struct Heroe *heroe) {
    }
 
    // Saltar
-   if ((cpct_isKeyPressed(/*Key_F*/Key_W) && heroe->id == G_heroe1) || (cpct_isKeyPressed(/*Key_P*/Key_CursorUp) && heroe->id == G_heroe2)) {
+   if ((cpct_isKeyPressed(Key_F) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_P) && heroe->id == G_heroe2)) {
       if(heroe->jumpPressed == 0) {
          heroe->jumpPressed = 1;
          // Si estaba en el suelo, salta
@@ -154,10 +155,13 @@ void updateHeroe(struct Heroe *heroe) {
 
    if(heroe->id == G_heroe1) {
       checkHeroeCollision(heroe, &map1[0][0]);
+      interactHeroeWithMap(heroe, &map1[0][0]);
    }
    else {
       checkHeroeCollision(heroe, &map2[0][0]);
+      interactHeroeWithMap(heroe, &map2[0][0]);
    }
+
    updateAnimation(&heroe->anim, heroe->nextAnim, 0);
 }
 
@@ -235,6 +239,75 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
          setAniHeroe(heroe, 0);
       }
    }
+
+   }
+
+void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
+   u8 x;
+   u8 y;
+
+   // Colisiona con items e interruptores
+   if(map[heroe->sensorCC] == 0x01) {  // POCION DE CURACION
+      gotItem = 1;
+      y = heroe->sensorCC / G_mapWTiles;
+      x = heroe->sensorCC - (y * G_mapWTiles);
+      map[heroe->sensorCC] = 0xFF;
+      if(heroe->id == G_heroe1) {
+         drawTile(x, y, G_left);
+      }
+      else {
+         drawTile(x, y, G_right);
+      } 
+   }
+   else if(map[heroe->sensorCC] == 0x02) {  // POCION AMARILLA
+      gotItem = 2;
+      y = heroe->sensorCC / G_mapWTiles;
+      x = heroe->sensorCC - (y * G_mapWTiles);
+      map[heroe->sensorCC] = 0xFF;
+      if(heroe->id == G_heroe1) { 
+         drawTile(x, y, G_left);
+      }
+      else { 
+         drawTile(x, y, G_right);
+      } 
+   }
+   else if(map[heroe->sensorCC] == 0x03) {  // LLAVE
+      gotItem = 3;
+      y = heroe->sensorCC / G_mapWTiles;
+      x = heroe->sensorCC - (y * G_mapWTiles);
+      map[heroe->sensorCC] = 0xFF;
+      if(heroe->id == G_heroe1) {
+         drawTile(x, y, G_left);
+      }
+      else {
+         drawTile(x, y, G_right);
+      }
+   }
+
+   gotItem = 0;
+
+   if(map[heroe->sensorCC] == 0x1C) {
+      y = heroe->sensorCC / G_mapWTiles;
+      x = heroe->sensorCC - (y * G_mapWTiles);
+      map[heroe->sensorCC] = 0x1D;
+      if(heroe->id == G_heroe1) {
+         drawTile(x, y, G_left);
+      }
+      else {
+         drawTile(x, y, G_right);
+      }
+   }
+   else if(map[heroe->sensorCC] == 0x2E) {
+      y = heroe->sensorCC / G_mapWTiles;
+      x = heroe->sensorCC - (y * G_mapWTiles);
+      map[heroe->sensorCC] = 0x2F;
+      if(heroe->id == G_heroe1) {
+         drawTile(x, y, G_left);
+      }
+      else {
+         drawTile(x, y, G_right);
+      }
+   }
 }
 
 // Dibuja los personajes
@@ -310,145 +383,167 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    else if(map[yTile*G_mapWTiles+xTile] == 0x00) {
       sprTile = (u8*)G_tile01;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x01) {    // PIEDRA ROMPIBLE 01
-      sprTile = (u8*)G_tile02;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x01) {    // POCION CURACION
+      if(side == G_left) {
+         sprTile = (u8*)G_redPotion;
+      }
+      else {
+         sprTile = (u8*)G_bluePotion;
+      }
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x02) {    // PIEDRA ROMPIBLE 02
-      sprTile = (u8*)G_tile03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x03) {    // PIEDRA ROMPIBLE 03
-      sprTile = (u8*)G_tile04;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x0A) {    // POCION ROJA
-      sprTile = (u8*)G_redPotion;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x0B) {    // POCION AZUL
-      sprTile = (u8*)G_bluePotion;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x0C) {    // POCION AMARILLA
+   else if(map[yTile*G_mapWTiles+xTile] == 0x02) {    // POCION AMARILLA
       sprTile = (u8*)G_yellowPotion;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x0D) {    // LLAVE HEROE ROJO
+   else if(map[yTile*G_mapWTiles+xTile] == 0x03) {    // LLAVE
       sprTile = (u8*)G_key;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x0E) {    // LLAVE HEROE AZUL
-      sprTile = (u8*)G_key;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x04) {    // PIEDRA ROMPIBLE 01
+      sprTile = (u8*)G_tile02;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x14) {    // PUERTA INICIO ROJA 01
-      sprTile = (u8*)G_doorR_init01;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x05) {    // PIEDRA ROMPIBLE 02
+      sprTile = (u8*)G_tile03;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x15) {    // PUERTA INICIO ROJA 02
-      sprTile = (u8*)G_doorR_init02;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x06) {    // PIEDRA ROMPIBLE 03
+      sprTile = (u8*)G_tile04;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x16) {    // PUERTA INICIO ROJA 03
-      sprTile = (u8*)G_doorR_init03;
+   // PUERTA INICIO NIVEL
+   else if(map[yTile*G_mapWTiles+xTile] == 0x10) {    // PUERTA INICIO 01
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init01;
+      else 
+         sprTile = (u8*)G_doorB_init01;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x17) {    // PUERTA INICIO ROJA 04
-      sprTile = (u8*)G_doorR_init04;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x11) {    // PUERTA INICIO 02
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init02;
+      else
+         sprTile = (u8*)G_doorB_init02;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x18) {    // PUERTA INICIO AZUL 01
-      sprTile = (u8*)G_doorB_init01;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x12) {    // PUERTA INICIO 03
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init03;
+      else 
+         sprTile = (u8*)G_doorB_init03;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x19) {    // PUERTA INICIO AZUL 02
-      sprTile = (u8*)G_doorB_init02;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x13) {    // PUERTA INICIO 04
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init04;
+      else 
+         sprTile = (u8*)G_doorB_init04;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1A) {    // PUERTA INICIO AZUL 03
-      sprTile = (u8*)G_doorB_init03;
+   // PUERTA SIGUIENTE NIVEL CERRADA
+   else if(map[yTile*G_mapWTiles+xTile] == 0x14) {    // PUERTA SIGUIENTE NIVEL CERRADA 01
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelLocked_01;
+      else 
+         sprTile = (u8*)G_doorB_levelLocked_01;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1B) {    // PUERTA INICIO AZUL 04
-      sprTile = (u8*)G_doorB_init04;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x15) {    // PUERTA SIGUIENTE NIVEL CERRADA 02
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelLocked_02;
+      else 
+         sprTile = (u8*)G_doorB_levelLocked_02;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1C) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 01
-      sprTile = (u8*)G_doorR_levelLocked_01;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x16) {    // PUERTA SIGUIENTE NIVEL CERRADA 03
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelLocked_03;
+      else 
+         sprTile = (u8*)G_doorB_levelLocked_03;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1D) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 02
-      sprTile = (u8*)G_doorR_levelLocked_02;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x17) {    // PUERTA SIGUIENTE NIVEL CERRADA 04
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelLocked_04;
+      else 
+         sprTile = (u8*)G_doorB_levelLocked_04;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1E) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 03
-      sprTile = (u8*)G_doorR_levelLocked_03;
+   // PUERTA SIGUIENTE NIVEL ABIERTA
+   else if(map[yTile*G_mapWTiles+xTile] == 0x18) {    // PUERTA SIGUIENTE NIVEL ABIERTA 01
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelOpen01;
+      else 
+         sprTile = (u8*)G_doorB_levelOpen01;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1F) {    // PUERTA SIGUIENTE NIVEL CERRADA ROJA 04
-      sprTile = (u8*)G_doorR_levelLocked_04;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x19) {    // PUERTA SIGUIENTE NIVEL ABIERTA 02
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelOpen02;
+      else 
+         sprTile = (u8*)G_doorB_levelOpen02;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x20) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 01
-      sprTile = (u8*)G_doorB_levelLocked_01;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1A) {    // PUERTA SIGUIENTE NIVEL ABIERTA 03
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelOpen03;
+      else 
+         sprTile = (u8*)G_doorB_levelOpen03;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x21) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 02
-      sprTile = (u8*)G_doorB_levelLocked_02;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1B) {    // PUERTA SIGUIENTE NIVEL ABIERTA 04
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_levelOpen04;
+      else 
+         sprTile = (u8*)G_doorB_levelOpen04;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x22) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 03
-      sprTile = (u8*)G_doorB_levelLocked_03;
+   //PUERTAS INTERMEDIAS CERRADAS
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1E || map[yTile*G_mapWTiles+xTile] == 0x26 || map[yTile*G_mapWTiles+xTile] == 0x30 || map[yTile*G_mapWTiles+xTile] == 0x38 || map[yTile*G_mapWTiles+xTile] == 0x42 || map[yTile*G_mapWTiles+xTile] == 0x4A) {
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init01;
+      else
+         sprTile = (u8*)G_doorB_init01;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x23) {    // PUERTA SIGUIENTE NIVEL CERRADA AZUL 04
-      sprTile = (u8*)G_doorB_levelLocked_04;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1F || map[yTile*G_mapWTiles+xTile] == 0x27 || map[yTile*G_mapWTiles+xTile] == 0x31 || map[yTile*G_mapWTiles+xTile] == 0x39 || map[yTile*G_mapWTiles+xTile] == 0x43 || map[yTile*G_mapWTiles+xTile] == 0x4B) {
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init02;
+      else
+         sprTile = (u8*)G_doorB_init02;
    }
-   //PUERTAS INTERMEDIAS CERRADAS ROJAS
-   else if(map[yTile*G_mapWTiles+xTile] == 0x30 || map[yTile*G_mapWTiles+xTile] == 0x38 || map[yTile*G_mapWTiles+xTile] == 0x40 || map[yTile*G_mapWTiles+xTile] == 0x48) {    // PUERTA ROJA CERRADA 01
-      sprTile = (u8*)G_doorR_init01;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x20 || map[yTile*G_mapWTiles+xTile] == 0x28 || map[yTile*G_mapWTiles+xTile] == 0x32 || map[yTile*G_mapWTiles+xTile] == 0x3A || map[yTile*G_mapWTiles+xTile] == 0x44 || map[yTile*G_mapWTiles+xTile] == 0x4C) {
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init03;
+      else
+         sprTile = (u8*)G_doorB_init03;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x31 || map[yTile*G_mapWTiles+xTile] == 0x39 || map[yTile*G_mapWTiles+xTile] == 0x41 || map[yTile*G_mapWTiles+xTile] == 0x49) {    // PUERTA ROJA CERRADA 02
-      sprTile = (u8*)G_doorR_init02;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x21 || map[yTile*G_mapWTiles+xTile] == 0x29 || map[yTile*G_mapWTiles+xTile] == 0x33 || map[yTile*G_mapWTiles+xTile] == 0x3B || map[yTile*G_mapWTiles+xTile] == 0x45 || map[yTile*G_mapWTiles+xTile] == 0x4D) {
+      if(side == G_left) 
+         sprTile = (u8*)G_doorR_init04;
+      else
+         sprTile = (u8*)G_doorB_init04;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x32 || map[yTile*G_mapWTiles+xTile] == 0x3A || map[yTile*G_mapWTiles+xTile] == 0x42 || map[yTile*G_mapWTiles+xTile] == 0x4A) {    // PUERTA ROJA CERRADA 03
-      sprTile = (u8*)G_doorR_init03;
+   //PUERTAS INTERMEDIAS ABIERTAS
+   else if(map[yTile*G_mapWTiles+xTile] == 0x22 || map[yTile*G_mapWTiles+xTile] == 0x2A || map[yTile*G_mapWTiles+xTile] == 0x34 || map[yTile*G_mapWTiles+xTile] == 0x3C || map[yTile*G_mapWTiles+xTile] == 0x46 || map[yTile*G_mapWTiles+xTile] == 0x4E) {
+      if(side == G_left)
+         sprTile = (u8*)G_doorR_open01;
+      else 
+         sprTile = (u8*)G_doorB_open01;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x33 || map[yTile*G_mapWTiles+xTile] == 0x3B || map[yTile*G_mapWTiles+xTile] == 0x43 || map[yTile*G_mapWTiles+xTile] == 0x4B) {    // PUERTA ROJA CERRADA 04
-      sprTile = (u8*)G_doorR_init04;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x23 || map[yTile*G_mapWTiles+xTile] == 0x2B || map[yTile*G_mapWTiles+xTile] == 0x35 || map[yTile*G_mapWTiles+xTile] == 0x3D || map[yTile*G_mapWTiles+xTile] == 0x47 || map[yTile*G_mapWTiles+xTile] == 0x4F) {
+      if(side == G_left)
+         sprTile = (u8*)G_doorR_open02;
+      else 
+         sprTile = (u8*)G_doorB_open02;
    }
-   //PUERTAS INTERMEDIAS ABIERTAS ROJAS
-   else if(map[yTile*G_mapWTiles+xTile] == 0x34 || map[yTile*G_mapWTiles+xTile] == 0x3C || map[yTile*G_mapWTiles+xTile] == 0x44 || map[yTile*G_mapWTiles+xTile] == 0x4C) {    // PUERTA ROJA ABIERTA 01
-      sprTile = (u8*)G_doorR_init01;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x24 || map[yTile*G_mapWTiles+xTile] == 0x2C || map[yTile*G_mapWTiles+xTile] == 0x36 || map[yTile*G_mapWTiles+xTile] == 0x3E || map[yTile*G_mapWTiles+xTile] == 0x48 || map[yTile*G_mapWTiles+xTile] == 0x50) {
+      if(side == G_left)
+         sprTile = (u8*)G_doorR_open03;
+      else 
+         sprTile = (u8*)G_doorB_open03;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x35 || map[yTile*G_mapWTiles+xTile] == 0x3D || map[yTile*G_mapWTiles+xTile] == 0x45 || map[yTile*G_mapWTiles+xTile] == 0x4D) {    // PUERTA ROJA ABIERTA 02
-      sprTile = (u8*)G_doorR_init02;
+   else if(map[yTile*G_mapWTiles+xTile] == 0x25 || map[yTile*G_mapWTiles+xTile] == 0x2D || map[yTile*G_mapWTiles+xTile] == 0x37 || map[yTile*G_mapWTiles+xTile] == 0x3F || map[yTile*G_mapWTiles+xTile] == 0x49 || map[yTile*G_mapWTiles+xTile] == 0x51) {
+      if(side == G_left)
+         sprTile = (u8*)G_doorR_open04;
+      else 
+         sprTile = (u8*)G_doorB_open04;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x36 || map[yTile*G_mapWTiles+xTile] == 0x3E || map[yTile*G_mapWTiles+xTile] == 0x46 || map[yTile*G_mapWTiles+xTile] == 0x4E) {    // PUERTA ROJA ABIERTA 03
-      sprTile = (u8*)G_doorR_init03;
+   // INTERRUPTOR NORMAL
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1C || map[yTile*G_mapWTiles+xTile] == 0x2E || map[yTile*G_mapWTiles+xTile] == 0x40) {    // INTERRUPTOR NORMAL
+      if(side == G_left)
+         sprTile = (u8*)G_buttonB_normal;
+      else
+         sprTile = (u8*)G_buttonR_normal;
    }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x37 || map[yTile*G_mapWTiles+xTile] == 0x3F || map[yTile*G_mapWTiles+xTile] == 0x47 || map[yTile*G_mapWTiles+xTile] == 0x4F) {    // PUERTA ROJA ABIERTA 04
-      sprTile = (u8*)G_doorR_init04;
-   }
-   //PUERTAS INTERMEDIAS CERRADAS AZULES
-   else if(map[yTile*G_mapWTiles+xTile] == 0x58 || map[yTile*G_mapWTiles+xTile] == 0x60 || map[yTile*G_mapWTiles+xTile] == 0x68 || map[yTile*G_mapWTiles+xTile] == 0x70) {    // PUERTA AZUL CERRADA 01
-      sprTile = (u8*)G_doorB_init01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x59 || map[yTile*G_mapWTiles+xTile] == 0x61 || map[yTile*G_mapWTiles+xTile] == 0x69 || map[yTile*G_mapWTiles+xTile] == 0x71) {    // PUERTA AZUL CERRADA 02
-      sprTile = (u8*)G_doorB_init02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x5A || map[yTile*G_mapWTiles+xTile] == 0x62 || map[yTile*G_mapWTiles+xTile] == 0x6A || map[yTile*G_mapWTiles+xTile] == 0x72) {    // PUERTA AZUL CERRADA 03
-      sprTile = (u8*)G_doorB_init03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x5B || map[yTile*G_mapWTiles+xTile] == 0x63 || map[yTile*G_mapWTiles+xTile] == 0x6B || map[yTile*G_mapWTiles+xTile] == 0x73) {    // PUERTA AZUL CERRADA 04
-      sprTile = (u8*)G_doorB_init04;
-   }
-   //PUERTAS INTERMEDIAS ABIERTAS AZULES
-   else if(map[yTile*G_mapWTiles+xTile] == 0x5C || map[yTile*G_mapWTiles+xTile] == 0x64 || map[yTile*G_mapWTiles+xTile] == 0x6C || map[yTile*G_mapWTiles+xTile] == 0x74) {    // PUERTA AZUL ABIERTA 01
-      sprTile = (u8*)G_doorB_init01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x5D || map[yTile*G_mapWTiles+xTile] == 0x65 || map[yTile*G_mapWTiles+xTile] == 0x6D || map[yTile*G_mapWTiles+xTile] == 0x75) {    // PUERTA AZUL ABIERTA 02
-      sprTile = (u8*)G_doorB_init02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x5E || map[yTile*G_mapWTiles+xTile] == 0x66 || map[yTile*G_mapWTiles+xTile] == 0x6E || map[yTile*G_mapWTiles+xTile] == 0x76) {    // PUERTA AZUL ABIERTA 03
-      sprTile = (u8*)G_doorB_init03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x5F || map[yTile*G_mapWTiles+xTile] == 0x67 || map[yTile*G_mapWTiles+xTile] == 0x6F || map[yTile*G_mapWTiles+xTile] == 0x77) {    // PUERTA AZUL ABIERTA 04
-      sprTile = (u8*)G_doorB_init04;
-   }
-   // INTERRUPTOR NORMAL ROJO
-   else if(map[yTile*G_mapWTiles+xTile] == 0x90 || map[yTile*G_mapWTiles+xTile] == 0x92 || map[yTile*G_mapWTiles+xTile] == 0x94 || map[yTile*G_mapWTiles+xTile] == 0x96) {    // INTERRUPTOR NORMAL ROJO
-      sprTile = (u8*)G_buttonR_normal;
-   }
-   //INTERRUPTOR ACTIVO ROJO
-   else if(map[yTile*G_mapWTiles+xTile] == 0x91 || map[yTile*G_mapWTiles+xTile] == 0x93 || map[yTile*G_mapWTiles+xTile] == 0x95 || map[yTile*G_mapWTiles+xTile] == 0x97) {    // INTERRUPTOR ACTIVO ROJO
-      sprTile = (u8*)G_buttonR_pressed;
-   }
-   // INTERRUPTOR NORMAL AZUL
-   else if(map[yTile*G_mapWTiles+xTile] == 0x9A || map[yTile*G_mapWTiles+xTile] == 0x9C || map[yTile*G_mapWTiles+xTile] == 0x9E || map[yTile*G_mapWTiles+xTile] == 0xA0) {    // INTERRUPTOR NORMAL AZUL
-      sprTile = (u8*)G_buttonB_normal;
-   }
-   //INTERRUPTOR ACTIVO AZUL
-   else if(map[yTile*G_mapWTiles+xTile] == 0x9B || map[yTile*G_mapWTiles+xTile] == 0x9D || map[yTile*G_mapWTiles+xTile] == 0x9F || map[yTile*G_mapWTiles+xTile] == 0xA1) {    // INTERRUPTOR ACTIVO AZUL
-      sprTile = (u8*)G_buttonB_pressed;
+   //INTERRUPTOR ACTIVO
+   else if(map[yTile*G_mapWTiles+xTile] == 0x1D || map[yTile*G_mapWTiles+xTile] == 0x2F || map[yTile*G_mapWTiles+xTile] == 0x41) {    // INTERRUPTOR ACTIVO
+      if(side == G_left)
+         sprTile = (u8*)G_buttonB_pressed;
+      else
+         sprTile = (u8*)G_buttonR_pressed;
    }
    else {
       sprTile = (u8*)G_tileBlack;

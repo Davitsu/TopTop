@@ -47,7 +47,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	updateSensorHeroe(heroe1);
 
 	heroe2->id = G_heroe2;
-	heroe2->x = 24;
+	heroe2->x = 4;
 	heroe2->y = 140;
 	heroe2->preX[0] = heroe2->x;
 	heroe2->preX[1] = heroe2->x;
@@ -56,7 +56,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->stateY = sy_land;
 	heroe2->jumpPressed = 0;
 	heroe2->health = 6;
-	heroe2->side = G_left;
+	heroe2->side = G_right;
 	heroe2->anim.frames = (TAnimFrame**)g_aniHeroB[0][heroe2->side];
 	heroe2->anim.frame_id = 0;
 	heroe2->anim.time = ANI_FPS_RUN;
@@ -100,6 +100,7 @@ void updateSensorHeroe(struct Heroe *heroe) {
 	heroe->sensorTR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y+1);
 	heroe->sensorDL = byte2tile1(heroe->x + 1, heroe->y + G_heroeH - 1);
 	heroe->sensorDR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + G_heroeH - 1);
+	heroe->sensorCC = byte2tile1(heroe->x, heroe->y + G_heroeH - G_tileSizeH);
 }
 
 // Intercambia  las posiciones previas del heroe
