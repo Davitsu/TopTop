@@ -106,6 +106,10 @@ void updateHeroe(struct Heroe *heroe) {
          // Ani Run
          setAniHeroe(heroe, 1); 
       }
+      else if(heroe->stateY == sy_duck)  {
+         // Ani Duck Run
+         setAniHeroe(heroe, 5);
+      }
    }
    else if (((cpct_isKeyPressed(Key_D) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorRight) && heroe->id == G_heroe2)) && heroe->x < G_mapWBytes - G_heroeW) {
       // Derecha
@@ -115,22 +119,44 @@ void updateHeroe(struct Heroe *heroe) {
          // Ani Run
          setAniHeroe(heroe, 1);
       }
+      else if(heroe->stateY == sy_duck)  {
+         // Ani Duck Run
+         setAniHeroe(heroe, 5);
+      }
    }
    else {
       if(heroe->stateY == sy_land) {
          // Ani Idle
          setAniHeroe(heroe, 0);
       }
+      else if(heroe->stateY == sy_duck)  {
+         // Ani Duck
+         setAniHeroe(heroe, 4);
+      }
+   }
+
+   // Agachar
+   if ((cpct_isKeyPressed(Key_S) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorDown) && heroe->id == G_heroe2)) {
+      heroe->duckPressed = 1;
+      // Si esta en el suelo, se puede agachar
+      if(heroe->stateY == sy_land) {
+         heroe->stateY = sy_duck;
+      }
+   }
+   else {
+      heroe->duckPressed = 0;
    }
 
    // Saltar
    if ((cpct_isKeyPressed(Key_F) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_P) && heroe->id == G_heroe2)) {
-      if(heroe->jumpPressed == 0) {
-         heroe->jumpPressed = 1;
-         // Si estaba en el suelo, salta
-         if(heroe->stateY == sy_land) {
-            heroe->stateY = sy_jump;
-            heroe->jumpFactor = 0;
+      if(heroe->stateY != sy_duck) {
+         if(heroe->jumpPressed == 0) {
+            heroe->jumpPressed = 1;
+            // Si estaba en el suelo, salta
+            if(heroe->stateY == sy_land) {
+               heroe->stateY = sy_jump;
+               heroe->jumpFactor = 0;
+            }
          }
       }
    }
@@ -221,9 +247,21 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
       }
    }
 
+   // Detectamos si podemos dejar de estar agachados (si queremos)
+   if(heroe->stateY == sy_duck) {
+      // Si hemos soltado la tecla de agachar y no colisionamos con nada al levantarnos...
+      if(heroe->duckPressed == 0) {
+         if(map[heroe->sensorLT] != 0x00 && map[heroe->sensorRT] != 0x00 ) {
+            heroe->stateY = sy_land;
+            // Ani Idle
+            setAniHeroe(heroe, 0);
+         }
+      }
+   }
+
    // -- Colisiones Horizontales
    // Colisiones con tiles a la izquierda
-   if(map[heroe->sensorLT] == 0x00 || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00) {
+   if((heroe->stateY != sy_duck && map[heroe->sensorLT] == 0x00) || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00) {
       heroe->x = ((heroe->sensorLC - ((heroe->sensorLC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) + G_tileSizeW;
       if(heroe->stateY == sy_land) {
          // Ani Idle
@@ -232,7 +270,7 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    }
 
    // Colisiones con tiles a la derecha
-   if(map[heroe->sensorRT] == 0x00 || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
+   if((heroe->stateY != sy_duck && map[heroe->sensorRT] == 0x00) || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
       heroe->x = ((heroe->sensorRC - ((heroe->sensorRC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) - G_tileSizeW;
       if(heroe->stateY == sy_land) {
          // Ani Idle

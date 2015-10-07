@@ -46,6 +46,7 @@ typedef struct Heroe {
 	enum StateY stateY;
 	u8 jumpFactor;
 	u8 jumpPressed;
+	u8 duckPressed;
 	u8 health;
 	u8 side;
 	TAnimation anim;
