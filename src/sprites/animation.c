@@ -49,7 +49,7 @@ const TAnimFrame G_allAniHeroR[28] = {
 	{ G_heroR_duckrun_right01, ANI_FPS },	  	//24// << DuckRun Right
 	{ G_heroR_duckrun_right02, ANI_FPS },	  	//25// |
 	{ G_heroR_duckrun_right03, ANI_FPS },	  	//26// |
-	{ G_heroR_duckrun_right04, ANI_FPS },	  	//27// |
+	{ G_heroR_duckrun_right04, ANI_FPS } 	  	//27// |
 };
 
 #define A_HR G_allAniHeroR
@@ -77,6 +77,7 @@ TAnimFrame** const g_aniHeroR[6][2] = {
 };
 
 #undef A_HR
+
 
 // Animaciones Chico
 const TAnimFrame G_allAniHeroB[28] = {
@@ -107,7 +108,7 @@ const TAnimFrame G_allAniHeroB[28] = {
 	{ G_heroB_duckrun_right01, ANI_FPS },	  	//24// << DuckRun Right
 	{ G_heroB_duckrun_right02, ANI_FPS },	  	//25// |
 	{ G_heroB_duckrun_right03, ANI_FPS },	  	//26// |
-	{ G_heroB_duckrun_right04, ANI_FPS },	  	//27// |
+	{ G_heroB_duckrun_right04, ANI_FPS }	  	//27// |
 };
 
 #define A_HB G_allAniHeroB
@@ -135,6 +136,30 @@ TAnimFrame** const g_aniHeroB[6][2] = {
 };
 
 #undef A_HB
+
+
+// Animaciones Disparos Chica
+const TAnimFrame G_allAniShotR[6] = {
+    { G_shootR_left1_01, ANI_FPS_SHOT }, 		// 0// << Left Lvl 1
+    { G_shootR_left1_02, ANI_FPS_SHOT }, 		// 1// |
+    { G_shoorR_left2_01, ANI_FPS_SHOT }, 		// 2// << Left Lvl 2
+    { G_shootR_left2_02, ANI_FPS_SHOT },  		// 3// |
+    { G_shootR_left3_01, ANI_FPS_SHOT },  		// 4// << Left Lvl 3
+	{ G_shootR_left3_02, ANI_FPS_SHOT }  		// 5// |
+};
+
+#define A_SR G_allAniShotR
+
+TAnimFrame*  const G_aniShotR_left_1[3]    	= { &A_SR[0], &A_SR[1], 0 };
+TAnimFrame*  const G_aniShotR_left_2[3]    	= { &A_SR[2], &A_SR[3], 0 };
+TAnimFrame*  const G_aniShotR_left_3[3]    	= { &A_SR[4], &A_SR[5], 0 };
+
+TAnimFrame** const g_aniShotR[1][3] = {
+   	{  G_aniShotR_left_1, G_aniShotR_left_2, G_aniShotR_left_3  } 	// STATE 0 = LEFT
+};
+
+#undef A_SR
+
 
 i8 updateAnimation(TAnimation* anim, TAnimFrame** newAnim, TAnimStatus newStatus) {
 	i8 newframe = 0;

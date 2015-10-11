@@ -46,12 +46,17 @@
 #define G_offsetX_m2 44		// Offset X mapa 2 (4 bytes * 11 tiles)
 #define G_offsetY 40 		// Offset Y (ambos mapas) (8 bytes * 4 tiles)
 
+#define G_playersNum 2
+
 // ID de los Heroes
 #define G_heroe1 1
 #define G_heroe2 2
 
 // Salto
 #define G_jumpSize 13
+
+// Maximo de disparos
+#define G_maxShots 3
 
 // Tamano del heroe en bytes
 #define G_heroeW 4 			
