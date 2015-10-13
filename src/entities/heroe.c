@@ -39,6 +39,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->jumpPressed = 0;
 	heroe1->duckPressed = 0;
 	heroe1->health = 6;
+	heroe1->weaponLevel = 1;
 	heroe1->side = G_left;
 	heroe1->anim.frames = (TAnimFrame**)g_aniHeroR[0][heroe1->side];
 	heroe1->anim.frame_id = 0;
@@ -58,6 +59,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->jumpPressed = 0;
 	heroe2->duckPressed = 0;
 	heroe2->health = 6;
+	heroe2->weaponLevel = 1;
 	heroe2->side = G_right;
 	heroe2->anim.frames = (TAnimFrame**)g_aniHeroB[0][heroe2->side];
 	heroe2->anim.frame_id = 0;

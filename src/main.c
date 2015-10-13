@@ -51,6 +51,7 @@ void initScene(u8 *scene) {
 
 void application() {
    u8 scene = G_sceneGame;    // Primera escena (y la actual)
+   //u8 scene = G_sceneMenu;    // Primera escena (y la actual)
    u8 nextScene = scene;      // Siguiente escena (siempre empieza siendo igual a la primera)
 
    // Initialize CPC before starting the game

@@ -40,6 +40,7 @@ void drawHUDBorder();
 void drawHearts();
 void drawLevel();
 void drawPortraits();
+void drawBulletsAndStars();
 void interactHeroeWithMap(struct Heroe*, u8*);
 
 extern struct Heroe heroe1;

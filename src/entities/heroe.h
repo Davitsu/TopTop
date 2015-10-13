@@ -48,6 +48,7 @@ typedef struct Heroe {
 	u8 jumpPressed;
 	u8 duckPressed;
 	u8 health;
+	u8 weaponLevel;
 	u8 side;
 	TAnimation anim;
 	TAnimFrame** nextAnim;

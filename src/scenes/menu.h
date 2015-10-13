@@ -24,4 +24,10 @@
 void initMenu();
 u8 updateMenu();
 
+void drawMenuBorder();
+void drawMenu();
+void swapBuffersMenu(u8**);
+
+extern u8* const g_SCR_VMEM_MENU; 	// Pointer to the start of default video memory screen
+
 #endif
