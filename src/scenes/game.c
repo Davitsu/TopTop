@@ -20,12 +20,16 @@
 #include "game.h"
 #include "../sprites/sprites.h"
 #include "../sprites/animation.h"
+#include "../entities/shot.h"
 #include "../entities/heroe.h"
 #include "../constants.h"
 #include "../maps/maps.h"
 
 struct Heroe heroe1;
 struct Heroe heroe2;
+
+struct Shot shots1[G_maxShots];
+struct Shot shots2[G_maxShots];
 
 u8 map1[G_mapHTiles][G_mapWTiles];
 u8 map2[G_mapHTiles][G_mapWTiles];
@@ -41,7 +45,7 @@ u8 gotItem;
 void initGame() {
    u8 x, y;
 
-   level = 8;
+   level = 0;
    gotItem = 0;
 
    // Lee y prepara los mapas
@@ -57,6 +61,8 @@ void initGame() {
 
    // Inicializamos todas las entidades...
    initHeroes(&heroe1, &heroe2);
+   initShots(shots1);
+   initShots(shots2);
 
    // Preparamos el double buffer y dibujamos...
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
@@ -80,6 +86,7 @@ u8 updateGame() {
    updateHeroe(&heroe1);
    updateHeroe(&heroe2);
    
+   cpct_waitVSYNC();
    cpct_waitVSYNC();
    swapBuffers(g_scrbuffers);
 
@@ -363,6 +370,19 @@ void drawHeroes() {
    //Se dibuja el sprite del personaje 2
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
    cpct_drawSpriteMasked(heroe2.anim.frames[heroe2.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
+}
+
+// Dibuja los disparos
+void drawShots(struct Shot *shots) {
+   u8 *pvideomem, i;
+
+   for(i=0; i<G_maxShots; i++) {
+      // Dibuja el disparo si esta vivo (activo)
+      if(shots[i].alive == 1) {
+         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + shots[i].x, G_offsetY + shots[i].y);
+         cpct_drawSpriteMasked(shots[i].anim.frames[shots[i].anim.frame_id]->sprite, pvideomem, shots[i].width, shots[i].height);
+      }
+   }
 }
 
 // Dibuja el borde del area de juego

@@ -22,6 +22,7 @@
 #include <types.h>
 #include "../constants.h"
 #include "../entities/heroe.h"
+#include "../entities/shot.h"
 
 void initGame();
 void firstDraw();
@@ -30,6 +31,7 @@ void createHeroes();
 void updateHeroe(struct Heroe*);
 void checkHeroeCollision(struct Heroe*, u8*);
 void drawHeroes();
+void drawShots(struct Shot *shots);
 void drawGameBorder();
 void drawHUD();
 void drawTile(u8, u8, u8);
@@ -45,6 +47,9 @@ void interactHeroeWithMap(struct Heroe*, u8*);
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;
+
+extern struct Shot shots1[G_maxShots];
+extern struct Shot shots2[G_maxShots];
 
 extern u8 map1[G_mapHTiles][G_mapWTiles];
 extern u8 map2[G_mapHTiles][G_mapWTiles];
