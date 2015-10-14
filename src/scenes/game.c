@@ -24,6 +24,7 @@
 #include "../entities/heroe.h"
 #include "../constants.h"
 #include "../maps/maps.h"
+#include "../audio/audio.h"
 
 struct Heroe heroe1;
 struct Heroe heroe2;
@@ -47,6 +48,10 @@ void initGame() {
 
    level = 0;
    gotItem = 0;
+
+   // Inicializamos el audio
+   cpct_akp_musicInit(molusk_song); 
+   cpct_akp_SFXInit(molusk_song);
 
    // Lee y prepara los mapas
    for(y=0; y<G_mapHTiles; y++) {
@@ -92,6 +97,10 @@ u8 updateGame() {
 
    repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left);
    repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right);
+
+      //Reproduce la musica
+      cpct_akp_musicPlay();
+   
    drawHeroes();
    
 	return G_sceneGame;
@@ -165,6 +174,8 @@ void updateHeroe(struct Heroe *heroe) {
             heroe->jumpPressed = 1;
             // Si estaba en el suelo, salta
             if(heroe->stateY == sy_land) {
+               // Reproducimos el efecto de sonido
+               //cpct_akp_SFXPlay(2, 15, 36, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
                heroe->stateY = sy_jump;
                heroe->jumpFactor = 0;
             }
