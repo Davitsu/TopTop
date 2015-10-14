@@ -53,7 +53,7 @@
 #define G_heroe2 2
 
 // Salto
-#define G_jumpSize 13
+#define G_jumpSize 9
 
 // Maximo de disparos
 #define G_maxShots 3

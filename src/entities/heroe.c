@@ -24,7 +24,7 @@
 #include "../sprites/sprites.h"
 #include "../constants.h"
 
-const u8 jumpValues[G_jumpSize] = {4, 4, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1, 0}; 	// Valores de la velocidad de salto/caida en cada frame
+const u8 jumpValues[G_jumpSize] = {6, 5, 4, 3, 2, 2, 1, 1, 0}; 	// Valores de la velocidad de salto/caida en cada frame
 
 // Crea a los personajes
 void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
@@ -82,13 +82,14 @@ void updateJump(struct Heroe *heroe) {
 		}
 		else { 									// Si ha terminado pasamos a caer
 			heroe->stateY = sy_fall;
+			heroe->jumpFactor--;
 		}
 	}
 	else if(heroe->stateY == sy_fall) {
 		// Actualiza la caida
 		heroe->y += jumpValues[heroe->jumpFactor];
 
-		if(heroe->jumpFactor > 3) { 			// Aceleramos hasta la posicion 6 del array
+		if(heroe->jumpFactor > 2) { 			// Aceleramos hasta la posicion 6 del array
 			heroe->jumpFactor--;
 		}
 	}

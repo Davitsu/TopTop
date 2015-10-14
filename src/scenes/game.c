@@ -218,8 +218,8 @@ void updateHeroe(struct Heroe *heroe) {
    else {
       heroe->jumpPressed = 0;
       // Si estaba saltando, cae
-      if(heroe->stateY == sy_jump && heroe->jumpFactor < 7) {
-         heroe->jumpFactor = 7;
+      if(heroe->stateY == sy_jump && heroe->jumpFactor < 5) {
+         heroe->jumpFactor = 5;
       }
    } 
 
@@ -328,7 +328,7 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
       if(heroe->y < G_mapHTiles * G_tileSizeH - G_heroeH) {
          if(heroe->stateY != sy_jump && heroe->stateY != sy_fall) {
             heroe->stateY = sy_fall;
-            heroe->jumpFactor = G_jumpSize - 1;
+            heroe->jumpFactor = G_jumpSize - 2;
          }
       }
    }
@@ -469,7 +469,7 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
 
          switch(shots[i].dir) {
             case sd_left:
-               shots[i].x--;
+               shots[i].x -= 2;
                if(shots[i].x > 200) { // Al ser unsigned no puedo poner <0
                   shots[i].active = 0;
                   if(shots[i].preX[0] != shots[i].preX[1]) { // Seguro por si acaba de disparar
@@ -481,7 +481,7 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
                }
                break;
             case sd_right:
-               shots[i].x++;
+               shots[i].x += 2;
                if(shots[i].x > G_mapWBytes-4) {
                   shots[i].active = 0;
                   if(shots[i].preX[0] != shots[i].preX[1]) { // Seguro por si acaba de disparar
@@ -493,7 +493,7 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
                }
                break;
             case sd_up:
-               shots[i].y -= 2;
+               shots[i].y -= 4;
                if(shots[i].y > 200) { // Al ser unsigned no puedo poner <0
                   shots[i].active = 0;
                   if(shots[i].preY[0] != shots[i].preY[1]) { // Seguro por si acaba de disparar
