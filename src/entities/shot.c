@@ -82,7 +82,6 @@ void createShot(struct Heroe *heroe, struct Shot *shots) {
 			shots[j].dir = sd_right;
 		}
 		
-		
 		shots[j].nextAnim = (TAnimFrame**)g_aniShotR[shots[j].dir][shots[j].level];
 
 		switch(shots[j].dir) {

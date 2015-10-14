@@ -45,8 +45,8 @@ typedef struct {
    TAnimStatus   status;    // Status of the animation
 } TAnimation;
 
-#define ANI_FPS 12
-#define ANI_FPS_RUN 5
+#define ANI_FPS 6
+#define ANI_FPS_RUN 2
 #define ANI_FPS_SHOT 2
 
 //Animaciones Chica

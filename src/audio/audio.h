@@ -16,18 +16,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _MENU_H_
-#define _MENU_H_
-
 #include <types.h>
 
-void initMenu();
-u8 updateMenu();
+// Sound effects
+//extern __at(0x1D4D) const u8 G_hurt[87];
 
-void drawMenuBorder();
-void drawMenu();
-void swapBuffersMenu(u8**);
+extern __at(0x7000) const u8 molusk_song[3545];
 
-extern u8* const g_SCR_VMEM_MENU; 	// Pointer to the start of default video memory screen
-
-#endif
+// Music

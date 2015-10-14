@@ -40,7 +40,7 @@ void drawTile(u8, u8, u8);
 void changeTile(u8, u8, u8, u8);
 void redrawTiles(u8);
 void repaintBackgroundOverSprite(u8, u8, u8);
-void repaintBackgroundOverShot(u8, u8, u8);
+void repaintBackgroundOverShot(struct Shot*, u8);
 void drawMap();
 void swapBuffers(u8**);
 void swapPrePosShot(u8*, u8*);
@@ -48,6 +48,7 @@ void drawHUDBorder();
 void drawHearts();
 void drawLevel();
 void drawPortraits();
+void drawBulletsAndStars();
 void interactHeroeWithMap(struct Heroe*, u8*);
 
 extern struct Heroe heroe1;
