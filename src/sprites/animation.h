@@ -47,7 +47,7 @@ typedef struct {
 
 #define ANI_FPS 12
 #define ANI_FPS_RUN 5
-#define ANI_FPS_SHOT 5
+#define ANI_FPS_SHOT 2
 
 //Animaciones Chica
 extern const TAnimFrame G_allAniHeroR[28];             // guarda todos los frames de todas las animaciones
@@ -86,13 +86,19 @@ extern TAnimFrame* const G_aniHeroB_duckrun_right[5];
 extern TAnimFrame** const g_aniHeroB[6][2];
 
 //Animaciones Disparos Chica
-extern const TAnimFrame G_allAniShotR[6];
+extern const TAnimFrame G_allAniShotR[18];
 
 extern TAnimFrame* const G_aniShotR_left_1[3];
 extern TAnimFrame* const G_aniShotR_left_2[3];
 extern TAnimFrame* const G_aniShotR_left_3[3];
+extern TAnimFrame* const G_aniShotR_right_1[3];
+extern TAnimFrame* const G_aniShotR_right_2[3];
+extern TAnimFrame* const G_aniShotR_right_3[3];
+extern TAnimFrame* const G_aniShotR_up_1[3];
+extern TAnimFrame* const G_aniShotR_up_2[3];
+extern TAnimFrame* const G_aniShotR_up_3[3];
 
-extern TAnimFrame** const g_aniShotR[1][3];        // [Numero de animaciones][Numero de niveles del disparo]
+extern TAnimFrame** const g_aniShotR[3][3];        // [Numero de animaciones][Numero de niveles del disparo]
  
 // UTILITY FUNCTIONS
 i8 updateAnimation(TAnimation* anim, TAnimFrame** newAnim, TAnimStatus newStatus);

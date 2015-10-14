@@ -75,4 +75,10 @@
 #define G_borderTop_p2      40
 #define G_borderBottom_p2  180
 
+typedef enum shotLevel {
+	sl_1, 
+	sl_2,
+	sl_3 
+};
+
 #endif

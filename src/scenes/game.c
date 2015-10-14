@@ -25,6 +25,9 @@
 #include "../constants.h"
 #include "../maps/maps.h"
 
+#define G_NUM_REDRAW 32
+#define G_DONT_REDRAW 255
+
 struct Heroe heroe1;
 struct Heroe heroe2;
 
@@ -33,6 +36,9 @@ struct Shot shots2[G_maxShots];
 
 u8 map1[G_mapHTiles][G_mapWTiles];
 u8 map2[G_mapHTiles][G_mapWTiles];
+
+u8 mapRedraw1[G_NUM_REDRAW];
+u8 mapRedraw2[G_NUM_REDRAW];
 
 extern u8* const G_SCR_VMEM = (u8*)0xC000; 
 
@@ -52,6 +58,11 @@ void initGame() {
          map1[y][x] = G_map01[y*G_mapWTiles+x];
          map2[y][x] = G_map02[y*G_mapWTiles+x];
       }
+   }
+
+   for(x=0; x<G_NUM_REDRAW; x++) {
+      mapRedraw1[x] = G_DONT_REDRAW;
+      mapRedraw2[x] = G_DONT_REDRAW;
    }
 
 	drawGameBorder();
@@ -80,16 +91,40 @@ void firstDraw() {
 
 // Update del menu
 u8 updateGame() {
+   u8 i;
    updateHeroe(&heroe1);
    updateHeroe(&heroe2);
+   updateShots(&heroe1, shots1);
+   updateShots(&heroe2, shots2);
    
-   cpct_waitVSYNC();
    cpct_waitVSYNC();
    swapBuffers(g_scrbuffers);
 
    repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left);
    repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right);
+
+   redrawTiles(G_left);
+   redrawTiles(G_right);
+
+   for(i=0; i<G_maxShots; i++) {
+      if(shots1[i].drawable > 0) {
+         repaintBackgroundOverShot(shots1[i].preX[0], shots1[i].preY[0], G_left);
+         if(shots1[i].active == 0) {
+            shots1[i].drawable--;
+         }
+      }
+   }
+   for(i=0; i<G_maxShots; i++) {
+      if(shots2[i].drawable > 0) {
+         repaintBackgroundOverShot(shots2[i].preX[0], shots2[i].preY[0], G_right);
+         if(shots2[i].active == 0) {
+            shots2[i].drawable--;
+         }
+      }
+   }
+
    drawHeroes();
+   drawShots();
    
 	return G_sceneGame;
 }
@@ -155,7 +190,7 @@ void updateHeroe(struct Heroe *heroe) {
    }
 
    // Saltar
-   if ((cpct_isKeyPressed(Key_F) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_P) && heroe->id == G_heroe2)) {
+   if ((cpct_isKeyPressed(Key_F) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_O) && heroe->id == G_heroe2)) {
       if(heroe->stateY != sy_duck) {
          if(heroe->jumpPressed == 0) {
             heroe->jumpPressed = 1;
@@ -189,10 +224,32 @@ void updateHeroe(struct Heroe *heroe) {
    if(heroe->id == G_heroe1) {
       checkHeroeCollision(heroe, &map1[0][0]);
       interactHeroeWithMap(heroe, &map1[0][0]);
+
+      //Disparar
+      if(cpct_isKeyPressed(Key_G)) {
+         if(heroe->shotPressed == 0) {
+            heroe->shotPressed = 1;
+            createShot(heroe, shots1);
+         }
+      }
+      else {
+         heroe->shotPressed = 0;
+      }   
    }
    else {
       checkHeroeCollision(heroe, &map2[0][0]);
       interactHeroeWithMap(heroe, &map2[0][0]);
+
+      //Disparar
+      if(cpct_isKeyPressed(Key_P)) {
+         if(heroe->shotPressed == 0) {
+            heroe->shotPressed = 1;
+            createShot(heroe, shots2);
+         }
+      }
+      else {
+         heroe->shotPressed = 0;
+      }  
    }
 
    updateAnimation(&heroe->anim, heroe->nextAnim, 0);
@@ -208,7 +265,10 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
       isColliding = 0;
       updateSensorHeroe(heroe);
       // Colisiones con tiles superiores
-      if(map[heroe->sensorTL] == 0x00 || map[heroe->sensorTR] == 0x00) {
+      if(map[heroe->sensorTL] == 0x00 || map[heroe->sensorTR] == 0x00 ||
+         map[heroe->sensorTL] == 0x04 || map[heroe->sensorTR] == 0x04 ||
+         map[heroe->sensorTL] == 0x05 || map[heroe->sensorTR] == 0x05 ||
+         map[heroe->sensorTL] == 0x06 || map[heroe->sensorTR] == 0x06) {
          if(heroe->stateY == sy_jump) { 
             isColliding = 1;
             heroe->y = (heroe->sensorTL / G_mapWTiles) * G_tileSizeH + G_tileSizeH-1;
@@ -226,7 +286,10 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
       }
 
       // Colisiones con tiles inferiores
-      if(map[heroe->sensorDL] == 0x00 || map[heroe->sensorDR] == 0x00) {
+      if(map[heroe->sensorDL] == 0x00 || map[heroe->sensorDR] == 0x00 ||
+         map[heroe->sensorDL] == 0x04 || map[heroe->sensorDR] == 0x04 ||
+         map[heroe->sensorDL] == 0x05 || map[heroe->sensorDR] == 0x05 ||
+         map[heroe->sensorDL] == 0x06 || map[heroe->sensorDR] == 0x06) {
          if(heroe->stateY != sy_jump) {
             isColliding = 1;
             heroe->y = (heroe->sensorDL / G_mapWTiles) * G_tileSizeH - G_heroeH;
@@ -245,7 +308,10 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    } while(isColliding != 0);
 
    // Detectamos si hay suelo debajo nuestra para caer o no
-   if(map[heroe->sensorDL+8] != 0x00 && map[heroe->sensorDR+8] != 0x00) {
+   if(map[heroe->sensorDL+8] != 0x00 && map[heroe->sensorDR+8] != 0x00 &&
+      map[heroe->sensorDL+8] != 0x04 && map[heroe->sensorDR+8] != 0x04 &&
+      map[heroe->sensorDL+8] != 0x05 && map[heroe->sensorDR+8] != 0x05 &&
+      map[heroe->sensorDL+8] != 0x06 && map[heroe->sensorDR+8] != 0x06) {
       if(heroe->y < G_mapHTiles * G_tileSizeH - G_heroeH) {
          if(heroe->stateY != sy_jump && heroe->stateY != sy_fall) {
             heroe->stateY = sy_fall;
@@ -258,7 +324,10 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    if(heroe->stateY == sy_duck) {
       // Si hemos soltado la tecla de agachar y no colisionamos con nada al levantarnos...
       if(heroe->duckPressed == 0) {
-         if(map[heroe->sensorLT] != 0x00 && map[heroe->sensorRT] != 0x00 ) {
+         if(map[heroe->sensorTL] != 0x00 && map[heroe->sensorTR] != 0x00 &&
+            map[heroe->sensorTL] != 0x04 && map[heroe->sensorTR] != 0x04 &&
+            map[heroe->sensorTL] != 0x05 && map[heroe->sensorTR] != 0x05 &&
+            map[heroe->sensorTL] != 0x06 && map[heroe->sensorTR] != 0x06) {
             heroe->stateY = sy_land;
             // Ani Idle
             setAniHeroe(heroe, 0);
@@ -268,7 +337,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
 
    // -- Colisiones Horizontales
    // Colisiones con tiles a la izquierda
-   if((heroe->stateY != sy_duck && map[heroe->sensorLT] == 0x00) || map[heroe->sensorLC] == 0x00 || map[heroe->sensorLD] == 0x00) {
+   if((heroe->stateY != sy_duck && (map[heroe->sensorLT] == 0x00 || map[heroe->sensorLT] == 0x04 || map[heroe->sensorLT] == 0x05 || map[heroe->sensorLT] == 0x06)) ||
+      map[heroe->sensorLC] == 0x00 || map[heroe->sensorLC] == 0x04 || map[heroe->sensorLC] == 0x05 || map[heroe->sensorLC] == 0x06 ||
+      map[heroe->sensorLD] == 0x00 || map[heroe->sensorLD] == 0x04 || map[heroe->sensorLD] == 0x05 || map[heroe->sensorLD] == 0x06) {
       heroe->x = ((heroe->sensorLC - ((heroe->sensorLC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) + G_tileSizeW;
       if(heroe->stateY == sy_land) {
          // Ani Idle
@@ -277,7 +348,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    }
 
    // Colisiones con tiles a la derecha
-   if((heroe->stateY != sy_duck && map[heroe->sensorRT] == 0x00) || map[heroe->sensorRC] == 0x00 || map[heroe->sensorRD] == 0x00) {
+   if((heroe->stateY != sy_duck && (map[heroe->sensorRT] == 0x00 || map[heroe->sensorRT] == 0x04 || map[heroe->sensorRT] == 0x05 || map[heroe->sensorRT] == 0x06)) ||
+      map[heroe->sensorRC] == 0x00 || map[heroe->sensorRC] == 0x04 || map[heroe->sensorRC] == 0x05 || map[heroe->sensorRC] == 0x06 ||
+      map[heroe->sensorRD] == 0x00 || map[heroe->sensorRD] == 0x04 || map[heroe->sensorRD] == 0x05 || map[heroe->sensorRD] == 0x06) {
       heroe->x = ((heroe->sensorRC - ((heroe->sensorRC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) - G_tileSizeW;
       if(heroe->stateY == sy_land) {
          // Ani Idle
@@ -368,15 +441,109 @@ void drawHeroes() {
    cpct_drawSpriteMasked(heroe2.anim.frames[heroe2.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
 }
 
-// Dibuja los disparos
-void drawShots(struct Shot *shots) {
-   u8 *pvideomem, i;
+void updateShots(struct Heroe *heroe, struct Shot *shots) {
+   u8 i;
 
    for(i=0; i<G_maxShots; i++) {
+      if(shots[i].active == 1) {
+         // Cambiamos la variable en la que guardamos la posicion previa.
+         // Usamos dos variables para saber donde limpiar el rastro en cada buffer
+         swapPrePosShot(shots[i].preX, shots[i].preY);
+         shots[i].preX[1] = shots[i].x;
+         shots[i].preY[1] = shots[i].y;
+
+         updateAnimation(&shots[i].anim, shots[i].nextAnim, 0);
+
+         switch(shots[i].dir) {
+            case sd_left:
+               shots[i].x--;
+               if(shots[i].x > 200) { // Al ser unsigned no puedo poner <0
+                  shots[i].active = 0;
+                  if(shots[i].preX[0] != shots[i].preX[1]) { // Seguro por si acaba de disparar
+                     shots[i].x = shots[i].preX[1];
+                  }
+                  else {
+                     shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
+                  }
+               }
+               break;
+            case sd_right:
+               shots[i].x++;
+               if(shots[i].x > G_mapWBytes-4) {
+                  shots[i].active = 0;
+                  if(shots[i].preX[0] != shots[i].preX[1]) { // Seguro por si acaba de disparar
+                     shots[i].x = shots[i].preX[1];
+                  }
+                  else {
+                     shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
+                  }
+               }
+               break;
+            case sd_up:
+               shots[i].y -= 2;
+               if(shots[i].y > 200) { // Al ser unsigned no puedo poner <0
+                  shots[i].active = 0;
+                  if(shots[i].preY[0] != shots[i].preY[1]) { // Seguro por si acaba de disparar
+                     shots[i].y = shots[i].preY[1];
+                  }
+                  else {
+                     shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
+                  }
+               }
+               break;
+         }
+         
+
+         if(heroe->id == G_heroe1) {
+            checkShotsCollision(&shots[i], &map1[0][0], G_left);
+         }
+         else {
+            checkShotsCollision(&shots[i], &map2[0][0], G_right);
+         }
+         
+      }
+   }
+}
+
+void checkShotsCollision(struct Shot* shot, u8 *map, u8 side) {
+   updateSensorShot(shot);
+
+   if(map[shot->sensor1] == 0x0) {
+      shot->active = 0;
+   }
+   else if(map[shot->sensor1] == 0x04) {
+      shot->active = 0;
+      changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x05);
+   }
+   else if(map[shot->sensor1] == 0x05) {
+      shot->active = 0;
+      changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x06);
+   }
+   else if(map[shot->sensor1] == 0x06) {
+      shot->active = 0;
+      changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0xFF);
+   }
+}
+
+// Dibuja los disparos
+void drawShots() {
+   u8 *pvideomem, i;
+
+   // Disparos de la chica
+   for(i=0; i<G_maxShots; i++) {
       // Dibuja el disparo si esta vivo (activo)
-      if(shots[i].alive == 1) {
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + shots[i].x, G_offsetY + shots[i].y);
-         cpct_drawSpriteMasked(shots[i].anim.frames[shots[i].anim.frame_id]->sprite, pvideomem, shots[i].width, shots[i].height);
+      if(shots1[i].active == 1) {
+         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + shots1[i].x, G_offsetY + shots1[i].y);
+         cpct_drawSpriteMasked(shots1[i].anim.frames[shots1[i].anim.frame_id]->sprite, pvideomem, shots1[i].width, shots1[i].height);
+      }
+   }
+
+   // Disparos del chico
+   for(i=0; i<G_maxShots; i++) {
+      // Dibuja el disparo si esta vivo (activo)
+      if(shots2[i].active == 1) {
+         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + shots2[i].x, G_offsetY + shots2[i].y);
+         cpct_drawSpriteMasked(shots2[i].anim.frames[shots2[i].anim.frame_id]->sprite, pvideomem, shots2[i].width, shots2[i].height);
       }
    }
 }
@@ -611,11 +778,56 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    cpct_drawTileAligned4x8_f(sprTile, pvideomem);
 }
 
+void changeTile(u8 xTile, u8 yTile, u8 side, u8 newValue) {
+   u8 *map, *mapRedraw, i, found;
+   found = 0;
+
+   if(side == G_left) {
+      map = *map1;
+      mapRedraw = mapRedraw1;
+   }
+   else {
+      map = *map2;
+      mapRedraw = mapRedraw2;
+   }
+
+   for(i=0; i<G_NUM_REDRAW && found == 0; i++) {
+      if(mapRedraw[i] == G_DONT_REDRAW) {
+         found = 1;
+         mapRedraw[i] = yTile*G_mapWTiles+xTile;
+         map[yTile*G_mapWTiles+xTile] = newValue;
+         drawTile(xTile, yTile, side);
+      }
+   }
+}
+
+void redrawTiles(u8 side) {
+   u8 *mapRedraw, i, found;
+   found = 0;
+
+   if(side == G_left) {
+      mapRedraw = mapRedraw1;
+   }
+   else {
+      mapRedraw = mapRedraw2;
+   }
+
+   for(i=0; i<G_NUM_REDRAW && found == 0; i++) {
+      if(mapRedraw[i] != G_DONT_REDRAW) {
+         drawTile(mapRedraw[i]%G_mapWTiles, mapRedraw[i]/G_mapWTiles, side);
+         mapRedraw[i] = G_DONT_REDRAW;
+      }
+      else {
+         found = 1;
+      }
+   }
+}
+
 // Redibuja los tiles adyacentes al player (limpia su rastro)
 void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
    byte2tile2(&x, &y);
 
-   // Ahora limpiamos el area de tiles adyacentes al jugador (2x3 tiles)
+   // Ahora limpiamos el area de tiles adyacentes al jugador (3x3 tiles)
 
    // [x][-][-] <- Columna y
    drawTile(x, y, side);
@@ -634,6 +846,22 @@ void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
       drawTile(x, y+2, side);
       if(x+1 < G_mapWTiles) drawTile(x+1, y+2, side);
       if(x-1 >= 0) drawTile(x-1, y+2, side);
+   }
+}
+
+void repaintBackgroundOverShot(u8 x, u8 y, u8 side) {
+   byte2tile2(&x, &y);
+
+   // Ahora limpiamos el area de tiles adyacentes al disparo (2x2 tiles)
+
+   // [x][-] <- Columna y
+   drawTile(x, y, side);
+   if(x+1 < G_mapWTiles) drawTile(x+1, y, side);
+
+   // [-][x] <- Columna y+1
+   if(y+1 < G_mapHTiles) {
+      drawTile(x, y+1, side);
+      if(x+1 < G_mapWTiles) drawTile(x+1, y+1, side);
    }
 }
 
@@ -665,6 +893,18 @@ void swapBuffers(u8** scrbuffers) {
    aux = scrbuffers[0];
    scrbuffers[0] = scrbuffers[1];
    scrbuffers[1] = aux;
+}
+
+void swapPrePosShot(u8 *preX, u8 *preY) {
+   u8 prePos;
+
+   prePos = preX[0];
+   preX[0] = preX[1];
+   preX[1] = prePos;
+
+   prePos = preY[0];
+   preY[0] = preY[1];
+   preY[1] = prePos;
 }
 
 // Dibuja el HUD

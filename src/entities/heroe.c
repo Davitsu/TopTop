@@ -38,7 +38,9 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->stateY = sy_land;
 	heroe1->jumpPressed = 0;
 	heroe1->duckPressed = 0;
+	heroe1->shotPressed = 0;
 	heroe1->health = 6;
+	heroe1->level = sl_3;
 	heroe1->side = G_left;
 	heroe1->anim.frames = (TAnimFrame**)g_aniHeroR[0][heroe1->side];
 	heroe1->anim.frame_id = 0;
@@ -57,7 +59,9 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->stateY = sy_land;
 	heroe2->jumpPressed = 0;
 	heroe2->duckPressed = 0;
+	heroe2->shotPressed = 0;
 	heroe2->health = 6;
+	heroe2->level = sl_1;
 	heroe2->side = G_right;
 	heroe2->anim.frames = (TAnimFrame**)g_aniHeroB[0][heroe2->side];
 	heroe2->anim.frame_id = 0;
@@ -84,7 +88,7 @@ void updateJump(struct Heroe *heroe) {
 		// Actualiza la caida
 		heroe->y += jumpValues[heroe->jumpFactor];
 
-		if(heroe->jumpFactor > 6) { 			// Aceleramos hasta la posicion 6 del array
+		if(heroe->jumpFactor > 3) { 			// Aceleramos hasta la posicion 6 del array
 			heroe->jumpFactor--;
 		}
 	}
@@ -92,25 +96,14 @@ void updateJump(struct Heroe *heroe) {
 
 // Actualiza la posicion tile de los sensores del heroe
 void updateSensorHeroe(struct Heroe *heroe) {
-	u8 duckOffsetL, duckOffsetT;
-
-	if(heroe->stateY == sy_duck) {
-		duckOffsetL = 0;
-		duckOffsetT = 0;
-	}
-	else {
-		duckOffsetL = 0;
-		duckOffsetT = 0;
-	}
-
-	heroe->sensorLT = byte2tile1(heroe->x, heroe->y + 2 + duckOffsetL);
+	heroe->sensorLT = byte2tile1(heroe->x, heroe->y + 2);
 	heroe->sensorLC = byte2tile1(heroe->x, heroe->y + G_heroeH - G_tileSizeH);
 	heroe->sensorLD = byte2tile1(heroe->x, heroe->y + G_heroeH - 3);
-	heroe->sensorRT = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + 2 + duckOffsetL);
+	heroe->sensorRT = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + 2);
 	heroe->sensorRC = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - G_tileSizeH);
 	heroe->sensorRD = byte2tile1(heroe->x + G_heroeW - 1, heroe->y + G_heroeH - 3);
-	heroe->sensorTL = byte2tile1(heroe->x + 1, heroe->y + 1 + duckOffsetT);
-	heroe->sensorTR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + 1 + duckOffsetT);
+	heroe->sensorTL = byte2tile1(heroe->x + 1, heroe->y + 1);
+	heroe->sensorTR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + 1);
 	heroe->sensorDL = byte2tile1(heroe->x + 1, heroe->y + G_heroeH - 1);
 	heroe->sensorDR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + G_heroeH - 1);
 	heroe->sensorCC = byte2tile1(heroe->x, heroe->y + G_heroeH - G_tileSizeH);

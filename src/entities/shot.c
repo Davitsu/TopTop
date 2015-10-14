@@ -30,24 +30,133 @@ void initShots(struct Shot *shots) {
 	for(i=0; i<G_maxShots; i++) {
 		shots[i].x = 0;
 		shots[i].y = 0;
+		shots[i].preX[0] = shots[i].x;
+		shots[i].preX[1] = shots[i].x;
+		shots[i].preY[0] = shots[i].y;
+		shots[i].preY[1] = shots[i].y;
 		shots[i].width = 0;
-		shots[i].height= 0;
-		shots[i].level = 0;
-		shots[i].alive = 0;
+		shots[i].height = 0;
+		shots[i].level = sl_1;
+		shots[i].active = 0;
+		shots[i].drawable = 0;
 		shots[i].dir = sd_up;
-		shots[i].anim.frames = (TAnimFrame**)g_aniShotR[0][shots[i].level];
+		shots[i].anim.frames = (TAnimFrame**)g_aniShotR[shots[i].dir][shots[i].level];
 		shots[i].anim.frame_id = 0;
 		shots[i].anim.time = ANI_FPS_SHOT;
 		shots[i].anim.status = as_cycle;
 		shots[i].nextAnim = shots[i].anim.frames;
+		shots[i].sensor1 = 0;
+		shots[i].sensor2 = 0;
 	}
 }
 
-void createShot(struct Heroe *heroe) {
-	if(heroe->id == G_heroe1) {
-		// Disparo Chica
+void createShot(struct Heroe *heroe, struct Shot *shots) {
+	u8 i;
+	u8 j = 0;
+	u8 found = 0;
+
+	// Comprobamos si es posible disparar (si hay menos de 3 en pantalla)
+	for(i=0; i<G_maxShots && found==0; i++) {
+		// Si hay un disparo no activo, ese sera el que usaremos
+		if(shots[i].active == 0 && shots[i].drawable == 0) {
+			found = 1;
+			j = i;
+		}
 	}
-	else {
-		// Disparo Chico
+
+	// Si hemos encontrado un disparo para usar, seguimos
+	// si no, se acaba la funcion, no podemos disparar
+	if(found == 1) {
+		shots[j].active = 1;
+		shots[j].drawable = 3;
+		shots[j].level = heroe->level;
+
+		// Si pulsa arriba, dispara hacia arriba. Si no, depende del lado al que mira el heroe
+		if ((cpct_isKeyPressed(Key_W) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorUp) && heroe->id == G_heroe2)) {
+			shots[j].dir = sd_up;
+		}
+		else if (heroe->side == G_left) {
+			shots[j].dir = sd_left;
+		}
+		else {
+			shots[j].dir = sd_right;
+		}
+		
+		
+		shots[j].nextAnim = (TAnimFrame**)g_aniShotR[shots[j].dir][shots[j].level];
+
+		switch(shots[j].dir) {
+			case sd_left:
+				if(shots[j].level == sl_1) {
+					shots[j].x = heroe->x - 1;
+					shots[j].y = heroe->y + 5;
+					shots[j].width = 4;
+					shots[j].height = 1;
+				}
+				else if(shots[j].level == sl_2) {
+					shots[j].x = heroe->x - 1;
+					shots[j].y = heroe->y + 3;
+					shots[j].width = 4;
+					shots[j].height = 5;
+				}
+				else {
+					shots[j].x = heroe->x - 1;
+					shots[j].y = heroe->y + 2;
+					shots[j].width = 4;
+					shots[j].height = 7;
+				}
+				break;
+			case sd_right:
+				if(shots[j].level == sl_1) {
+					shots[j].x = heroe->x + 1;
+					shots[j].y = heroe->y + 5;
+					shots[j].width = 4;
+					shots[j].height = 1;
+				}
+				else if(shots[j].level == sl_2) {
+					shots[j].x = heroe->x + 1;
+					shots[j].y = heroe->y + 3;
+					shots[j].width = 4;
+					shots[j].height = 5;
+				}
+				else {
+					shots[j].x = heroe->x + 1;
+					shots[j].y = heroe->y + 2;
+					shots[j].width = 4;
+					shots[j].height = 7;
+				}
+				break;
+			case sd_up:
+				if(shots[j].level == sl_1) {
+					shots[j].x = heroe->x + 2;
+					shots[j].y = heroe->y;
+					shots[j].width = 1;
+					shots[j].height = 8;
+				}
+				else if(shots[j].level == sl_2) {
+					shots[j].x = heroe->x + 1;
+					shots[j].y = heroe->y;
+					shots[j].width = 3;
+					shots[j].height = 8;
+				}
+				else {
+					shots[j].x = heroe->x;
+					shots[j].y = heroe->y;
+					shots[j].width = 4;
+					shots[j].height = 8;
+				}
+				break;
+		}
+
+		shots[j].preX[0] = shots[j].x;
+		shots[j].preX[1] = shots[j].x;
+		shots[j].preY[0] = shots[j].y;
+		shots[j].preY[1] = shots[j].y;
 	}
+}
+
+// Actualiza la posicion tile de los sensores del disparo
+void updateSensorShot(struct Shot *shot) {
+	shot->sensor1 = byte2tile1(shot->x, shot->y);
+	shot->sensor2 = byte2tile1(shot->x, shot->y);
 }

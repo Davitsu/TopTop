@@ -25,25 +25,31 @@
 #include "../constants.h"
 
 typedef enum ShotDir {
-	sd_up, 
 	sd_left,
-	sd_right
+	sd_right,
+	sd_up
 };
 
 //Entidad heroe
 typedef struct Shot {
 	u8 x;
 	u8 y;
+	u8 preX[2];
+	u8 preY[2];
 	u8 width;
 	u8 height;
-	u8 level;
-	u8 alive;
+	enum shotLevel level;
+	u8 active;
+	u8 drawable;
 	enum ShotDir dir;
 	TAnimation anim;
 	TAnimFrame** nextAnim;
+	u8 sensor1;
+	u8 sensor2;
 };
 
 void initShots(struct Shot*);
-void createShot(struct Heroe*);
+void createShot(struct Heroe*, struct Shot*);
+void updateSensorShot(struct Shot*);
 
 #endif

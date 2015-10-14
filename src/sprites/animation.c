@@ -139,13 +139,27 @@ TAnimFrame** const g_aniHeroB[6][2] = {
 
 
 // Animaciones Disparos Chica
-const TAnimFrame G_allAniShotR[6] = {
-    { G_shootR_left1_01, ANI_FPS_SHOT }, 		// 0// << Left Lvl 1
-    { G_shootR_left1_02, ANI_FPS_SHOT }, 		// 1// |
-    { G_shoorR_left2_01, ANI_FPS_SHOT }, 		// 2// << Left Lvl 2
-    { G_shootR_left2_02, ANI_FPS_SHOT },  		// 3// |
-    { G_shootR_left3_01, ANI_FPS_SHOT },  		// 4// << Left Lvl 3
-	{ G_shootR_left3_02, ANI_FPS_SHOT }  		// 5// |
+const TAnimFrame G_allAniShotR[18] = {
+    { G_shotR_left1_01, ANI_FPS_SHOT }, 		// 0// << Left Lvl 1
+    { G_shotR_left1_02, ANI_FPS_SHOT }, 		// 1// |
+    { G_shotR_left2_01, ANI_FPS_SHOT }, 		// 2// << Left Lvl 2
+    { G_shotR_left2_02, ANI_FPS_SHOT },  		// 3// |
+    { G_shotR_left3_01, ANI_FPS_SHOT },  		// 4// << Left Lvl 3
+	{ G_shotR_left3_02, ANI_FPS_SHOT },  		// 5// |
+
+	{ G_shotR_right1_01, ANI_FPS_SHOT }, 		// 0// << Right Lvl 1
+    { G_shotR_right1_02, ANI_FPS_SHOT }, 		// 1// |
+    { G_shotR_right2_01, ANI_FPS_SHOT }, 		// 2// << Right Lvl 2
+    { G_shotR_right2_02, ANI_FPS_SHOT },  		// 3// |
+    { G_shotR_right3_01, ANI_FPS_SHOT },  		// 4// << Right Lvl 3
+	{ G_shotR_right3_02, ANI_FPS_SHOT },  		// 5// |
+
+	{ G_shotR_up1_01, ANI_FPS_SHOT }, 			// 0// << Up Lvl 1
+    { G_shotR_up1_02, ANI_FPS_SHOT }, 			// 1// |
+    { G_shotR_up2_01, ANI_FPS_SHOT }, 			// 2// << Up Lvl 2
+    { G_shotR_up2_02, ANI_FPS_SHOT },  		// 3// |
+    { G_shotR_up3_01, ANI_FPS_SHOT },  		// 4// << Up Lvl 3
+	{ G_shotR_up3_02, ANI_FPS_SHOT }  			// 5// |
 };
 
 #define A_SR G_allAniShotR
@@ -153,9 +167,17 @@ const TAnimFrame G_allAniShotR[6] = {
 TAnimFrame*  const G_aniShotR_left_1[3]    	= { &A_SR[0], &A_SR[1], 0 };
 TAnimFrame*  const G_aniShotR_left_2[3]    	= { &A_SR[2], &A_SR[3], 0 };
 TAnimFrame*  const G_aniShotR_left_3[3]    	= { &A_SR[4], &A_SR[5], 0 };
+TAnimFrame*  const G_aniShotR_right_1[3]    = { &A_SR[6], &A_SR[7], 0 };
+TAnimFrame*  const G_aniShotR_right_2[3]   	= { &A_SR[8], &A_SR[9], 0 };
+TAnimFrame*  const G_aniShotR_right_3[3]   	= { &A_SR[10], &A_SR[11], 0 };
+TAnimFrame*  const G_aniShotR_up_1[3]    	= { &A_SR[12], &A_SR[13], 0 };
+TAnimFrame*  const G_aniShotR_up_2[3]    	= { &A_SR[14], &A_SR[15], 0 };
+TAnimFrame*  const G_aniShotR_up_3[3]    	= { &A_SR[16], &A_SR[17], 0 };
 
-TAnimFrame** const g_aniShotR[1][3] = {
-   	{  G_aniShotR_left_1, G_aniShotR_left_2, G_aniShotR_left_3  } 	// STATE 0 = LEFT
+TAnimFrame** const g_aniShotR[3][3] = {
+   	{  G_aniShotR_left_1, G_aniShotR_left_2, G_aniShotR_left_3  }, 		// STATE 0 = LEFT
+   	{  G_aniShotR_right_1, G_aniShotR_right_2, G_aniShotR_right_3  }, 	// STATE 0 = RIGHT
+   	{  G_aniShotR_up_1, G_aniShotR_up_2, G_aniShotR_up_3  } 			// STATE 0 = UP
 };
 
 #undef A_SR

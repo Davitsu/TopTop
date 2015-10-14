@@ -47,7 +47,9 @@ typedef struct Heroe {
 	u8 jumpFactor;
 	u8 jumpPressed;
 	u8 duckPressed;
+	u8 shotPressed;
 	u8 health;
+	enum shotLevel level;
 	u8 side;
 	TAnimation anim;
 	TAnimFrame** nextAnim;
