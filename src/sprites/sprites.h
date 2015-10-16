@@ -91,6 +91,7 @@ extern const u8 G_tile02[32];
 extern const u8 G_tile03[32];
 extern const u8 G_tile04[32];
 extern const u8 G_tileBlack[32];
+extern const u8 G_spikes[32];
 
 // ===============================================
 // =											 =

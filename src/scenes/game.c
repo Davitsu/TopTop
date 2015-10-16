@@ -63,7 +63,8 @@ void initGame() {
    for(y=0; y<G_mapHTiles; y++) {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
-         map1[y][x] = G_map01[y*G_mapWTiles+x];
+         //map1[y][x] = G_map01[y*G_mapWTiles+x];
+         map1[y][x] = G_map_pruebaPinchos[y*G_mapWTiles+x];
          map2[y][x] = G_map02[y*G_mapWTiles+x];
       }
    }
@@ -265,6 +266,8 @@ void updateHeroe(struct Heroe *heroe) {
       }  
    }
 
+   updateCooldown(heroe);
+
    updateAnimation(&heroe->anim, heroe->nextAnim, 0);
 }
 
@@ -380,6 +383,8 @@ void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
    // Colisiona con items e interruptores
    if(map[heroe->sensorCC] == 0x01) {  // POCION DE CURACION
       gotItem = 1;
+      heroe->health++;
+      drawHearts();
       y = heroe->sensorCC / G_mapWTiles;
       x = heroe->sensorCC - (y * G_mapWTiles);
       map[heroe->sensorCC] = 0xFF;
@@ -417,10 +422,10 @@ void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
 
    gotItem = 0;
 
-   if(map[heroe->sensorCC] == 0x1C) {
+   if(map[heroe->sensorCC] == 0x1C) {  // INTERRUPTOR ROJO NORMAL 1
       y = heroe->sensorCC / G_mapWTiles;
       x = heroe->sensorCC - (y * G_mapWTiles);
-      map[heroe->sensorCC] = 0x1D;
+      map[heroe->sensorCC] = 0x1D;     // INTERRUPTOR ROJO ACTIVO 1
       if(heroe->id == G_heroe1) {
          drawTile(x, y, G_left);
       }
@@ -428,15 +433,23 @@ void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
          drawTile(x, y, G_right);
       }
    }
-   else if(map[heroe->sensorCC] == 0x2E) {
+   else if(map[heroe->sensorCC] == 0x2E) {   // INTERRUPTOR ROJO NORMAL 2
       y = heroe->sensorCC / G_mapWTiles;
       x = heroe->sensorCC - (y * G_mapWTiles);
-      map[heroe->sensorCC] = 0x2F;
+      map[heroe->sensorCC] = 0x2F;           // INTERRUPTOR ROJO ACTIVO 2
       if(heroe->id == G_heroe1) {
          drawTile(x, y, G_left);
       }
       else {
          drawTile(x, y, G_right);
+      }
+   }
+
+   if(map[heroe->sensorDL] == 0x08 || map[heroe->sensorDR] == 0x08) {   // HAY PINCHOS
+      if(heroe->cooldown == 0) {
+         heroe->health--;
+         heroe->cooldown = G_Cooldown;
+         drawHearts();
       }
    }
 }
@@ -643,6 +656,9 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
    }
    else if(map[yTile*G_mapWTiles+xTile] == 0x06) {    // PIEDRA ROMPIBLE 03
       sprTile = (u8*)G_tile04;
+   }
+   else if(map[yTile*G_mapWTiles+xTile] == 0x08) {    // PIEDRA ROMPIBLE 03
+      sprTile = (u8*)G_spikes;
    }
    // PUERTA INICIO NIVEL
    else if(map[yTile*G_mapWTiles+xTile] == 0x10) {    // PUERTA INICIO 01

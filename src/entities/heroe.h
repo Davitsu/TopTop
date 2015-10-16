@@ -49,6 +49,7 @@ typedef struct Heroe {
 	u8 duckPressed;
 	u8 shotPressed;
 	u8 health;
+	u8 cooldown;
 	enum shotLevel level;
 	u8 side;
 	TAnimation anim;
@@ -68,6 +69,7 @@ typedef struct Heroe {
 
 void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
 void updateJump(struct Heroe *heroe);
+void updateCooldown(struct Heroe *heroe);
 void updateSensorHeroe(struct Heroe *heroe);
 void swapPrePos(struct Heroe *heroe);
 u8 byte2tile1(u8, u8);
