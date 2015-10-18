@@ -64,7 +64,7 @@
 
 #define G_maxHealth 6	// Vida maxima de los personajes
 
-#define G_Cooldown 10
+#define G_Cooldown 20
 
 //Bordes hasta los que el personaje puede moverse
 #define G_borderRight_p1    32

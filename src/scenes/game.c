@@ -48,12 +48,16 @@ u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los do
 u8 level;
 u8 gotItem;
 
+u8 redrawHearts;
+
 // Inicializa el menu
 void initGame() {
    u8 x, y;
 
    level = 0;
    gotItem = 0;
+
+   redrawHearts = 0;
 
    // Inicializamos el audio
    cpct_akp_musicInit(molusk_song); 
@@ -136,6 +140,8 @@ u8 updateGame() {
    // Dibuja entidades
    drawHeroes();
    drawShots();
+
+   redrawHUD();
    
 	return G_sceneGame;
 }
@@ -385,6 +391,7 @@ void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
       gotItem = 1;
       heroe->health++;
       drawHearts();
+      redrawHearts = 1;
       y = heroe->sensorCC / G_mapWTiles;
       x = heroe->sensorCC - (y * G_mapWTiles);
       map[heroe->sensorCC] = 0xFF;
@@ -450,6 +457,7 @@ void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
          heroe->health--;
          heroe->cooldown = G_Cooldown;
          drawHearts();
+         redrawHearts = 1;
       }
    }
 }
@@ -956,6 +964,13 @@ void drawHUD() {
    drawLevel();
    drawPortraits();
    drawBulletsAndStars();
+}
+
+void redrawHUD() {
+   if(redrawHearts == 1) {
+      drawHearts();
+      redrawHearts = 0;
+   }
 }
 
 // DIBUJA EL NIVEL EN EL HUD

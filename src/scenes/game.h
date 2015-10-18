@@ -36,6 +36,7 @@ void checkShotsCollision(struct Shot*, u8*, u8);
 void drawShots();
 void drawGameBorder();
 void drawHUD();
+void redrawHUD();
 void drawTile(u8, u8, u8);
 void changeTile(u8, u8, u8, u8);
 void redrawTiles(u8);
@@ -62,6 +63,8 @@ extern u8 map2[G_mapHTiles][G_mapWTiles];
 
 extern u8 level;
 extern u8 gotItem;	// 0 = nada, 1 = pocion curacion, 2 = pocion amarilla, 3 = llave
+
+extern u8 redrawHearts;
 
 extern u8* const g_SCR_VMEM; 	// Pointer to the start of default video memory screen
 
