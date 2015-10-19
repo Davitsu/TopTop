@@ -60,8 +60,10 @@ void initGame() {
    redrawHearts = 0;
 
    // Inicializamos el audio
-   cpct_akp_musicInit(molusk_song); 
-   cpct_akp_SFXInit(molusk_song);
+   cpct_akp_musicInit(G_toptop_effects); 
+
+   //cpct_akp_musicInit(G_toptop_effects); 
+   cpct_akp_SFXInit(G_toptop_effects);
 
    // Lee y prepara los mapas
    for(y=0; y<G_mapHTiles; y++) {
@@ -214,8 +216,8 @@ void updateHeroe(struct Heroe *heroe) {
             heroe->jumpPressed = 1;
             // Si estaba en el suelo, salta
             if(heroe->stateY == sy_land) {
-               // Reproducimos el efecto de sonido
-               //cpct_akp_SFXPlay(2, 15, 36, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
+               // Reproducimos el efecto de sonido SALTAR
+               cpct_akp_SFXPlay(1, 15, 36, 0, 0, AY_CHANNEL_A);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
                heroe->stateY = sy_jump;
                heroe->jumpFactor = 0;
             }
