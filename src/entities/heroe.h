@@ -52,6 +52,7 @@ typedef struct Heroe {
 	u8 cooldown;
 	enum shotLevel level;
 	u8 side;
+	u8 readyNextLevel;
 	TAnimation anim;
 	TAnimFrame** nextAnim;
 	u8 sensorLT; 	// Sensor Left Top

@@ -51,6 +51,9 @@ void drawLevel();
 void drawPortraits();
 void drawBulletsAndStars();
 void interactWithItems(struct Heroe*, u8*, u8);
+void interactWithDoors(struct Heroe*, u8*);
+void checkNextLevel();
+u8 tile2tile1(u8 x, u8 y);
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;
@@ -60,6 +63,9 @@ extern struct Shot shots2[G_maxShots];
 
 extern u8 map1[G_mapHTiles][G_mapWTiles];
 extern u8 map2[G_mapHTiles][G_mapWTiles];
+
+extern u8 doorLevel1;
+extern u8 doorLevel2;
 
 extern u8 level;
 

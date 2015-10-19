@@ -43,6 +43,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->cooldown = 0;
 	heroe1->level = sl_3;
 	heroe1->side = G_left;
+	heroe1->readyNextLevel = 0;
 	heroe1->anim.frames = (TAnimFrame**)g_aniHeroR[0][heroe1->side];
 	heroe1->anim.frame_id = 0;
 	heroe1->anim.time = ANI_FPS_RUN;
@@ -65,6 +66,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->cooldown = 0;
 	heroe2->level = sl_1;
 	heroe2->side = G_right;
+	heroe2->readyNextLevel = 0;
 	heroe2->anim.frames = (TAnimFrame**)g_aniHeroB[0][heroe2->side];
 	heroe2->anim.frame_id = 0;
 	heroe2->anim.time = ANI_FPS_RUN;

@@ -41,6 +41,9 @@ u8 map2[G_mapHTiles][G_mapWTiles];
 u8 mapRedraw1[G_NUM_REDRAW];
 u8 mapRedraw2[G_NUM_REDRAW];
 
+u8 doorLevel1;
+u8 doorLevel2;
+
 extern u8* const G_SCR_VMEM = (u8*)0xC000; 
 
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
@@ -54,8 +57,9 @@ void initGame() {
    u8 x, y;
 
    level = 0;
-
    redrawHearts = 0;
+   doorLevel1 = 0;
+   doorLevel2 = 0;
 
    // Inicializamos el audio
    cpct_akp_musicInit(molusk_song); 
@@ -68,6 +72,9 @@ void initGame() {
          //map1[y][x] = G_map01[y*G_mapWTiles+x];
          map1[y][x] = G_map01[y*G_mapWTiles+x];
          map2[y][x] = G_map02[y*G_mapWTiles+x];
+
+         if(map1[y][x] == 0x1A) doorLevel1 = tile2tile1(x, y);
+         if(map2[y][x] == 0x1E) doorLevel2 = tile2tile1(x, y);
       }
    }
 
@@ -113,6 +120,8 @@ u8 updateGame() {
    updateHeroe(&heroe2);
    updateShots(&heroe1, shots1);
    updateShots(&heroe2, shots2);
+
+   checkNextLevel();
    
    // ---------------------------------------------------------------------------------------------------
    cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
@@ -140,7 +149,7 @@ u8 updateGame() {
    // Redibuja tiles que han cambiado
    redrawTiles(G_left);
    redrawTiles(G_right);
-   
+
 	return G_sceneGame;
 }
 
@@ -167,6 +176,7 @@ void updateHeroe(struct Heroe *heroe) {
          // Ani Duck Run
          setAniHeroe(heroe, 5);
       }
+      heroe->readyNextLevel = 0;
    }
    else if (((cpct_isKeyPressed(Key_D) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorRight) && heroe->id == G_heroe2)) && heroe->x < G_mapWBytes - G_heroeW) {
       // Derecha
@@ -181,6 +191,7 @@ void updateHeroe(struct Heroe *heroe) {
          // Ani Duck Run
          setAniHeroe(heroe, 5);
       }
+      heroe->readyNextLevel = 0;
    }
    else {
       if(heroe->stateY == sy_land) {
@@ -200,6 +211,7 @@ void updateHeroe(struct Heroe *heroe) {
       if(heroe->stateY == sy_land) {
          heroe->stateY = sy_duck;
       }
+      heroe->readyNextLevel = 0;
    }
    else {
       heroe->duckPressed = 0;
@@ -219,6 +231,7 @@ void updateHeroe(struct Heroe *heroe) {
             }
          }
       }
+      heroe->readyNextLevel = 0;
    }
    else {
       heroe->jumpPressed = 0;
@@ -243,6 +256,7 @@ void updateHeroe(struct Heroe *heroe) {
       checkHeroeCollision(heroe, &map1[0][0]);
       interactWithItems(heroe, &map1[0][0], heroe->sensorCT);
       interactWithItems(heroe, &map1[0][0], heroe->sensorCC);
+      interactWithDoors(heroe, &map1[0][0]);
 
       //Disparar
       if(cpct_isKeyPressed(Key_G)) {
@@ -250,6 +264,7 @@ void updateHeroe(struct Heroe *heroe) {
             heroe->shotPressed = 1;
             createShot(heroe, shots1);
          }
+         heroe->readyNextLevel = 0;
       }
       else {
          heroe->shotPressed = 0;
@@ -259,6 +274,7 @@ void updateHeroe(struct Heroe *heroe) {
       checkHeroeCollision(heroe, &map2[0][0]);
       interactWithItems(heroe, &map2[0][0], heroe->sensorCT);
       interactWithItems(heroe, &map2[0][0], heroe->sensorCC);
+      interactWithDoors(heroe, &map2[0][0]);
 
       //Disparar
       if(cpct_isKeyPressed(Key_P)) {
@@ -266,6 +282,7 @@ void updateHeroe(struct Heroe *heroe) {
             heroe->shotPressed = 1;
             createShot(heroe, shots2);
          }
+         heroe->readyNextLevel = 0;
       }
       else {
          heroe->shotPressed = 0;
@@ -392,7 +409,7 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
 }
 
 void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
-   u8 x, y, side;
+   u8 x, y, side, xDoor, yDoor;
 
    if(heroe->id == G_heroe1) side = G_left;
    else side = G_right;
@@ -415,13 +432,39 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
    }
    else if(map[sensor] == 0x04) {  // LLAVE
       if(heroe->id == G_heroe1) {
-         // Logica llave chica
+         xDoor = doorLevel1 % G_mapWTiles;
+         yDoor = doorLevel1 / G_mapWTiles;
+
+         changeTile(xDoor, yDoor, G_left, 0x22);
+         changeTile(xDoor+1, yDoor, G_left, 0x23);
+         changeTile(xDoor, yDoor-1, G_left, 0x20);
+         changeTile(xDoor+1, yDoor-1, G_left, 0x21);
       }
       else {
-         // Logica llave chico
+         xDoor = doorLevel2 % G_mapWTiles;
+         yDoor = doorLevel2 / G_mapWTiles;
+
+         changeTile(xDoor, yDoor, G_right, 0x26);
+         changeTile(xDoor+1, yDoor, G_right, 0x27);
+         changeTile(xDoor, yDoor-1, G_right, 0x24);
+         changeTile(xDoor+1, yDoor-1, G_right, 0x25);
       }
       changeTile(x, y, side, 0xFF);
       // SFX
+   }
+}
+
+void interactWithDoors(struct Heroe *heroe, u8 *map) {
+   u8 x, y;
+
+   y = heroe->sensorCC / G_mapWTiles;
+   x = heroe->sensorCC % G_mapWTiles;
+
+   // Colisiona con puerta nivel
+   if(map[heroe->sensorCC] == 0x22 || map[heroe->sensorCC] == 0x23 || map[heroe->sensorCC] == 0x26 || map[heroe->sensorCC] == 0x27) {
+      if ((cpct_isKeyPressed(Key_W) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorUp) && heroe->id == G_heroe2)) {
+         heroe->readyNextLevel = 1;
+      }
    }
 }
 
@@ -1020,4 +1063,14 @@ void drawHUDBorder() {
    cpct_drawTileAligned4x8_f(G_border19, pvideomem);
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 76, 16); 
    cpct_drawTileAligned4x8_f(G_border19, pvideomem);
+}
+
+void checkNextLevel() {
+   if(heroe1.readyNextLevel == 1 && heroe2.readyNextLevel == 1) {
+      initGame();
+   }
+}
+
+u8 tile2tile1(u8 x, u8 y) {
+   return y*G_mapWTiles+x;
 }
