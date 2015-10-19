@@ -116,7 +116,8 @@ void updateSensorHeroe(struct Heroe *heroe) {
 	heroe->sensorTR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + 1);
 	heroe->sensorDL = byte2tile1(heroe->x + 1, heroe->y + G_heroeH - 1);
 	heroe->sensorDR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + G_heroeH - 1);
-	heroe->sensorCC = byte2tile1(heroe->x, heroe->y + G_heroeH - G_tileSizeH);
+	heroe->sensorCT = byte2tile1(heroe->x + (G_heroeW / 2) - 1, heroe->y + 3);
+	heroe->sensorCC = byte2tile1(heroe->x + (G_heroeW / 2) - 1, heroe->y + G_heroeH - 4);
 }
 
 // Intercambia  las posiciones previas del heroe

@@ -64,6 +64,7 @@ typedef struct Heroe {
 	u8 sensorTR; 	// Sensor Top Right
 	u8 sensorDL; 	// Sensor Down Left
 	u8 sensorDR; 	// Sensor Down Right
+	u8 sensorCT;	// Sensor Center Top
 	u8 sensorCC;	// Sensor Center Center
 };
 

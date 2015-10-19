@@ -50,7 +50,7 @@ void drawHearts();
 void drawLevel();
 void drawPortraits();
 void drawBulletsAndStars();
-void interactHeroeWithMap(struct Heroe*, u8*);
+void interactWithItems(struct Heroe*, u8*, u8);
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;
@@ -62,7 +62,6 @@ extern u8 map1[G_mapHTiles][G_mapWTiles];
 extern u8 map2[G_mapHTiles][G_mapWTiles];
 
 extern u8 level;
-extern u8 gotItem;	// 0 = nada, 1 = pocion curacion, 2 = pocion amarilla, 3 = llave
 
 extern u8 redrawHearts;
 
