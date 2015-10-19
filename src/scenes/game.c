@@ -46,7 +46,6 @@ extern u8* const G_SCR_VMEM = (u8*)0xC000;
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
 u8 level;
-u8 gotItem;
 
 u8 redrawHearts;
 
@@ -55,7 +54,6 @@ void initGame() {
    u8 x, y;
 
    level = 0;
-   gotItem = 0;
 
    redrawHearts = 0;
 
@@ -68,7 +66,7 @@ void initGame() {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
          //map1[y][x] = G_map01[y*G_mapWTiles+x];
-         map1[y][x] = G_map_pruebaPinchos[y*G_mapWTiles+x];
+         map1[y][x] = G_map01[y*G_mapWTiles+x];
          map2[y][x] = G_map02[y*G_mapWTiles+x];
       }
    }
@@ -288,9 +286,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
       updateSensorHeroe(heroe);
       // Colisiones con tiles superiores
       if(map[heroe->sensorTL] == 0x00 || map[heroe->sensorTR] == 0x00 ||
-         map[heroe->sensorTL] == 0x04 || map[heroe->sensorTR] == 0x04 ||
          map[heroe->sensorTL] == 0x05 || map[heroe->sensorTR] == 0x05 ||
-         map[heroe->sensorTL] == 0x06 || map[heroe->sensorTR] == 0x06) {
+         map[heroe->sensorTL] == 0x06 || map[heroe->sensorTR] == 0x06 ||
+         map[heroe->sensorTL] == 0x07 || map[heroe->sensorTR] == 0x07) {
          if(heroe->stateY == sy_jump) { 
             isColliding = 1;
             heroe->y = (heroe->sensorTL / G_mapWTiles) * G_tileSizeH + G_tileSizeH-1;
@@ -309,9 +307,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
 
       // Colisiones con tiles inferiores
       if(map[heroe->sensorDL] == 0x00 || map[heroe->sensorDR] == 0x00 ||
-         map[heroe->sensorDL] == 0x04 || map[heroe->sensorDR] == 0x04 ||
          map[heroe->sensorDL] == 0x05 || map[heroe->sensorDR] == 0x05 ||
-         map[heroe->sensorDL] == 0x06 || map[heroe->sensorDR] == 0x06) {
+         map[heroe->sensorDL] == 0x06 || map[heroe->sensorDR] == 0x06 ||
+         map[heroe->sensorDL] == 0x07 || map[heroe->sensorDR] == 0x07) {
          if(heroe->stateY != sy_jump) {
             isColliding = 1;
             heroe->y = (heroe->sensorDL / G_mapWTiles) * G_tileSizeH - G_heroeH;
@@ -331,9 +329,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
 
    // Detectamos si hay suelo debajo nuestra para caer o no
    if(map[heroe->sensorDL+8] != 0x00 && map[heroe->sensorDR+8] != 0x00 &&
-      map[heroe->sensorDL+8] != 0x04 && map[heroe->sensorDR+8] != 0x04 &&
       map[heroe->sensorDL+8] != 0x05 && map[heroe->sensorDR+8] != 0x05 &&
-      map[heroe->sensorDL+8] != 0x06 && map[heroe->sensorDR+8] != 0x06) {
+      map[heroe->sensorDL+8] != 0x06 && map[heroe->sensorDR+8] != 0x06 &&
+      map[heroe->sensorDL+8] != 0x07 && map[heroe->sensorDR+8] != 0x07) {
       if(heroe->y < G_mapHTiles * G_tileSizeH - G_heroeH) {
          if(heroe->stateY != sy_jump && heroe->stateY != sy_fall) {
             heroe->stateY = sy_fall;
@@ -347,9 +345,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
       // Si hemos soltado la tecla de agachar y no colisionamos con nada al levantarnos...
       if(heroe->duckPressed == 0) {
          if(map[heroe->sensorTL] != 0x00 && map[heroe->sensorTR] != 0x00 &&
-            map[heroe->sensorTL] != 0x04 && map[heroe->sensorTR] != 0x04 &&
             map[heroe->sensorTL] != 0x05 && map[heroe->sensorTR] != 0x05 &&
-            map[heroe->sensorTL] != 0x06 && map[heroe->sensorTR] != 0x06) {
+            map[heroe->sensorTL] != 0x06 && map[heroe->sensorTR] != 0x06 &&
+            map[heroe->sensorTL] != 0x07 && map[heroe->sensorTR] != 0x07) {
             heroe->stateY = sy_land;
             // Ani Idle
             setAniHeroe(heroe, 0);
@@ -359,9 +357,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
 
    // -- Colisiones Horizontales
    // Colisiones con tiles a la izquierda
-   if((heroe->stateY != sy_duck && (map[heroe->sensorLT] == 0x00 || map[heroe->sensorLT] == 0x04 || map[heroe->sensorLT] == 0x05 || map[heroe->sensorLT] == 0x06)) ||
-      map[heroe->sensorLC] == 0x00 || map[heroe->sensorLC] == 0x04 || map[heroe->sensorLC] == 0x05 || map[heroe->sensorLC] == 0x06 ||
-      map[heroe->sensorLD] == 0x00 || map[heroe->sensorLD] == 0x04 || map[heroe->sensorLD] == 0x05 || map[heroe->sensorLD] == 0x06) {
+   if((heroe->stateY != sy_duck && (map[heroe->sensorLT] == 0x00 || map[heroe->sensorLT] == 0x05 || map[heroe->sensorLT] == 0x06 || map[heroe->sensorLT] == 0x07)) ||
+      map[heroe->sensorLC] == 0x00 || map[heroe->sensorLC] == 0x05 || map[heroe->sensorLC] == 0x06 || map[heroe->sensorLC] == 0x07 ||
+      map[heroe->sensorLD] == 0x00 || map[heroe->sensorLD] == 0x05 || map[heroe->sensorLD] == 0x06 || map[heroe->sensorLD] == 0x07) {
       heroe->x = ((heroe->sensorLC - ((heroe->sensorLC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) + G_tileSizeW;
       if(heroe->stateY == sy_land) {
          // Ani Idle
@@ -370,9 +368,9 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    }
 
    // Colisiones con tiles a la derecha
-   if((heroe->stateY != sy_duck && (map[heroe->sensorRT] == 0x00 || map[heroe->sensorRT] == 0x04 || map[heroe->sensorRT] == 0x05 || map[heroe->sensorRT] == 0x06)) ||
-      map[heroe->sensorRC] == 0x00 || map[heroe->sensorRC] == 0x04 || map[heroe->sensorRC] == 0x05 || map[heroe->sensorRC] == 0x06 ||
-      map[heroe->sensorRD] == 0x00 || map[heroe->sensorRD] == 0x04 || map[heroe->sensorRD] == 0x05 || map[heroe->sensorRD] == 0x06) {
+   if((heroe->stateY != sy_duck && (map[heroe->sensorRT] == 0x00 || map[heroe->sensorRT] == 0x05 || map[heroe->sensorRT] == 0x06 || map[heroe->sensorRT] == 0x07)) ||
+      map[heroe->sensorRC] == 0x00 || map[heroe->sensorRC] == 0x05 || map[heroe->sensorRC] == 0x06 || map[heroe->sensorRC] == 0x07 ||
+      map[heroe->sensorRD] == 0x00 || map[heroe->sensorRD] == 0x05 || map[heroe->sensorRD] == 0x06 || map[heroe->sensorRD] == 0x07) {
       heroe->x = ((heroe->sensorRC - ((heroe->sensorRC / G_mapWTiles) * G_mapWTiles)) * G_tileSizeW) - G_tileSizeW;
       if(heroe->stateY == sy_land) {
          // Ani Idle
@@ -383,73 +381,41 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    }
 
 void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
-   u8 x;
-   u8 y;
+   u8 x, y, side;
+
+   if(heroe->id == G_heroe1) side = G_left;
+   else side = G_right;
+
+   y = heroe->sensorCC / G_mapWTiles;
+   x = heroe->sensorCC % G_mapWTiles;
 
    // Colisiona con items e interruptores
-   if(map[heroe->sensorCC] == 0x01) {  // POCION DE CURACION
-      gotItem = 1;
+   if(map[heroe->sensorCC] == 0x01 || map[heroe->sensorCC] == 0x02) {  // POCION DE CURACION
       heroe->health++;
       drawHearts();
       redrawHearts = 1;
-      y = heroe->sensorCC / G_mapWTiles;
-      x = heroe->sensorCC - (y * G_mapWTiles);
-      map[heroe->sensorCC] = 0xFF;
+      changeTile(x, y, side, 0xFF);
+      // SFX
+   }
+   else if(map[heroe->sensorCC] == 0x03) {  // POCION AMARILLA
+      // Logica pocion amarilla
+      changeTile(x, y, side, 0xFF);
+      // SFX
+   }
+   else if(map[heroe->sensorCC] == 0x04) {  // LLAVE
       if(heroe->id == G_heroe1) {
-         drawTile(x, y, G_left);
+         // Logica llave chica
       }
       else {
-         drawTile(x, y, G_right);
-      } 
-   }
-   else if(map[heroe->sensorCC] == 0x02) {  // POCION AMARILLA
-      gotItem = 2;
-      y = heroe->sensorCC / G_mapWTiles;
-      x = heroe->sensorCC - (y * G_mapWTiles);
-      map[heroe->sensorCC] = 0xFF;
-      if(heroe->id == G_heroe1) { 
-         drawTile(x, y, G_left);
+         // Logica llave chico
       }
-      else { 
-         drawTile(x, y, G_right);
-      } 
-   }
-   else if(map[heroe->sensorCC] == 0x03) {  // LLAVE
-      gotItem = 3;
-      y = heroe->sensorCC / G_mapWTiles;
-      x = heroe->sensorCC - (y * G_mapWTiles);
-      map[heroe->sensorCC] = 0xFF;
-      if(heroe->id == G_heroe1) {
-         drawTile(x, y, G_left);
-      }
-      else {
-         drawTile(x, y, G_right);
-      }
+      changeTile(x, y, side, 0xFF);
+      // SFX
    }
 
-   gotItem = 0;
-
-   if(map[heroe->sensorCC] == 0x1C) {  // INTERRUPTOR ROJO NORMAL 1
-      y = heroe->sensorCC / G_mapWTiles;
-      x = heroe->sensorCC - (y * G_mapWTiles);
-      map[heroe->sensorCC] = 0x1D;     // INTERRUPTOR ROJO ACTIVO 1
-      if(heroe->id == G_heroe1) {
-         drawTile(x, y, G_left);
-      }
-      else {
-         drawTile(x, y, G_right);
-      }
-   }
-   else if(map[heroe->sensorCC] == 0x2E) {   // INTERRUPTOR ROJO NORMAL 2
-      y = heroe->sensorCC / G_mapWTiles;
-      x = heroe->sensorCC - (y * G_mapWTiles);
-      map[heroe->sensorCC] = 0x2F;           // INTERRUPTOR ROJO ACTIVO 2
-      if(heroe->id == G_heroe1) {
-         drawTile(x, y, G_left);
-      }
-      else {
-         drawTile(x, y, G_right);
-      }
+   // Boton generico
+   if(map[heroe->sensorCC] == 0x28) {  // INTERRUPTOR ROJO NORMAL 1   
+      changeTile(x, y, side, 0x29); // INTERRUPTOR ROJO ACTIVO 1
    }
 
    if(map[heroe->sensorDL] == 0x08 || map[heroe->sensorDR] == 0x08) {   // HAY PINCHOS
@@ -458,6 +424,7 @@ void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
          heroe->cooldown = G_Cooldown;
          drawHearts();
          redrawHearts = 1;
+         // SFX
       }
    }
 }
@@ -542,18 +509,18 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
 void checkShotsCollision(struct Shot* shot, u8 *map, u8 side) {
    updateSensorShot(shot);
 
-   if(map[shot->sensor1] == 0x0) {
+   if(map[shot->sensor1] == 0x00) {
       shot->active = 0;
-   }
-   else if(map[shot->sensor1] == 0x04) {
-      shot->active = 0;
-      changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x05);
    }
    else if(map[shot->sensor1] == 0x05) {
       shot->active = 0;
       changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x06);
    }
    else if(map[shot->sensor1] == 0x06) {
+      shot->active = 0;
+      changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x07);
+   }
+   else if(map[shot->sensor1] == 0x07) {
       shot->active = 0;
       changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0xFF);
    }
@@ -635,181 +602,7 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
 
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
 
-   // Comprobamos el tipo del tile para saber que grafico dibujar
-   if(map[yTile*G_mapWTiles+xTile] == 0xFF) {
-      sprTile = (u8*)G_tileBlack;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x00) {
-      sprTile = (u8*)G_tile01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x01) {    // POCION CURACION
-      if(side == G_left) {
-         sprTile = (u8*)G_redPotion;
-      }
-      else {
-         sprTile = (u8*)G_bluePotion;
-      }
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x02) {    // POCION AMARILLA
-      sprTile = (u8*)G_yellowPotion;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x03) {    // LLAVE
-      sprTile = (u8*)G_key;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x04) {    // PIEDRA ROMPIBLE 01
-      sprTile = (u8*)G_tile02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x05) {    // PIEDRA ROMPIBLE 02
-      sprTile = (u8*)G_tile03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x06) {    // PIEDRA ROMPIBLE 03
-      sprTile = (u8*)G_tile04;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x08) {    // PIEDRA ROMPIBLE 03
-      sprTile = (u8*)G_spikes;
-   }
-   // PUERTA INICIO NIVEL
-   else if(map[yTile*G_mapWTiles+xTile] == 0x10) {    // PUERTA INICIO 01
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init01;
-      else 
-         sprTile = (u8*)G_doorB_init01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x11) {    // PUERTA INICIO 02
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init02;
-      else
-         sprTile = (u8*)G_doorB_init02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x12) {    // PUERTA INICIO 03
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init03;
-      else 
-         sprTile = (u8*)G_doorB_init03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x13) {    // PUERTA INICIO 04
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init04;
-      else 
-         sprTile = (u8*)G_doorB_init04;
-   }
-   // PUERTA SIGUIENTE NIVEL CERRADA
-   else if(map[yTile*G_mapWTiles+xTile] == 0x14) {    // PUERTA SIGUIENTE NIVEL CERRADA 01
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelLocked_01;
-      else 
-         sprTile = (u8*)G_doorB_levelLocked_01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x15) {    // PUERTA SIGUIENTE NIVEL CERRADA 02
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelLocked_02;
-      else 
-         sprTile = (u8*)G_doorB_levelLocked_02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x16) {    // PUERTA SIGUIENTE NIVEL CERRADA 03
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelLocked_03;
-      else 
-         sprTile = (u8*)G_doorB_levelLocked_03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x17) {    // PUERTA SIGUIENTE NIVEL CERRADA 04
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelLocked_04;
-      else 
-         sprTile = (u8*)G_doorB_levelLocked_04;
-   }
-   // PUERTA SIGUIENTE NIVEL ABIERTA
-   else if(map[yTile*G_mapWTiles+xTile] == 0x18) {    // PUERTA SIGUIENTE NIVEL ABIERTA 01
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelOpen01;
-      else 
-         sprTile = (u8*)G_doorB_levelOpen01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x19) {    // PUERTA SIGUIENTE NIVEL ABIERTA 02
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelOpen02;
-      else 
-         sprTile = (u8*)G_doorB_levelOpen02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1A) {    // PUERTA SIGUIENTE NIVEL ABIERTA 03
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelOpen03;
-      else 
-         sprTile = (u8*)G_doorB_levelOpen03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1B) {    // PUERTA SIGUIENTE NIVEL ABIERTA 04
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_levelOpen04;
-      else 
-         sprTile = (u8*)G_doorB_levelOpen04;
-   }
-   //PUERTAS INTERMEDIAS CERRADAS
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1E || map[yTile*G_mapWTiles+xTile] == 0x26 || map[yTile*G_mapWTiles+xTile] == 0x30 || map[yTile*G_mapWTiles+xTile] == 0x38 || map[yTile*G_mapWTiles+xTile] == 0x42 || map[yTile*G_mapWTiles+xTile] == 0x4A) {
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init01;
-      else
-         sprTile = (u8*)G_doorB_init01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1F || map[yTile*G_mapWTiles+xTile] == 0x27 || map[yTile*G_mapWTiles+xTile] == 0x31 || map[yTile*G_mapWTiles+xTile] == 0x39 || map[yTile*G_mapWTiles+xTile] == 0x43 || map[yTile*G_mapWTiles+xTile] == 0x4B) {
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init02;
-      else
-         sprTile = (u8*)G_doorB_init02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x20 || map[yTile*G_mapWTiles+xTile] == 0x28 || map[yTile*G_mapWTiles+xTile] == 0x32 || map[yTile*G_mapWTiles+xTile] == 0x3A || map[yTile*G_mapWTiles+xTile] == 0x44 || map[yTile*G_mapWTiles+xTile] == 0x4C) {
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init03;
-      else
-         sprTile = (u8*)G_doorB_init03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x21 || map[yTile*G_mapWTiles+xTile] == 0x29 || map[yTile*G_mapWTiles+xTile] == 0x33 || map[yTile*G_mapWTiles+xTile] == 0x3B || map[yTile*G_mapWTiles+xTile] == 0x45 || map[yTile*G_mapWTiles+xTile] == 0x4D) {
-      if(side == G_left) 
-         sprTile = (u8*)G_doorR_init04;
-      else
-         sprTile = (u8*)G_doorB_init04;
-   }
-   //PUERTAS INTERMEDIAS ABIERTAS
-   else if(map[yTile*G_mapWTiles+xTile] == 0x22 || map[yTile*G_mapWTiles+xTile] == 0x2A || map[yTile*G_mapWTiles+xTile] == 0x34 || map[yTile*G_mapWTiles+xTile] == 0x3C || map[yTile*G_mapWTiles+xTile] == 0x46 || map[yTile*G_mapWTiles+xTile] == 0x4E) {
-      if(side == G_left)
-         sprTile = (u8*)G_doorR_open01;
-      else 
-         sprTile = (u8*)G_doorB_open01;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x23 || map[yTile*G_mapWTiles+xTile] == 0x2B || map[yTile*G_mapWTiles+xTile] == 0x35 || map[yTile*G_mapWTiles+xTile] == 0x3D || map[yTile*G_mapWTiles+xTile] == 0x47 || map[yTile*G_mapWTiles+xTile] == 0x4F) {
-      if(side == G_left)
-         sprTile = (u8*)G_doorR_open02;
-      else 
-         sprTile = (u8*)G_doorB_open02;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x24 || map[yTile*G_mapWTiles+xTile] == 0x2C || map[yTile*G_mapWTiles+xTile] == 0x36 || map[yTile*G_mapWTiles+xTile] == 0x3E || map[yTile*G_mapWTiles+xTile] == 0x48 || map[yTile*G_mapWTiles+xTile] == 0x50) {
-      if(side == G_left)
-         sprTile = (u8*)G_doorR_open03;
-      else 
-         sprTile = (u8*)G_doorB_open03;
-   }
-   else if(map[yTile*G_mapWTiles+xTile] == 0x25 || map[yTile*G_mapWTiles+xTile] == 0x2D || map[yTile*G_mapWTiles+xTile] == 0x37 || map[yTile*G_mapWTiles+xTile] == 0x3F || map[yTile*G_mapWTiles+xTile] == 0x49 || map[yTile*G_mapWTiles+xTile] == 0x51) {
-      if(side == G_left)
-         sprTile = (u8*)G_doorR_open04;
-      else 
-         sprTile = (u8*)G_doorB_open04;
-   }
-   // INTERRUPTOR NORMAL
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1C || map[yTile*G_mapWTiles+xTile] == 0x2E || map[yTile*G_mapWTiles+xTile] == 0x40) {    // INTERRUPTOR NORMAL
-      if(side == G_left)
-         sprTile = (u8*)G_buttonB_normal;
-      else
-         sprTile = (u8*)G_buttonR_normal;
-   }
-   //INTERRUPTOR ACTIVO
-   else if(map[yTile*G_mapWTiles+xTile] == 0x1D || map[yTile*G_mapWTiles+xTile] == 0x2F || map[yTile*G_mapWTiles+xTile] == 0x41) {    // INTERRUPTOR ACTIVO
-      if(side == G_left)
-         sprTile = (u8*)G_buttonB_pressed;
-      else
-         sprTile = (u8*)G_buttonR_pressed;
-   }
-   else {
-      sprTile = (u8*)G_tileBlack;
-   }
+   sprTile = G_tileId[map[yTile*G_mapWTiles+xTile]];
    
    // Lo dibujamos
    cpct_drawTileAligned4x8_f(sprTile, pvideomem);

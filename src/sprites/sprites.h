@@ -14,6 +14,8 @@
 
 #include <types.h>
 
+#define G_tileRange 256
+
 extern const u8 G_palette[16];
 
 // ===============================================
@@ -262,5 +264,7 @@ extern const u8 G_shotB_left3_02[56];
 extern const u8 G_shotB_right3_02[56];
 extern const u8 G_shotB_up3_01[64];
 extern const u8 G_shotB_up3_02[64];
+
+extern u8* const G_tileId[G_tileRange];
 
 #endif

@@ -62,7 +62,6 @@ extern u8 map1[G_mapHTiles][G_mapWTiles];
 extern u8 map2[G_mapHTiles][G_mapWTiles];
 
 extern u8 level;
-extern u8 gotItem;	// 0 = nada, 1 = pocion curacion, 2 = pocion amarilla, 3 = llave
 
 extern u8 redrawHearts;
 

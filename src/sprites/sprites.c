@@ -10,6 +10,7 @@
 // ------------------------------------------------------
 
 #include <types.h>
+#include "sprites.h"
 
 // COLOR PALETTE
 const u8 G_palette[16] = {
@@ -1959,3 +1960,62 @@ const u8 G_shotB_up3_02[64] = {
 	0xFF, 0x00, 0xAA, 0x10, 0xFF, 0x00, 0xFF, 0x00, 
 	0x55, 0x20, 0xFF, 0x00, 0xFF, 0x00, 0x55, 0x20};
 
+u8* const G_tileId[G_tileRange] = {
+	G_tile01, G_redPotion, G_bluePotion, G_yellowPotion, G_key,																//   0 <--> 4
+	G_tile02, G_tile03, G_tile04, G_spikes, 0, 																				//   5 <--> 9
+	0, 0, 0, 0, 0, 																											//  10 <--> 14
+	0, G_doorR_init01, G_doorR_init02, G_doorR_init03, G_doorR_init04, 														//  15 <--> 19
+	G_doorB_init01, G_doorB_init02, G_doorB_init03, G_doorB_init04, G_doorR_levelLocked_01,									//  20 <--> 24
+	G_doorR_levelLocked_02, G_doorR_levelLocked_03, G_doorR_levelLocked_04, G_doorB_levelLocked_01, G_doorB_levelLocked_02,	//  25 <--> 29
+	G_doorB_levelLocked_03, G_doorB_levelLocked_04, G_doorR_levelOpen01, G_doorR_levelOpen02, G_doorR_levelOpen03, 			//  30 <--> 34
+	G_doorR_levelOpen04, G_doorB_levelOpen01, G_doorB_levelOpen02, G_doorB_levelOpen03, G_doorB_levelOpen04, 				//  35 <--> 39
+	G_buttonR_normal, G_buttonR_pressed, G_doorR_init01, G_doorR_init02, G_doorR_init03, 									//  40 <--> 44
+	G_doorR_init04, G_doorR_open01, G_doorR_open02, G_doorR_open03, G_doorR_open04, 										//  45 <--> 49
+
+	G_doorR_init01, G_doorR_init02, G_doorR_init03, G_doorR_init04, G_doorR_open01, 										//  50 <--> 54
+	G_doorR_open02, G_doorR_open03, G_doorR_open04, G_buttonR_normal, G_buttonR_pressed, 									//  55 <--> 59
+	G_doorR_init01, G_doorR_init02, G_doorR_init03, G_doorR_init04, G_doorR_open01, 										//  60 <--> 64
+	G_doorR_open02, G_doorR_open03, G_doorR_open04, G_doorR_init01, G_doorR_init02, 										//  65 <--> 69
+	G_doorR_init03, G_doorR_init04, G_doorR_open01, G_doorR_open02, G_doorR_open03, 										//  70 <--> 74
+	G_doorR_open04, G_buttonR_normal, G_buttonR_pressed, G_doorR_init01, G_doorR_init02, 									//  75 <--> 79
+	G_doorR_init03, G_doorR_init04, G_doorR_open01, G_doorR_open02, G_doorR_open03, 										//  80 <--> 84
+	G_doorR_open04, G_doorR_init01, G_doorR_init02, G_doorR_init03, G_doorR_init04, 										//  85 <--> 89
+	G_doorR_open01, G_doorR_open02, G_doorR_open03, G_doorR_open04, G_buttonB_normal, 										//  90 <--> 94
+	G_buttonB_pressed, G_doorB_init01, G_doorB_init02, G_doorB_init03, G_doorB_init04, 										//  95 <--> 99
+	
+	G_doorB_open01, G_doorB_open02, G_doorB_open03, G_doorB_open04, G_doorB_init01, 										// 100 <--> 104
+	G_doorB_init02, G_doorB_init03, G_doorB_init04, G_doorB_open01, G_doorB_open02, 										// 105 <--> 109
+	G_doorB_open03, G_doorB_open04, G_buttonB_normal, G_buttonB_pressed, G_doorB_init01, 									// 110 <--> 114
+	G_doorB_init02, G_doorB_init03, G_doorB_init04, G_doorB_open01, G_doorB_open02, 										// 115 <--> 119
+	G_doorB_open03, G_doorB_open04, G_doorB_init01, G_doorB_init02, G_doorB_init03, 										// 120 <--> 124
+	G_doorB_init04, G_doorB_open01, G_doorB_open02, G_doorB_open03, G_doorB_open04, 										// 125 <--> 129
+	G_buttonB_normal, G_buttonB_pressed, G_doorB_init01, G_doorB_init02, G_doorB_init03, 									// 130 <--> 134
+	G_doorB_init04, G_doorB_open01, G_doorB_open02, G_doorB_open03, G_doorB_open04, 										// 135 <--> 139
+	G_doorB_init01, G_doorB_init02, G_doorB_init03, G_doorB_init04, G_doorB_open01, 										// 140 <--> 144
+	G_doorB_open02, G_doorB_open03, G_doorB_open04, 0, 0, 																	// 145 <--> 149
+
+	0, 0, 0, 0, 0, 														// 150 <--> 154
+	0, 0, 0, 0, 0, 														// 155 <--> 159
+	0, 0, 0, 0, 0, 														// 160 <--> 164
+	0, 0, 0, 0, 0, 														// 165 <--> 169
+	0, 0, 0, 0, 0, 														// 170 <--> 174
+	0, 0, 0, 0, 0, 														// 175 <--> 179
+	0, 0, 0, 0, 0, 														// 180 <--> 184
+	0, 0, 0, 0, 0, 														// 185 <--> 189
+	0, 0, 0, 0, 0, 														// 190 <--> 194
+	0, 0, 0, 0, 0, 														// 195 <--> 199
+
+	0, 0, 0, 0, 0, 														// 200 <--> 204
+	0, 0, 0, 0, 0, 														// 205 <--> 209
+	0, 0, 0, 0, 0, 														// 210 <--> 214
+	0, 0, 0, 0, 0, 														// 215 <--> 219
+	0, 0, 0, 0, 0, 														// 220 <--> 224
+	0, 0, 0, 0, 0, 														// 225 <--> 229
+	0, 0, 0, 0, 0, 														// 230 <--> 234
+	0, 0, 0, 0, 0, 														// 235 <--> 239
+	0, 0, 0, 0, 0, 														// 240 <--> 244
+	0, 0, 0, 0, 0, 														// 245 <--> 249
+
+	0, 0, 0, 0, 0, 														// 250 <--> 254
+	G_tileBlack															// 255
+};
