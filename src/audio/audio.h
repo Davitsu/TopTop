@@ -18,9 +18,5 @@
 
 #include <types.h>
 
-// Sound effects
-//extern __at(0x1D4D) const u8 G_hurt[87];
-
-extern __at(0x7000) const u8 molusk_song[3545];
-
-// Music
+//extern __at(0x7000) const u8 G_toptop_music[75];
+extern __at(0x7000) const u8 G_toptop_effects[272];

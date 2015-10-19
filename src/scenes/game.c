@@ -62,8 +62,10 @@ void initGame() {
    doorLevel2 = 0;
 
    // Inicializamos el audio
-   cpct_akp_musicInit(molusk_song); 
-   cpct_akp_SFXInit(molusk_song);
+   cpct_akp_musicInit(G_toptop_effects); 
+
+   //cpct_akp_musicInit(G_toptop_effects); 
+   cpct_akp_SFXInit(G_toptop_effects);
 
    // Lee y prepara los mapas
    for(y=0; y<G_mapHTiles; y++) {
@@ -141,8 +143,6 @@ u8 updateGame() {
    drawHeroes();
    drawShots();
 
-   redrawHUD();
-
    // Intercambia buffer de dibujado
    swapBuffers(g_scrbuffers);
    
@@ -150,6 +150,8 @@ u8 updateGame() {
    redrawTiles(G_left);
    redrawTiles(G_right);
 
+   redrawHUD();
+   
 	return G_sceneGame;
 }
 
@@ -224,8 +226,8 @@ void updateHeroe(struct Heroe *heroe) {
             heroe->jumpPressed = 1;
             // Si estaba en el suelo, salta
             if(heroe->stateY == sy_land) {
-               // Reproducimos el efecto de sonido
-               //cpct_akp_SFXPlay(2, 15, 36, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
+               // Reproducimos el efecto de sonido SALTAR
+               cpct_akp_SFXPlay(1, 15, 50, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
                heroe->stateY = sy_jump;
                heroe->jumpFactor = 0;
             }
@@ -404,6 +406,8 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
          drawHearts();
          redrawHearts = 1;
          // SFX
+         if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
+         else cpct_akp_SFXPlay(2, 15, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
       }
    }
 }
@@ -424,11 +428,13 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
       redrawHearts = 1;
       changeTile(x, y, side, 0xFF);
       // SFX
+      cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
    }
    else if(map[sensor] == 0x03) {  // POCION AMARILLA
       // Logica pocion amarilla
       changeTile(x, y, side, 0xFF);
       // SFX
+      cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
    }
    else if(map[sensor] == 0x04) {  // LLAVE
       if(heroe->id == G_heroe1) {
@@ -451,6 +457,7 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
       }
       changeTile(x, y, side, 0xFF);
       // SFX
+      cpct_akp_SFXPlay(4, 15, 76, 0, 0, AY_CHANNEL_B); //nota que se toca: E-6 = MI6 = 76
    }
 }
 
