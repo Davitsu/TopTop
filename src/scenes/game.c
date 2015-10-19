@@ -120,16 +120,9 @@ u8 updateGame() {
    // Reproduce musica (1 vez cada frame)
    cpct_akp_musicPlay(); // La musica se reproduce cada frame
 
-   // Intercambia buffer de dibujado
-   swapBuffers(g_scrbuffers);
-
    // Redibuja tiles ocupados por Heroes
    repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left);
    repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right);
-
-   // Redibuja tiles que han cambiado
-   redrawTiles(G_left);
-   redrawTiles(G_right);
 
    // Redibuja tiles ocupados por Disparos
    repaintBackgroundOverShot(shots1, G_left);
@@ -140,6 +133,13 @@ u8 updateGame() {
    drawShots();
 
    redrawHUD();
+
+   // Intercambia buffer de dibujado
+   swapBuffers(g_scrbuffers);
+   
+   // Redibuja tiles que han cambiado
+   redrawTiles(G_left);
+   redrawTiles(G_right);
    
 	return G_sceneGame;
 }
@@ -241,7 +241,8 @@ void updateHeroe(struct Heroe *heroe) {
 
    if(heroe->id == G_heroe1) {
       checkHeroeCollision(heroe, &map1[0][0]);
-      interactHeroeWithMap(heroe, &map1[0][0]);
+      interactWithItems(heroe, &map1[0][0], heroe->sensorCT);
+      interactWithItems(heroe, &map1[0][0], heroe->sensorCC);
 
       //Disparar
       if(cpct_isKeyPressed(Key_G)) {
@@ -256,7 +257,8 @@ void updateHeroe(struct Heroe *heroe) {
    }
    else {
       checkHeroeCollision(heroe, &map2[0][0]);
-      interactHeroeWithMap(heroe, &map2[0][0]);
+      interactWithItems(heroe, &map2[0][0], heroe->sensorCT);
+      interactWithItems(heroe, &map2[0][0], heroe->sensorCC);
 
       //Disparar
       if(cpct_isKeyPressed(Key_P)) {
@@ -378,46 +380,6 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
       }
    }
 
-   }
-
-void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
-   u8 x, y, side;
-
-   if(heroe->id == G_heroe1) side = G_left;
-   else side = G_right;
-
-   y = heroe->sensorCC / G_mapWTiles;
-   x = heroe->sensorCC % G_mapWTiles;
-
-   // Colisiona con items e interruptores
-   if(map[heroe->sensorCC] == 0x01 || map[heroe->sensorCC] == 0x02) {  // POCION DE CURACION
-      heroe->health++;
-      drawHearts();
-      redrawHearts = 1;
-      changeTile(x, y, side, 0xFF);
-      // SFX
-   }
-   else if(map[heroe->sensorCC] == 0x03) {  // POCION AMARILLA
-      // Logica pocion amarilla
-      changeTile(x, y, side, 0xFF);
-      // SFX
-   }
-   else if(map[heroe->sensorCC] == 0x04) {  // LLAVE
-      if(heroe->id == G_heroe1) {
-         // Logica llave chica
-      }
-      else {
-         // Logica llave chico
-      }
-      changeTile(x, y, side, 0xFF);
-      // SFX
-   }
-
-   // Boton generico
-   if(map[heroe->sensorCC] == 0x28) {  // INTERRUPTOR ROJO NORMAL 1   
-      changeTile(x, y, side, 0x29); // INTERRUPTOR ROJO ACTIVO 1
-   }
-
    if(map[heroe->sensorDL] == 0x08 || map[heroe->sensorDR] == 0x08) {   // HAY PINCHOS
       if(heroe->cooldown == 0) {
          heroe->health--;
@@ -426,6 +388,40 @@ void interactHeroeWithMap(struct Heroe *heroe, u8 *map) {
          redrawHearts = 1;
          // SFX
       }
+   }
+}
+
+void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
+   u8 x, y, side;
+
+   if(heroe->id == G_heroe1) side = G_left;
+   else side = G_right;
+
+   y = sensor / G_mapWTiles;
+   x = sensor % G_mapWTiles;
+
+   // Colisiona con items e interruptores
+   if(map[sensor] == 0x01 || map[sensor] == 0x02) {  // POCION DE CURACION
+      heroe->health++;
+      drawHearts();
+      redrawHearts = 1;
+      changeTile(x, y, side, 0xFF);
+      // SFX
+   }
+   else if(map[sensor] == 0x03) {  // POCION AMARILLA
+      // Logica pocion amarilla
+      changeTile(x, y, side, 0xFF);
+      // SFX
+   }
+   else if(map[sensor] == 0x04) {  // LLAVE
+      if(heroe->id == G_heroe1) {
+         // Logica llave chica
+      }
+      else {
+         // Logica llave chico
+      }
+      changeTile(x, y, side, 0xFF);
+      // SFX
    }
 }
 
