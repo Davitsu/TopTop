@@ -48,6 +48,7 @@ typedef struct Heroe {
 	u8 jumpPressed;
 	u8 duckPressed;
 	u8 shotPressed;
+	u8 upPressed;
 	u8 health;
 	u8 cooldown;
 	enum shotLevel level;

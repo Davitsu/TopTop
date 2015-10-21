@@ -44,6 +44,12 @@ u8 mapRedraw2[G_NUM_REDRAW];
 u8 doorLevel1;
 u8 doorLevel2;
 
+u8 blueDoor[G_maxButtons][2];
+u8 redDoor[G_maxButtons][2];
+
+u8 blueButton[G_maxButtons][2];
+u8 redButton[G_maxButtons][2];
+
 extern u8* const G_SCR_VMEM = (u8*)0xC000; 
 
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
@@ -54,12 +60,20 @@ u8 redrawHearts;
 
 // Inicializa el menu
 void initGame() {
-   u8 x, y;
+   u8 x, y, i;
 
    level = 0;
    redrawHearts = 0;
    doorLevel1 = 0;
    doorLevel2 = 0;
+
+   for(i=0; i<G_maxButtons; i++) {
+      blueButton[i][0] = G_outsideMap;    // Coordenada del boton, en principio no estan en el mapa
+      blueButton[i][1] = 0;               // Estado del boton -> 0 = Desactivado, 1 = Activado
+
+      redButton[i][0] = G_outsideMap;
+      redButton[i][1] = 0;
+   }
 
    // Inicializamos el audio
    cpct_akp_musicInit(G_toptop_effects); 
@@ -75,8 +89,37 @@ void initGame() {
          map1[y][x] = G_map03[y*G_mapWTiles+x];
          map2[y][x] = G_map04[y*G_mapWTiles+x];
 
-         if(map1[y][x] == 0x1A) doorLevel1 = tile2tile1(x, y);
-         if(map2[y][x] == 0x1E) doorLevel2 = tile2tile1(x, y);
+         // Guardamos coordenadas de distintos elementos del mapa
+         switch(map1[y][x]) {
+            case 0x1A: doorLevel1 = tile2tile1(x, y); break;               // << Puertas fin de nivel
+
+            case 0x2A: redDoor[0][0] = tile2tile1(x, y); break;            // << Puertas intermedias
+            case 0x32: redDoor[0][1] = tile2tile1(x, y); break;            // |
+            case 0x3C: redDoor[1][0] = tile2tile1(x, y); break;            // |
+            case 0x44: redDoor[1][1] = tile2tile1(x, y); break;            // |
+            case 0x4E: redDoor[2][0] = tile2tile1(x, y); break;            // |
+            case 0x56: redDoor[2][1] = tile2tile1(x, y); break;            // |
+
+            case 0x5E: blueButton[0][0] = tile2tile1(x, y); break;         // << Botones
+            case 0x70: blueButton[1][0] = tile2tile1(x, y); break;         // |
+            case 0x82: blueButton[2][0] = tile2tile1(x, y); break;         // |
+         }
+
+         // Guardamos coordenadas de distintos elementos del mapa
+         switch(map2[y][x]) {
+            case 0x1E: doorLevel2 = tile2tile1(x, y); break;               // << Puertas fin de nivel
+
+            case 0x60: blueDoor[0][0] = tile2tile1(x, y); break;           // << Puertas intermedias
+            case 0x68: blueDoor[0][1] = tile2tile1(x, y); break;           // |
+            case 0x72: blueDoor[1][0] = tile2tile1(x, y); break;           // |
+            case 0x7A: blueDoor[1][1] = tile2tile1(x, y); break;           // |
+            case 0x84: blueDoor[2][0] = tile2tile1(x, y); break;           // |
+            case 0x8C: blueDoor[2][1] = tile2tile1(x, y); break;           // |
+
+            case 0x28: redButton[0][0] = tile2tile1(x, y); break;          // << Botones
+            case 0x3A: redButton[1][0] = tile2tile1(x, y); break;          // |
+            case 0x4C: redButton[2][0] = tile2tile1(x, y); break;          // |
+         }
       }
    }
 
@@ -462,7 +505,10 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
 }
 
 void interactWithDoors(struct Heroe *heroe, u8 *map) {
-   u8 x, y;
+   u8 x, y, side, xDoor, yDoor, xDoor2, yDoor2, i;
+
+   if(heroe->id == G_heroe1) side = G_left;
+   else side = G_right;
 
    y = heroe->sensorCC / G_mapWTiles;
    x = heroe->sensorCC % G_mapWTiles;
@@ -471,6 +517,163 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
    if(map[heroe->sensorCC] == 0x22 || map[heroe->sensorCC] == 0x23 || map[heroe->sensorCC] == 0x26 || map[heroe->sensorCC] == 0x27) {
       if ((cpct_isKeyPressed(Key_W) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorUp) && heroe->id == G_heroe2)) {
          heroe->readyNextLevel = 1;
+      }
+   }
+
+   if(heroe->id == G_heroe1) {   // Jugador 1
+      if (cpct_isKeyPressed(Key_W)) {
+         if(heroe->upPressed == 0) {
+            for(i=0; i<G_maxButtons; i++) {
+               heroe->upPressed = 1;
+               if(redButton[i][1] == 1) {
+                  if(heroe->sensorCC == redDoor[i][0] || heroe->sensorCC == redDoor[i][0]+1 || heroe->sensorCC == redDoor[i][0]+G_mapWTiles || heroe->sensorCC == redDoor[i][0]+G_mapWTiles+1) {
+                     heroe->x = (redDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
+                     heroe->y = (redDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
+                     // SFX ENTRAR PUERTA
+                  }
+                  else if(heroe->sensorCC == redDoor[i][1] || heroe->sensorCC == redDoor[i][1]+1 || heroe->sensorCC == redDoor[i][1]+G_mapWTiles || heroe->sensorCC == redDoor[i][1]+G_mapWTiles+1) {
+                     heroe->x = (redDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
+                     heroe->y = (redDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
+                     // SFX ENTRAR PUERTA
+                  }
+               }
+            }
+         }
+      }
+      else {
+         heroe->upPressed = 0;
+      }
+   }
+   else {      // Jugador 2
+      if (cpct_isKeyPressed(Key_CursorUp)) {
+         if(heroe->upPressed == 0) {
+            for(i=0; i<G_maxButtons; i++) {
+               heroe->upPressed = 1;
+               if(blueButton[i][1] == 1) {
+                  if(heroe->sensorCC == blueDoor[i][0] || heroe->sensorCC == blueDoor[i][0]+1 || heroe->sensorCC == blueDoor[i][0]+G_mapWTiles || heroe->sensorCC == blueDoor[i][0]+G_mapWTiles+1) {
+                     heroe->x = (blueDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
+                     heroe->y = (blueDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
+                     // SFX ENTRAR PUERTA
+                  }
+                  else if(heroe->sensorCC == blueDoor[i][1] || heroe->sensorCC == blueDoor[i][1]+1 || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles+1) {
+                     heroe->x = (blueDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
+                     heroe->y = (blueDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
+                     // SFX ENTRAR PUERTA
+                  }
+               }
+            }
+         }
+      }
+      else {
+         heroe->upPressed = 0;
+      }
+   }
+
+   // Botones azules
+   if(heroe->id == G_heroe1) {   // Jugador 1
+      for(i=0; i<G_maxButtons; i++) {
+         // Si el boton se encuentra en el mapa...
+         if(blueButton[i][0] != G_outsideMap) {
+            if(blueButton[i][1] == 0) {   // Si el boton no esta pulsado...
+               if(heroe->sensorCC == blueButton[i][0]) {  // Y estoy sobre el...
+                  blueButton[i][1] = 1;   // Lo activo
+                  changeTile(blueButton[i][0] % G_mapWTiles, blueButton[i][0] / G_mapWTiles, side, map[blueButton[i][0]]+1);
+
+                  xDoor = blueDoor[i][0] % G_mapWTiles;
+                  yDoor = blueDoor[i][0] / G_mapWTiles;
+                  xDoor2 = blueDoor[i][1] % G_mapWTiles;
+                  yDoor2 = blueDoor[i][1] / G_mapWTiles;
+
+                  changeTile(xDoor, yDoor, G_right, map2[yDoor][xDoor]+4);
+                  changeTile(xDoor+1, yDoor, G_right, map2[yDoor][xDoor+1]+4);
+                  changeTile(xDoor, yDoor+1, G_right, map2[yDoor+1][xDoor]+4);
+                  changeTile(xDoor+1, yDoor+1, G_right, map2[yDoor+1][xDoor+1]+4);
+
+                  changeTile(xDoor2, yDoor2, G_right, map2[yDoor2][xDoor2]+4);
+                  changeTile(xDoor2+1, yDoor2, G_right, map2[yDoor2][xDoor2+1]+4);
+                  changeTile(xDoor2, yDoor2+1, G_right, map2[yDoor2+1][xDoor2]+4);
+                  changeTile(xDoor2+1, yDoor2+1, G_right, map2[yDoor2+1][xDoor2+1]+4);
+
+                  //SFX PULSAR
+               }
+            }
+            else if(blueButton[i][1] == 1) {   // Si el boton esta pulsado...
+               if(heroe->sensorCC != blueButton[i][0]) {  // Y no estoy sobre el...
+                  blueButton[i][1] = 0;   // Lo desactivo
+                  changeTile(blueButton[i][0] % G_mapWTiles, blueButton[i][0] / G_mapWTiles, side, map[blueButton[i][0]]-1);
+
+                  xDoor = blueDoor[i][0] % G_mapWTiles;
+                  yDoor = blueDoor[i][0] / G_mapWTiles;
+                  xDoor2 = blueDoor[i][1] % G_mapWTiles;
+                  yDoor2 = blueDoor[i][1] / G_mapWTiles;
+
+                  changeTile(xDoor, yDoor, G_right, map2[yDoor][xDoor]-4);
+                  changeTile(xDoor+1, yDoor, G_right, map2[yDoor][xDoor+1]-4);
+                  changeTile(xDoor, yDoor+1, G_right, map2[yDoor+1][xDoor]-4);
+                  changeTile(xDoor+1, yDoor+1, G_right, map2[yDoor+1][xDoor+1]-4);
+
+                  changeTile(xDoor2, yDoor2, G_right, map2[yDoor2][xDoor2]-4);
+                  changeTile(xDoor2+1, yDoor2, G_right, map2[yDoor2][xDoor2+1]-4);
+                  changeTile(xDoor2, yDoor2+1, G_right, map2[yDoor2+1][xDoor2]-4);
+                  changeTile(xDoor2+1, yDoor2+1, G_right, map2[yDoor2+1][xDoor2+1]-4);
+
+                  //SFX DESPULSAR
+               }
+            }
+         }
+      }
+   }
+   else {   // Jugador 2
+      for(i=0; i<G_maxButtons; i++) {
+         // Si el boton se encuentra en el mapa...
+         if(redButton[i][0] != G_outsideMap) {
+            if(redButton[i][1] == 0) {   // Si el boton no esta pulsado...
+               if(heroe->sensorCC == redButton[i][0]) {  // Y estoy sobre el...
+                  redButton[i][1] = 1;   // Lo activo
+                  changeTile(redButton[i][0] % G_mapWTiles, redButton[i][0] / G_mapWTiles, side, map[redButton[i][0]]+1);
+
+                  xDoor = redDoor[i][0] % G_mapWTiles;
+                  yDoor = redDoor[i][0] / G_mapWTiles;
+                  xDoor2 = redDoor[i][1] % G_mapWTiles;
+                  yDoor2 = redDoor[i][1] / G_mapWTiles;
+
+                  changeTile(xDoor, yDoor, G_left, map1[yDoor][xDoor]+4);
+                  changeTile(xDoor+1, yDoor, G_left, map1[yDoor][xDoor+1]+4);
+                  changeTile(xDoor, yDoor+1, G_left, map1[yDoor+1][xDoor]+4);
+                  changeTile(xDoor+1, yDoor+1, G_left, map1[yDoor+1][xDoor+1]+4);
+
+                  changeTile(xDoor2, yDoor2, G_left, map1[yDoor2][xDoor2]+4);
+                  changeTile(xDoor2+1, yDoor2, G_left, map1[yDoor2][xDoor2+1]+4);
+                  changeTile(xDoor2, yDoor2+1, G_left, map1[yDoor2+1][xDoor2]+4);
+                  changeTile(xDoor2+1, yDoor2+1, G_left, map1[yDoor2+1][xDoor2+1]+4);
+
+                  //SFX PULSAR
+               }
+            }
+            else if(redButton[i][1] == 1) {   // Si el boton esta pulsado...
+               if(heroe->sensorCC != redButton[i][0]) {  // Y no estoy sobre el...
+                  redButton[i][1] = 0;   // Lo desactivo
+                  changeTile(redButton[i][0] % G_mapWTiles, redButton[i][0] / G_mapWTiles, side, map[redButton[i][0]]-1);
+
+                  xDoor = redDoor[i][0] % G_mapWTiles;
+                  yDoor = redDoor[i][0] / G_mapWTiles;
+                  xDoor2 = redDoor[i][1] % G_mapWTiles;
+                  yDoor2 = redDoor[i][1] / G_mapWTiles;
+
+                  changeTile(xDoor, yDoor, G_left, map1[yDoor][xDoor]-4);
+                  changeTile(xDoor+1, yDoor, G_left, map1[yDoor][xDoor+1]-4);
+                  changeTile(xDoor, yDoor+1, G_left, map1[yDoor+1][xDoor]-4);
+                  changeTile(xDoor+1, yDoor+1, G_left, map1[yDoor+1][xDoor+1]-4);
+
+                  changeTile(xDoor2, yDoor2, G_left, map1[yDoor2][xDoor2]-4);
+                  changeTile(xDoor2+1, yDoor2, G_left, map1[yDoor2][xDoor2+1]-4);
+                  changeTile(xDoor2, yDoor2+1, G_left, map1[yDoor2+1][xDoor2]-4);
+                  changeTile(xDoor2+1, yDoor2+1, G_left, map1[yDoor2+1][xDoor2+1]-4);
+
+                  //SFX DESPULSAR
+               }
+            }
+         }
       }
    }
 }

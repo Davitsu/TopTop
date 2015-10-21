@@ -39,6 +39,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe1->jumpPressed = 0;
 	heroe1->duckPressed = 0;
 	heroe1->shotPressed = 0;
+	heroe1->upPressed = 0;
 	heroe1->health = 6;
 	heroe1->cooldown = 0;
 	heroe1->level = sl_3;
@@ -62,6 +63,7 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	heroe2->jumpPressed = 0;
 	heroe2->duckPressed = 0;
 	heroe2->shotPressed = 0;
+	heroe2->upPressed = 0;
 	heroe2->health = 6;
 	heroe2->cooldown = 0;
 	heroe2->level = sl_1;

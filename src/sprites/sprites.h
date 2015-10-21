@@ -246,7 +246,7 @@ extern const u8 G_shotR_left3_02[56];
 extern const u8 G_shotR_right3_02[56];
 extern const u8 G_shotR_up3_01[64];
 extern const u8 G_shotR_up3_02[64];
-extern const u8 G_shotB_left1_01[8];
+/*extern const u8 G_shotB_left1_01[8];
 extern const u8 G_shotB_right1_01[8];
 extern const u8 G_shotB_left1_02[8];
 extern const u8 G_shotB_right1_02[8];
@@ -263,7 +263,7 @@ extern const u8 G_shotB_right3_01[56];
 extern const u8 G_shotB_left3_02[56];
 extern const u8 G_shotB_right3_02[56];
 extern const u8 G_shotB_up3_01[64];
-extern const u8 G_shotB_up3_02[64];
+extern const u8 G_shotB_up3_02[64];*/
 
 extern u8* const G_tileId[G_tileRange];
 
