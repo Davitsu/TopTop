@@ -25,5 +25,7 @@ extern const u8 G_map01[152];
 extern const u8 G_map02[152];
 extern const u8 G_map03[152];
 extern const u8 G_map04[152];
+extern const u8 G_map07[152];
+extern const u8 G_map08[152];
 
 #endif

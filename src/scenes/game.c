@@ -86,8 +86,8 @@ void initGame() {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
          //map1[y][x] = G_map01[y*G_mapWTiles+x];
-         map1[y][x] = G_map03[y*G_mapWTiles+x];
-         map2[y][x] = G_map04[y*G_mapWTiles+x];
+         map1[y][x] = G_map07[y*G_mapWTiles+x];
+         map2[y][x] = G_map08[y*G_mapWTiles+x];
 
          // Guardamos coordenadas de distintos elementos del mapa
          switch(map1[y][x]) {
@@ -353,7 +353,7 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
          map[heroe->sensorTL] == 0x05 || map[heroe->sensorTR] == 0x05 ||
          map[heroe->sensorTL] == 0x06 || map[heroe->sensorTR] == 0x06 ||
          map[heroe->sensorTL] == 0x07 || map[heroe->sensorTR] == 0x07) {
-         if(heroe->stateY == sy_jump) { 
+         if(heroe->stateY == sy_jump || heroe->stateY == sy_fall) { 
             isColliding = 1;
             heroe->y = (heroe->sensorTL / G_mapWTiles) * G_tileSizeH + G_tileSizeH-1;
             heroe->jumpFactor = G_jumpSize-1;
@@ -400,6 +400,17 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
          if(heroe->stateY != sy_jump && heroe->stateY != sy_fall) {
             heroe->stateY = sy_fall;
             heroe->jumpFactor = G_jumpSize - 2;
+            updateSensorHeroe(heroe);
+            // Colisiones con tiles superiores
+            if(map[heroe->sensorTL] == 0x00 || map[heroe->sensorTR] == 0x00 ||
+               map[heroe->sensorTL] == 0x05 || map[heroe->sensorTR] == 0x05 ||
+               map[heroe->sensorTL] == 0x06 || map[heroe->sensorTR] == 0x06 ||
+               map[heroe->sensorTL] == 0x07 || map[heroe->sensorTR] == 0x07) {
+               if(heroe->stateY == sy_jump || heroe->stateY == sy_fall) { 
+                  heroe->y = (heroe->sensorTL / G_mapWTiles) * G_tileSizeH + G_tileSizeH-1;
+                  updateSensorHeroe(heroe);
+               }
+            }
          }
       }
    }
@@ -691,12 +702,18 @@ void drawHeroes() {
    u8* pvideomem;
 
    //Se dibuja el sprite del personaje 1
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
-   cpct_drawSpriteMasked(heroe1.anim.frames[heroe1.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
+   if(heroe1.cooldown == 0 || heroe1.cooldown == 1 || heroe1.cooldown == 4 || heroe1.cooldown == 5 || heroe1.cooldown == 8 || heroe1.cooldown == 9 ||
+      heroe1.cooldown == 12 || heroe1.cooldown == 13 || heroe1.cooldown == 16 || heroe1.cooldown == 17 || heroe1.cooldown == 20) {
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
+      cpct_drawSpriteMasked(heroe1.anim.frames[heroe1.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
+   }
 
    //Se dibuja el sprite del personaje 2
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
-   cpct_drawSpriteMasked(heroe2.anim.frames[heroe2.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
+   if(heroe2.cooldown == 0 || heroe2.cooldown == 1 || heroe2.cooldown == 4 || heroe2.cooldown == 5 || heroe2.cooldown == 8 || heroe2.cooldown == 9 ||
+      heroe2.cooldown == 12 || heroe2.cooldown == 13 || heroe2.cooldown == 16 || heroe2.cooldown == 17 || heroe2.cooldown == 20) {
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
+      cpct_drawSpriteMasked(heroe2.anim.frames[heroe2.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
+   }
 }
 
 void updateShots(struct Heroe *heroe, struct Shot *shots) {
