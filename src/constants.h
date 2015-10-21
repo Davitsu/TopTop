@@ -58,6 +58,11 @@
 // Maximo de disparos
 #define G_maxShots 3
 
+// Maximo de botones
+#define G_maxButtons 3
+
+#define G_outsideMap 255
+
 // Tamano del heroe en bytes
 #define G_heroeW 4 			
 #define G_heroeH 12

@@ -67,6 +67,12 @@ extern u8 map2[G_mapHTiles][G_mapWTiles];
 extern u8 doorLevel1;
 extern u8 doorLevel2;
 
+extern u8 blueDoor[G_maxButtons][2];
+extern u8 redDoor[G_maxButtons][2];
+
+extern u8 blueButton[G_maxButtons][2];
+extern u8 redButton[G_maxButtons][2];
+
 extern u8 level;
 
 extern u8 redrawHearts;
