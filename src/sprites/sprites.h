@@ -267,4 +267,6 @@ extern const u8 G_shotB_up3_02[64];*/
 
 extern u8* const G_tileId[G_tileRange];
 
+extern const u8 G_logoRantan[32];
+
 #endif

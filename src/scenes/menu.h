@@ -20,6 +20,7 @@
 #define _MENU_H_
 
 #include <types.h>
+#include "../sprites/animation.h"
 
 void initMenu();
 u8 updateMenu();
@@ -29,5 +30,7 @@ void drawMenu();
 void swapBuffersMenu(u8**);
 
 extern u8* const g_SCR_VMEM_MENU; 	// Pointer to the start of default video memory screen
+
+//extern TAnimation anim;
 
 #endif
