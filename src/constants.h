@@ -56,7 +56,7 @@
 #define G_jumpSize 9
 
 // Maximo de disparos
-#define G_maxShots 3
+#define G_maxShots 1
 
 // Maximo de botones
 #define G_maxButtons 3
