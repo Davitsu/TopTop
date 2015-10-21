@@ -19,4 +19,4 @@
 #include <types.h>
 
 //extern __at(0x7000) const u8 G_toptop_music[75];
-extern __at(0x7000) const u8 G_toptop_effects[272];
+extern __at(0x7EB4) const u8 G_toptop_effects[252];

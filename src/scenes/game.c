@@ -72,8 +72,8 @@ void initGame() {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
          //map1[y][x] = G_map01[y*G_mapWTiles+x];
-         map1[y][x] = G_map01[y*G_mapWTiles+x];
-         map2[y][x] = G_map02[y*G_mapWTiles+x];
+         map1[y][x] = G_map03[y*G_mapWTiles+x];
+         map2[y][x] = G_map04[y*G_mapWTiles+x];
 
          if(map1[y][x] == 0x1A) doorLevel1 = tile2tile1(x, y);
          if(map2[y][x] == 0x1E) doorLevel2 = tile2tile1(x, y);
