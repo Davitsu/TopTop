@@ -141,6 +141,7 @@ void initGame() {
    firstDraw();                                    // Dibujamos en el buffer actual
    cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
    swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
+   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
    firstDraw();                                    // Dibujamos en este buffer
 }
 
