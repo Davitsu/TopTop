@@ -159,6 +159,15 @@ void createShot(struct Heroe *heroe, struct Shot *shots) {
 
 // Actualiza la posicion tile de los sensores del disparo
 void updateSensorShot(struct Shot *shot) {
-	shot->sensor1 = byte2tile1(shot->x, shot->y);
-	shot->sensor2 = byte2tile1(shot->x, shot->y);
+	switch(shot->dir) {
+		case sd_left:
+			shot->sensor1 = byte2tile1(shot->x, shot->y + shot->height / 2);
+			break;
+		case sd_right:
+			shot->sensor1 = byte2tile1(shot->x + shot->width, shot->y + shot->height / 2);
+			break;
+		case sd_up:
+			shot->sensor1 = byte2tile1(shot->x + shot->width / 2, shot->y);
+			break;
+	}
 }
