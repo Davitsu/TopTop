@@ -76,7 +76,7 @@ void initGame() {
    }
 
    // Inicializamos el audio
-   cpct_akp_musicInit(G_toptop_effects); 
+   cpct_akp_musicInit(G_toptop_music); 
 
    //cpct_akp_musicInit(G_toptop_effects); 
    cpct_akp_SFXInit(G_toptop_effects);
