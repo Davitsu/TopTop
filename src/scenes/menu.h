@@ -28,7 +28,7 @@ void drawMenuBorder();
 void drawMenuBorderTile(u8 x, u8 y, u8 *spriteBorder);
 void drawMenuBorderSprite(u8 x, u8 y, u8 *spriteBorder);
 void drawMenu();
-void drawCredits();
+//void drawCredits();
 void drawLogo();
 void drawTop(u8 x, u8 y);
 void drawTopTile(u8 x, u8 y);

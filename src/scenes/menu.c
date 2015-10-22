@@ -22,7 +22,6 @@
 #include "../constants.h"
 #include "../audio/audio.h"
 
-//TAnimation anim;
 u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
 // Inicializa el menu
@@ -62,14 +61,13 @@ void drawMenu() {
   drawLogo();
 }
 
-void drawCredits() {
+/*void drawCredits() {
   u8 *pvideomem;
 
   drawMenuBorder();
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
   cpct_drawStringM0("CREDITOS", pvideomem, 3, 0);
-
-}
+}*/
 
 void drawLogo() {
   // TOPTOP LOGO
@@ -156,8 +154,8 @@ void drawOptions() {
   // Dibujar opciones
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
   cpct_drawStringM0("1.JUGAR", pvideomem, 3, 0);
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
-  cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);
+  /*pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
+  cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);*/
 
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 14, 182);
   cpct_drawStringM0("RANTAN   2015", pvideomem, 6, 0);

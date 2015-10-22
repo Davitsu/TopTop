@@ -222,11 +222,10 @@ u8 updateGameLevel() {
    redrawHUD();
 
    if(heroe1.health == 0 || heroe2.health == 0) {
-      return G_sceneGameOver;
+      drawGameOver();
    }
-   else {     
-	  return G_sceneGame;
-   }
+
+   return G_sceneGame;
 }
 
 // Update que se encarga de cambiar de un update a otro
@@ -525,12 +524,12 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
       // SFX
       cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
    }
-   else if(map[sensor] == 0x03) {  // POCION AMARILLA
+   //else if(map[sensor] == 0x03) {  // POCION AMARILLA
       // Logica pocion amarilla
       /*changeTile(x, y, side, 0xFF);
       // SFX
       cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B);*/ //nota que se toca: D-4 = RE4 = 50
-   }
+   //}
    else if(map[sensor] == 0x04) {  // LLAVE
       if(heroe->id == G_heroe1) {
          xDoor = doorLevel1 % G_mapWTiles;
