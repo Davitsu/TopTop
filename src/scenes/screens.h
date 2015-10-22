@@ -26,7 +26,9 @@ void initScreens(u8 screen);
 u8 updateScreens(u8 screen);
 
 void drawScreensBorder();
-void drawScreens();
+void drawGameOver();
+void drawNextLevel();
+void drawGameComplete();
 void swapBuffersScreens(u8**);
 
 extern u8* const g_SCR_VMEM_SCREENS; 	// Pointer to the start of default video memory screen

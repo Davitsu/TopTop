@@ -115,32 +115,6 @@ void drawMenu() {
   //Se dibuja el sprite del personaje 2
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 155);
   cpct_drawSpriteMasked(G_heroB_idle_left01, pvideomem, G_heroeW, G_heroeH);
-
-  //pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 0, 0);  
-  //cpct_drawStringM0("OOOOOOOOOOOOOOOOOOOO", pvideomem, 5, 0);
-
-  /*for(i=0; i<20; i++) {   // Fila superior
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], i*G_tileSizeW, 0);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
-
-  /*for(i=0; i<23; i++) {   // Columna izquierda
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 0, i*G_tileSizeH+G_tileSizeH);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
-
-  /*for(i=0; i<23; i++) {   // Columna derecha
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 76, i*G_tileSizeH+G_tileSizeH);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
-
-  /*for(i=0; i<20; i++) {   // Fila inferior
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], i*G_tileSizeW, 192);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
-
-  //pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 0, 192);  
-  //cpct_drawStringM0("OOOOOOOOOOOOOOOOOOOO", pvideomem, 5, 0);
 }
 
 void drawCredits() {

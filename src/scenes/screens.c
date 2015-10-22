@@ -29,19 +29,20 @@ u8* const scrbuffersScreens[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de l
 
 // Inicializa las pantallas
 void initScreens(u8 screen) {
-	cpct_akp_musicInit(G_toptop_effects); 
-    cpct_akp_SFXInit(G_toptop_effects);
-
 	drawScreensBorder();
 
 	// Preparamos el double buffer y dibujamos...
 	cpct_memset_f64(scrbuffersScreens[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
 	cpct_waitVSYNC();                               	 // Esperamos al VSYNC para esperar a dibujar
-	drawScreens();                                     	 // Dibujamos en el buffer actual
+	if(screen == 0) drawGameOver();                      // Dibujamos en el buffer actual
+	//else if(screen == 1) drawNextLevel();
+	//else if(screen == 2) drawGameComplete();
 	cpct_waitVSYNC();                               	 // Volvemos a esperar al VSYNC
 	swapBuffersScreens(scrbuffersScreens);             	 // Cambiamos de buffer
-	drawScreens();                                     	 // Dibujamos en este buffer
-
+	cpct_memset_f64(scrbuffersScreens[1], 0x00, 0x4000); // Limpiamos el primer buffer
+	if(screen == 0) drawGameOver();                   	 // Dibujamos en este buffer
+	//else if(screen == 1) drawNextLevel();
+	//else if(screen == 2) drawGameComplete();
 }
 
 // Update de las pantallas
@@ -61,21 +62,54 @@ u8 updateScreens(u8 screen) {
 	// Scan Keyboard
 	cpct_scanKeyboard_f();
 
-	if (cpct_isKeyPressed(Key_1)) {
+	if(cpct_isKeyPressed(Key_1)) {
 		//SFX
 		cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_B);
-		return G_sceneGame;
+		if(screen == 0 || screen == 2) return G_sceneGame;
+		//else if(screen == 1) 
+	}
+	else if(cpct_isKeyPressed(Key_2)) {
+		//SFX
+		cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_B);
+		if(screen == 0 || screen == 2) return G_sceneMenu;
 	}
 	else {
 		return G_sceneGameOver;
 	}
 }
 
-void drawScreens() {
+void drawGameOver() {
 	u8 *pvideomem;
 
 	drawScreensBorder();
+
+	pvideomem = cpct_getScreenPtr(scrbuffersScreens[1], 26, 115);  
+  	cpct_drawStringM0("1.REINTENTAR", pvideomem, 3, 0);
+  	pvideomem = cpct_getScreenPtr(scrbuffersScreens[1], 20, 130);  
+  	cpct_drawStringM0("2.IR AL MENU", pvideomem, 1, 0);
 }
+
+/*void drawNextLevel() {
+	u8 *pvideomem;
+
+	drawScreensBorder();
+
+	pvideomem = cpct_getScreenPtr(scrbuffersScreens[1], 26, 115);  
+  	cpct_drawStringM0("1.CONTINUAR", pvideomem, 3, 0);
+  	pvideomem = cpct_getScreenPtr(scrbuffersScreens[1], 20, 130);  
+  	cpct_drawStringM0("2.IR AL MENU", pvideomem, 1, 0);
+}
+
+void drawGameComplete() {
+	u8 *pvideomem;
+
+	drawScreensBorder();
+
+	pvideomem = cpct_getScreenPtr(scrbuffersScreens[1], 26, 115);  
+  	cpct_drawStringM0("1.VOLVER A JUGAR", pvideomem, 3, 0);
+  	pvideomem = cpct_getScreenPtr(scrbuffersScreens[1], 20, 130);  
+  	cpct_drawStringM0("2.IR AL MENU", pvideomem, 1, 0);
+}*/
 
 void drawScreensBorder() {
 	u8* pvideomem;
