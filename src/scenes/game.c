@@ -50,14 +50,12 @@ u8 redDoor[G_maxButtons][2];
 u8 blueButton[G_maxButtons][2];
 u8 redButton[G_maxButtons][2];
 
-extern u8* const G_SCR_VMEM = (u8*)0xC000; 
-
-u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
-
 u8 level;
 u8 nextMap;
 
 u8 redrawHearts;
+
+u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
 // Inicializa el menu
 void initGame() {
@@ -176,8 +174,8 @@ void firstDraw() {
    drawGameBorder();
    drawMap();
 
-   cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
-   cpct_akp_musicPlay();
+   //cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+   //cpct_akp_musicPlay();
 
    drawHeroes();
    drawHUD();
@@ -1029,24 +1027,6 @@ void drawMap() {
    }
 }
 
-// Intercambia los buffers
-void swapBuffers(u8** scrbuffers) {
-   u8* aux; // Auxiliary pointer for making the change
-   
-   // Change what is shown on the screen (present backbuffer (1) is changed to 
-   // front-buffer, so it is shown at the screen)
-   // cpct_setVideoMemoryPage requires the 6 Most Significant bits of the address,
-   // so we have to shift them 10 times to the right (as addresses have 16 bits)
-   //
-   cpct_setVideoMemoryPage( (u16)(scrbuffers[1]) >> 10 );
-   
-   // Once backbuffer is being shown at the screen, we switch our two 
-   // variables to start using (0) as backbuffer and (1) as front-buffer
-   aux = scrbuffers[0];
-   scrbuffers[0] = scrbuffers[1];
-   scrbuffers[1] = aux;
-}
-
 void swapPrePosShot(u8 *preX, u8 *preY) {
    u8 prePos;
 
@@ -1337,4 +1317,21 @@ void drawHUDBorder() {
 
 u8 tile2tile1(u8 x, u8 y) {
    return y*G_mapWTiles+x;
+}
+
+void swapBuffers(u8** scrbuffers) {
+   u8* aux; // Auxiliary pointer for making the change
+   
+   // Change what is shown on the screen (present backbuffer (1) is changed to 
+   // front-buffer, so it is shown at the screen)
+   // cpct_setVideoMemoryPage requires the 6 Most Significant bits of the address,
+   // so we have to shift them 10 times to the right (as addresses have 16 bits)
+   //
+   cpct_setVideoMemoryPage( (u16)(scrbuffers[1]) >> 10 );
+   
+   // Once backbuffer is being shown at the screen, we switch our two 
+   // variables to start using (0) as backbuffer and (1) as front-buffer
+   aux = scrbuffers[0];
+   scrbuffers[0] = scrbuffers[1];
+   scrbuffers[1] = aux;
 }

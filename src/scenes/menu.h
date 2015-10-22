@@ -26,10 +26,14 @@ void initMenu();
 u8 updateMenu();
 
 void drawMenuBorder();
+void drawMenuBorderTile(u8 x, u8 y, u8 *spriteBorder);
+void drawMenuBorderSprite(u8 x, u8 y, u8 *spriteBorder);
 void drawMenu();
+void drawTop(u8 x, u8 y);
+void drawTopTile(u8 x, u8 y);
+void drawOptions();
+void drawMenuHeroes();
 void swapBuffersMenu(u8**);
-
-extern u8* const g_SCR_VMEM_MENU; 	// Pointer to the start of default video memory screen
 
 //extern TAnimation anim;
 
