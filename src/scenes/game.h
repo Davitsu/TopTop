@@ -53,7 +53,7 @@ void drawHearts();
 void drawSingleHeart(struct Heroe *heroe, u8 x, i8 offSetHeart, u8* heartFull, u8* heartHalf);
 void drawLevel();
 void drawPortraits();
-void drawBulletsAndStars(struct Heroe *heroe, u8 x, i8 offSetStar);
+void drawStars(struct Heroe *heroe, u8 x, i8 offSetStar);
 void interactWithItems(struct Heroe*, u8*, u8);
 void interactWithDoors(struct Heroe*, u8*);
 void checkNextLevel();
@@ -89,6 +89,7 @@ extern u8 level;
 extern u8 nextMap;
 
 extern u8 redrawHearts;
+extern u8 redrawStars;
 
 extern u8 sceneGame;		// pantalla actual
 
