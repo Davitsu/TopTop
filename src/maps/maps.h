@@ -21,7 +21,7 @@
 
 #include <types.h>
 
-#define G_numMaps 6
+#define G_numMaps 8
 
 extern const u8 G_maps[G_numMaps][152];
 

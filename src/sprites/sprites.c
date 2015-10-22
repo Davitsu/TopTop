@@ -1978,7 +1978,7 @@ const u8 G_logoRantan[32] = {
 	0x00, 0xFC, 0xFC, 0x00};
 
 u8* const G_tileId[G_tileRange] = {
-	G_tile01, G_redPotion, G_bluePotion, 0, G_key,																//   0 <--> 4
+	G_tile01, G_redPotion, G_bluePotion, G_starFull, G_key,																//   0 <--> 4
 	G_tile02, G_tile03, G_tile04, G_spikes, 0, 																				//   5 <--> 9
 	0, 0, 0, 0, 0, 																											//  10 <--> 14
 	0, G_doorR_init01, G_doorR_init02, G_doorR_init03, G_doorR_init04, 														//  15 <--> 19

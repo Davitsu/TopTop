@@ -54,6 +54,7 @@ u8 level;
 u8 nextMap;
 
 u8 redrawHearts;
+u8 redrawStars;
 
 u8 sceneGame;
 
@@ -62,7 +63,7 @@ u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los do
 // Inicializa el menu
 void initGame() {
    level = 1;
-   nextMap = 4;
+   nextMap = 0;
    sceneGame = 0;
 
    // Inicializamos a los heroes
@@ -92,6 +93,7 @@ void initLevel() {
    u8 x, y, i;
 
    redrawHearts = 0;
+   redrawStars = 0;
    doorLevel1 = 0;
    doorLevel2 = 0;
 
@@ -404,7 +406,7 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
          map[heroe->sensorTL] == 0x05 || map[heroe->sensorTR] == 0x05 ||
          map[heroe->sensorTL] == 0x06 || map[heroe->sensorTR] == 0x06 ||
          map[heroe->sensorTL] == 0x07 || map[heroe->sensorTR] == 0x07) {
-         if(heroe->stateY == sy_jump || heroe->stateY == sy_fall) { 
+         if(heroe->stateY == sy_jump/* || heroe->stateY == sy_fall*/) { 
             isColliding = 1;
             heroe->y = (heroe->sensorTL / G_mapWTiles) * G_tileSizeH + G_tileSizeH-1;
             heroe->jumpFactor = G_jumpSize-1;
@@ -505,14 +507,22 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
    }
 
    if(map[heroe->sensorDL] == 0x08 || map[heroe->sensorDR] == 0x08) {   // HAY PINCHOS
-      if(heroe->cooldown == 0) {
-         heroe->health--;
-         heroe->cooldown = G_Cooldown;
-         drawHearts();
-         redrawHearts = 1;
-         // SFX
-         if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 12, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
-         else cpct_akp_SFXPlay(2, 12, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
+      if(heroe->stateY == sy_land || heroe->stateY == sy_duck) {
+         if(heroe->cooldown == 0) {
+            heroe->health--;
+            if(heroe->level > sl_1) {
+               heroe->level--;
+               redrawStars = 1;
+               drawStars(&heroe1, 22, 4);
+               drawStars(&heroe2, 54, -4);
+            }
+            heroe->cooldown = G_Cooldown;
+            drawHearts();
+            redrawHearts = 1;
+            // SFX
+            if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 12, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
+            else cpct_akp_SFXPlay(2, 12, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
+         }
       }
    }
 }
@@ -537,12 +547,19 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
       // SFX
       cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
    }
-   //else if(map[sensor] == 0x03) {  // POCION AMARILLA
-      // Logica pocion amarilla
-      /*changeTile(x, y, side, 0xFF);
+   else if(map[sensor] == 0x03) {  // ESTRELLA
+      // Logica estrella
+      if(heroe->level < sl_3) {
+         heroe->level++;
+         redrawStars = 1;
+         drawStars(&heroe1, 22, 4);
+         drawStars(&heroe2, 54, -4);
+      }
+
+      changeTile(x, y, side, 0xFF);
       // SFX
-      cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B);*/ //nota que se toca: D-4 = RE4 = 50
-   //}
+      cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
+   }
    else if(map[sensor] == 0x04) {  // LLAVE
       if(heroe->id == G_heroe1) {
          xDoor = doorLevel1 % G_mapWTiles;
@@ -841,11 +858,24 @@ void checkShotsCollision(struct Shot* shot, u8 *map, u8 side) {
    }
    else if(map[shot->sensor1] == 0x05) {
       shot->active = 0;
-      changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x06);
+      if(shot->level == sl_1) {
+         changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x06);
+      }
+      else if(shot->level == sl_2) {
+         changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x07);
+      }
+      else {
+         changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0xFF);
+      }
    }
    else if(map[shot->sensor1] == 0x06) {
       shot->active = 0;
-      changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x07);
+      if(shot->level == sl_1) {
+         changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0x07);
+      }
+      else {
+         changeTile(shot->sensor1%G_mapWTiles, shot->sensor1/G_mapWTiles, side, 0xFF);
+      }
    }
    else if(map[shot->sensor1] == 0x07) {
       shot->active = 0;
@@ -1068,14 +1098,19 @@ void drawHUD() {
    drawHearts();
    drawLevel();
    drawPortraits();
-   drawBulletsAndStars(&heroe1, 22, 4);
-   drawBulletsAndStars(&heroe2, 54, -4);
+   drawStars(&heroe1, 22, 4);
+   drawStars(&heroe2, 54, -4);
 }
 
 void redrawHUD() {
    if(redrawHearts == 1) {
       drawHearts();
       redrawHearts = 0;
+   }
+   if(redrawStars == 1) {
+      drawStars(&heroe1, 22, 4);
+      drawStars(&heroe2, 54, -4);
+      redrawStars = 0;
    }
 }
 
@@ -1120,7 +1155,7 @@ void drawPortraits() {
    drawHudSprite(59, 15, 6, 12, G_weaponB);                 // Retrato baston chico          
 }
 
-void drawBulletsAndStars(struct Heroe *heroe, u8 x, i8 offSetStar) {
+void drawStars(struct Heroe *heroe, u8 x, i8 offSetStar) {
    switch(heroe->level) {
       case sl_3:
          drawHudSprite(x, 18, 4, 8, G_starFull);
