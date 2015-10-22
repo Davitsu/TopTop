@@ -70,8 +70,8 @@ typedef struct Heroe {
 	u8 sensorCC;	// Sensor Center Center
 };
 
-void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
-void resetHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
+void initHeroes(struct Heroe *heroe, u8 idHeroe);
+void resetHeroes(struct Heroe *heroe);
 void updateJump(struct Heroe *heroe);
 void updateCooldown(struct Heroe *heroe);
 void updateSensorHeroe(struct Heroe *heroe);

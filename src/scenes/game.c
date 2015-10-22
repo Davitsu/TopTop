@@ -67,7 +67,8 @@ void initGame() {
    sceneGame = 0;
 
    // Inicializamos a los heroes
-   initHeroes(&heroe1, &heroe2);
+   initHeroes(&heroe1, G_heroe1);
+   initHeroes(&heroe2, G_heroe2);
 
    // Inicializamos el nivel
    initLevel();
@@ -78,7 +79,8 @@ void checkNextLevel() {
       nextMap+=2;
       if(nextMap < G_numMaps) { // Preparo siguiente nivel
          level++;
-         resetHeroes(&heroe1, &heroe2);
+         resetHeroes(&heroe1);
+         resetHeroes(&heroe2);
          initLevel();
       }
       else {   // Fin del juego
@@ -586,7 +588,7 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
 }
 
 void interactWithDoors(struct Heroe *heroe, u8 *map) {
-   u8 x, y, side, xDoor, yDoor, xDoor2, yDoor2, i;
+   u8 x, side, y, i;
 
    if(heroe->id == G_heroe1) side = G_left;
    else side = G_right;
@@ -661,23 +663,8 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
          if(blueButton[i][0] != G_outsideMap) {
             if(blueButton[i][1] == 0) {   // Si el boton no esta pulsado...
                if(heroe->sensorCC == blueButton[i][0]) {  // Y estoy sobre el...
-                  blueButton[i][1] = 1;   // Lo activo
-                  changeTile(blueButton[i][0] % G_mapWTiles, blueButton[i][0] / G_mapWTiles, side, map[blueButton[i][0]]+1);
-
-                  xDoor = blueDoor[i][0] % G_mapWTiles;
-                  yDoor = blueDoor[i][0] / G_mapWTiles;
-                  xDoor2 = blueDoor[i][1] % G_mapWTiles;
-                  yDoor2 = blueDoor[i][1] / G_mapWTiles;
-
-                  changeTile(xDoor, yDoor, G_right, map2[yDoor][xDoor]+4);
-                  changeTile(xDoor+1, yDoor, G_right, map2[yDoor][xDoor+1]+4);
-                  changeTile(xDoor, yDoor+1, G_right, map2[yDoor+1][xDoor]+4);
-                  changeTile(xDoor+1, yDoor+1, G_right, map2[yDoor+1][xDoor+1]+4);
-
-                  changeTile(xDoor2, yDoor2, G_right, map2[yDoor2][xDoor2]+4);
-                  changeTile(xDoor2+1, yDoor2, G_right, map2[yDoor2][xDoor2+1]+4);
-                  changeTile(xDoor2, yDoor2+1, G_right, map2[yDoor2+1][xDoor2]+4);
-                  changeTile(xDoor2+1, yDoor2+1, G_right, map2[yDoor2+1][xDoor2+1]+4);
+                  blueButton[i][1] = 1;
+                  checkButtons(blueButton, blueDoor, map2, side, 4, map[blueButton[i][0]]+1, i, G_right);   // Lo activo
 
                   //SFX PULSAR
                   cpct_akp_SFXPlay(6, 15, 36, 0, 0, AY_CHANNEL_A); //nota que se toca: C-4 = DO4 = 36
@@ -685,23 +672,8 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
             }
             else if(blueButton[i][1] == 1) {   // Si el boton esta pulsado...
                if(heroe->sensorCC != blueButton[i][0]) {  // Y no estoy sobre el...
-                  blueButton[i][1] = 0;   // Lo desactivo
-                  changeTile(blueButton[i][0] % G_mapWTiles, blueButton[i][0] / G_mapWTiles, side, map[blueButton[i][0]]-1);
-
-                  xDoor = blueDoor[i][0] % G_mapWTiles;
-                  yDoor = blueDoor[i][0] / G_mapWTiles;
-                  xDoor2 = blueDoor[i][1] % G_mapWTiles;
-                  yDoor2 = blueDoor[i][1] / G_mapWTiles;
-
-                  changeTile(xDoor, yDoor, G_right, map2[yDoor][xDoor]-4);
-                  changeTile(xDoor+1, yDoor, G_right, map2[yDoor][xDoor+1]-4);
-                  changeTile(xDoor, yDoor+1, G_right, map2[yDoor+1][xDoor]-4);
-                  changeTile(xDoor+1, yDoor+1, G_right, map2[yDoor+1][xDoor+1]-4);
-
-                  changeTile(xDoor2, yDoor2, G_right, map2[yDoor2][xDoor2]-4);
-                  changeTile(xDoor2+1, yDoor2, G_right, map2[yDoor2][xDoor2+1]-4);
-                  changeTile(xDoor2, yDoor2+1, G_right, map2[yDoor2+1][xDoor2]-4);
-                  changeTile(xDoor2+1, yDoor2+1, G_right, map2[yDoor2+1][xDoor2+1]-4);
+                  blueButton[i][1] = 0;
+                  checkButtons(blueButton, blueDoor, map2, side, -4, map[blueButton[i][0]]-1, i, G_right);   // Lo desactivo
 
                   //SFX DESPULSAR
                   cpct_akp_SFXPlay(6, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
@@ -716,23 +688,8 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
          if(redButton[i][0] != G_outsideMap) {
             if(redButton[i][1] == 0) {   // Si el boton no esta pulsado...
                if(heroe->sensorCC == redButton[i][0]) {  // Y estoy sobre el...
-                  redButton[i][1] = 1;   // Lo activo
-                  changeTile(redButton[i][0] % G_mapWTiles, redButton[i][0] / G_mapWTiles, side, map[redButton[i][0]]+1);
-
-                  xDoor = redDoor[i][0] % G_mapWTiles;
-                  yDoor = redDoor[i][0] / G_mapWTiles;
-                  xDoor2 = redDoor[i][1] % G_mapWTiles;
-                  yDoor2 = redDoor[i][1] / G_mapWTiles;
-
-                  changeTile(xDoor, yDoor, G_left, map1[yDoor][xDoor]+4);
-                  changeTile(xDoor+1, yDoor, G_left, map1[yDoor][xDoor+1]+4);
-                  changeTile(xDoor, yDoor+1, G_left, map1[yDoor+1][xDoor]+4);
-                  changeTile(xDoor+1, yDoor+1, G_left, map1[yDoor+1][xDoor+1]+4);
-
-                  changeTile(xDoor2, yDoor2, G_left, map1[yDoor2][xDoor2]+4);
-                  changeTile(xDoor2+1, yDoor2, G_left, map1[yDoor2][xDoor2+1]+4);
-                  changeTile(xDoor2, yDoor2+1, G_left, map1[yDoor2+1][xDoor2]+4);
-                  changeTile(xDoor2+1, yDoor2+1, G_left, map1[yDoor2+1][xDoor2+1]+4);
+                  redButton[i][1] = 1;
+                  checkButtons(redButton, redDoor, map1, side, 4, map[redButton[i][0]]+1, i, G_left);   // Lo activo
 
                   //SFX PULSAR
                   cpct_akp_SFXPlay(6, 15, 36, 0, 0, AY_CHANNEL_C); //nota que se toca: C-4 = DO4 = 36
@@ -740,23 +697,8 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
             }
             else if(redButton[i][1] == 1) {   // Si el boton esta pulsado...
                if(heroe->sensorCC != redButton[i][0]) {  // Y no estoy sobre el...
-                  redButton[i][1] = 0;   // Lo desactivo
-                  changeTile(redButton[i][0] % G_mapWTiles, redButton[i][0] / G_mapWTiles, side, map[redButton[i][0]]-1);
-
-                  xDoor = redDoor[i][0] % G_mapWTiles;
-                  yDoor = redDoor[i][0] / G_mapWTiles;
-                  xDoor2 = redDoor[i][1] % G_mapWTiles;
-                  yDoor2 = redDoor[i][1] / G_mapWTiles;
-
-                  changeTile(xDoor, yDoor, G_left, map1[yDoor][xDoor]-4);
-                  changeTile(xDoor+1, yDoor, G_left, map1[yDoor][xDoor+1]-4);
-                  changeTile(xDoor, yDoor+1, G_left, map1[yDoor+1][xDoor]-4);
-                  changeTile(xDoor+1, yDoor+1, G_left, map1[yDoor+1][xDoor+1]-4);
-
-                  changeTile(xDoor2, yDoor2, G_left, map1[yDoor2][xDoor2]-4);
-                  changeTile(xDoor2+1, yDoor2, G_left, map1[yDoor2][xDoor2+1]-4);
-                  changeTile(xDoor2, yDoor2+1, G_left, map1[yDoor2+1][xDoor2]-4);
-                  changeTile(xDoor2+1, yDoor2+1, G_left, map1[yDoor2+1][xDoor2+1]-4);
+                  redButton[i][1] = 0;
+                  checkButtons(redButton, redDoor, map1, side, -4, map[redButton[i][0]]-1, i, G_left);   // Lo desactivo
 
                   //SFX DESPULSAR
                   cpct_akp_SFXPlay(6, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
@@ -765,6 +707,27 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
          }
       }
    }
+}
+
+void checkButtons(u8 buttons[G_maxButtons][2], u8 doors[G_maxButtons][2], u8 mapDest[G_mapHTiles][G_mapWTiles], u8 sideHeroe, i8 nextDoor, u8 mapValue, u8 i, u8 side) {
+   u8 xDoor, yDoor, xDoor2, yDoor2;
+
+   changeTile(buttons[i][0] % G_mapWTiles, buttons[i][0] / G_mapWTiles, sideHeroe, mapValue);
+
+   xDoor = doors[i][0] % G_mapWTiles;
+   yDoor = doors[i][0] / G_mapWTiles;
+   xDoor2 = doors[i][1] % G_mapWTiles;
+   yDoor2 = doors[i][1] / G_mapWTiles;
+
+   changeTile(xDoor, yDoor, side, mapDest[yDoor][xDoor]+nextDoor);
+   changeTile(xDoor+1, yDoor, side, mapDest[yDoor][xDoor+1]+nextDoor);
+   changeTile(xDoor, yDoor+1, side, mapDest[yDoor+1][xDoor]+nextDoor);
+   changeTile(xDoor+1, yDoor+1, side, mapDest[yDoor+1][xDoor+1]+nextDoor);
+
+   changeTile(xDoor2, yDoor2, side, mapDest[yDoor2][xDoor2]+nextDoor);
+   changeTile(xDoor2+1, yDoor2, side, mapDest[yDoor2][xDoor2+1]+nextDoor);
+   changeTile(xDoor2, yDoor2+1, side, mapDest[yDoor2+1][xDoor2]+nextDoor);
+   changeTile(xDoor2+1, yDoor2+1, side, mapDest[yDoor2+1][xDoor2+1]+nextDoor);
 }
 
 // Dibuja los personajes

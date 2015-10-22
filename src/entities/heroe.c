@@ -27,80 +27,61 @@
 const u8 jumpValues[G_jumpSize] = {6, 5, 4, 3, 2, 2, 1, 1, 0}; 	// Valores de la velocidad de salto/caida en cada frame
 
 // Crea a los personajes
-void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
-	heroe1->id = G_heroe1;
-	heroe1->x = 24;
-	heroe1->y = 140;
-	heroe1->preX[0] = heroe1->x;
-	heroe1->preX[1] = heroe1->x;
-	heroe1->preY[0] = heroe1->y;
-	heroe1->preY[1] = heroe1->y;
-	heroe1->stateY = sy_land;
-	heroe1->jumpPressed = 0;
-	heroe1->duckPressed = 0;
-	heroe1->shotPressed = 0;
-	heroe1->upPressed = 0;
-	heroe1->health = 6;
-	heroe1->cooldown = 0;
-	heroe1->level = sl_1;
-	heroe1->side = G_left;
-	heroe1->readyNextLevel = 0;
-	heroe1->anim.frames = (TAnimFrame**)g_aniHeroR[0][heroe1->side];
-	heroe1->anim.frame_id = 0;
-	heroe1->anim.time = ANI_FPS_RUN;
-	heroe1->anim.status = as_cycle;
-	heroe1->nextAnim = heroe1->anim.frames;
-	updateSensorHeroe(heroe1);
+void initHeroes(struct Heroe *heroe, u8 idHeroe) {
+	if(idHeroe == G_heroe1) {
+		heroe->id = G_heroe1;
+		heroe->side = G_left;
+		heroe->x = 24;
+		heroe->y = 140;
+		heroe->anim.frames = (TAnimFrame**)g_aniHeroR[0][heroe->side];
+	}
+	else {
+		heroe->id = G_heroe2;
+		heroe->side = G_right;
+		heroe->x = 4;
+		heroe->y = 140;
+		heroe->anim.frames = (TAnimFrame**)g_aniHeroB[0][heroe->side];
+	}
 
-	heroe2->id = G_heroe2;
-	heroe2->x = 4;
-	heroe2->y = 140;
-	heroe2->preX[0] = heroe2->x;
-	heroe2->preX[1] = heroe2->x;
-	heroe2->preY[0] = heroe2->y;
-	heroe2->preY[1] = heroe2->y;
-	heroe2->stateY = sy_land;
-	heroe2->jumpPressed = 0;
-	heroe2->duckPressed = 0;
-	heroe2->shotPressed = 0;
-	heroe2->upPressed = 0;
-	heroe2->health = 6;
-	heroe2->cooldown = 0;
-	heroe2->level = sl_1;
-	heroe2->side = G_right;
-	heroe2->readyNextLevel = 0;
-	heroe2->anim.frames = (TAnimFrame**)g_aniHeroB[0][heroe2->side];
-	heroe2->anim.frame_id = 0;
-	heroe2->anim.time = ANI_FPS_RUN;
-	heroe2->anim.status = as_cycle;
-	heroe2->nextAnim = heroe2->anim.frames;
-	updateSensorHeroe(heroe2);
+	heroe->anim.frame_id = 0;
+	heroe->anim.time = ANI_FPS_RUN;
+	heroe->anim.status = as_cycle;
+	heroe->nextAnim = heroe->anim.frames;
+	heroe->preX[0] = heroe->x;
+	heroe->preX[1] = heroe->x;
+	heroe->preY[0] = heroe->y;
+	heroe->preY[1] = heroe->y;
+	heroe->stateY = sy_land;
+	heroe->jumpPressed = 0;
+	heroe->duckPressed = 0;
+	heroe->shotPressed = 0;
+	heroe->upPressed = 0;
+	heroe->health = 6;
+	heroe->cooldown = 0;
+	heroe->level = sl_1;
+	heroe->readyNextLevel = 0;
+	updateSensorHeroe(heroe);
 }
 
-void resetHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {;
-	heroe1->x = 24;
-	heroe1->y = 140;
-	heroe1->preX[0] = heroe1->x;
-	heroe1->preX[1] = heroe1->x;
-	heroe1->preY[0] = heroe1->y;
-	heroe1->preY[1] = heroe1->y;
-	heroe1->stateY = sy_land;
-	heroe1->cooldown = 0;
-	heroe1->side = G_left;
-	heroe1->readyNextLevel = 0;
-	updateSensorHeroe(heroe1);
-
-	heroe2->x = 4;
-	heroe2->y = 140;
-	heroe2->preX[0] = heroe2->x;
-	heroe2->preX[1] = heroe2->x;
-	heroe2->preY[0] = heroe2->y;
-	heroe2->preY[1] = heroe2->y;
-	heroe2->stateY = sy_land;
-	heroe2->cooldown = 0;
-	heroe2->side = G_right;
-	heroe2->readyNextLevel = 0;
-	updateSensorHeroe(heroe2);
+void resetHeroes(struct Heroe *heroe) {
+	if(heroe->id == G_heroe1) {
+		heroe->x = 24;
+		heroe->y = 140;
+		heroe->side = G_left;
+	}
+	else {
+		heroe->x = 4;
+		heroe->y = 140;
+		heroe->side = G_right;
+	}
+	heroe->preX[0] = heroe->x;
+	heroe->preX[1] = heroe->x;
+	heroe->preY[0] = heroe->y;
+	heroe->preY[1] = heroe->y;
+	heroe->stateY = sy_land;
+	heroe->cooldown = 0;
+	heroe->readyNextLevel = 0;
+	updateSensorHeroe(heroe);
 }
 
 // Actualiza el salto del heroe
