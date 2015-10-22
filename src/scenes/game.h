@@ -25,6 +25,7 @@
 #include "../entities/shot.h"
 
 void initGame();
+void initLevel();
 void firstDraw();
 u8 updateGame();
 void createHeroes();
@@ -74,6 +75,7 @@ extern u8 blueButton[G_maxButtons][2];
 extern u8 redButton[G_maxButtons][2];
 
 extern u8 level;
+extern u8 nextMap;
 
 extern u8 redrawHearts;
 

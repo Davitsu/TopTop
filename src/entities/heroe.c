@@ -77,6 +77,32 @@ void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {
 	updateSensorHeroe(heroe2);
 }
 
+void resetHeroes(struct Heroe *heroe1, struct Heroe *heroe2) {;
+	heroe1->x = 24;
+	heroe1->y = 140;
+	heroe1->preX[0] = heroe1->x;
+	heroe1->preX[1] = heroe1->x;
+	heroe1->preY[0] = heroe1->y;
+	heroe1->preY[1] = heroe1->y;
+	heroe1->stateY = sy_land;
+	heroe1->cooldown = 0;
+	heroe1->side = G_left;
+	heroe1->readyNextLevel = 0;
+	updateSensorHeroe(heroe1);
+
+	heroe2->x = 4;
+	heroe2->y = 140;
+	heroe2->preX[0] = heroe2->x;
+	heroe2->preX[1] = heroe2->x;
+	heroe2->preY[0] = heroe2->y;
+	heroe2->preY[1] = heroe2->y;
+	heroe2->stateY = sy_land;
+	heroe2->cooldown = 0;
+	heroe2->side = G_right;
+	heroe2->readyNextLevel = 0;
+	updateSensorHeroe(heroe2);
+}
+
 // Actualiza el salto del heroe
 void updateJump(struct Heroe *heroe) {
 	if(heroe->stateY == sy_jump) {

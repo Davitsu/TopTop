@@ -55,14 +55,45 @@ extern u8* const G_SCR_VMEM = (u8*)0xC000;
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
 u8 level;
+u8 nextMap;
 
 u8 redrawHearts;
 
 // Inicializa el menu
 void initGame() {
+   level = 1;
+   nextMap = 0;
+
+   // Inicializamos el audio
+   cpct_akp_musicInit(G_toptop_effects); 
+
+   //cpct_akp_musicInit(G_toptop_effects); 
+   cpct_akp_SFXInit(G_toptop_effects);
+
+   // Inicializamos a los heroes
+   initHeroes(&heroe1, &heroe2);
+
+   //I Inicializamos el nivel
+   initLevel();
+}
+
+void checkNextLevel() {
+   if(heroe1.readyNextLevel == 1 && heroe2.readyNextLevel == 1) {
+      nextMap+=2;
+      if(nextMap < G_numMaps) { // Preparo siguiente nivel
+         level++;
+         resetHeroes(&heroe1, &heroe2);
+         initLevel();
+      }
+      else {   // Fin del juego
+
+      }
+   }
+}
+
+void initLevel() {
    u8 x, y, i;
 
-   level = 0;
    redrawHearts = 0;
    doorLevel1 = 0;
    doorLevel2 = 0;
@@ -75,19 +106,13 @@ void initGame() {
       redButton[i][1] = 0;
    }
 
-   // Inicializamos el audio
-   cpct_akp_musicInit(G_toptop_effects); 
-
-   //cpct_akp_musicInit(G_toptop_effects); 
-   cpct_akp_SFXInit(G_toptop_effects);
-
    // Lee y prepara los mapas
    for(y=0; y<G_mapHTiles; y++) {
       for(x=0; x<G_mapWTiles; x++) {
          // Obtenemos los datos de nuestros mapas
          //map1[y][x] = G_map01[y*G_mapWTiles+x];
-         map1[y][x] = G_map07[y*G_mapWTiles+x];
-         map2[y][x] = G_map08[y*G_mapWTiles+x];
+         map1[y][x] = G_maps[nextMap][y*G_mapWTiles+x];
+         map2[y][x] = G_maps[nextMap+1][y*G_mapWTiles+x];
 
          // Guardamos coordenadas de distintos elementos del mapa
          switch(map1[y][x]) {
@@ -128,12 +153,10 @@ void initGame() {
       mapRedraw2[x] = G_DONT_REDRAW;
    }
 
-	drawGameBorder();
-
-   // Inicializamos todas las entidades...
-   initHeroes(&heroe1, &heroe2);
    initShots(shots1);
    initShots(shots2);
+
+   drawGameBorder();
 
    // Preparamos el double buffer y dibujamos...
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
@@ -226,7 +249,6 @@ void updateHeroe(struct Heroe *heroe) {
    }
    else if (((cpct_isKeyPressed(Key_D) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorRight) && heroe->id == G_heroe2)) && heroe->x < G_mapWBytes - G_heroeW) {
       // Derecha
-      level++;
       heroe->x++;
       heroe->side = G_right;
       if(heroe->stateY == sy_land) {
@@ -1299,12 +1321,6 @@ void drawHUDBorder() {
    cpct_drawTileAligned4x8_f(G_border19, pvideomem);
    pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 76, 16); 
    cpct_drawTileAligned4x8_f(G_border19, pvideomem);
-}
-
-void checkNextLevel() {
-   if(heroe1.readyNextLevel == 1 && heroe2.readyNextLevel == 1) {
-      initGame();
-   }
 }
 
 u8 tile2tile1(u8 x, u8 y) {
