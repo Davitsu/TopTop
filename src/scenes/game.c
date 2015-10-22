@@ -1045,7 +1045,8 @@ void drawHUD() {
    drawHearts();
    drawLevel();
    drawPortraits();
-   drawBulletsAndStars();
+   drawBulletsAndStars(&heroe1, 22, 4);
+   drawBulletsAndStars(&heroe2, 54, -4);
 }
 
 void redrawHUD() {
@@ -1089,230 +1090,131 @@ void drawLevel() {
 
 //DIBUJAR RETRATOS
 void drawPortraits() {
-   u8 *pvideomem; 
+   drawHudSprite(2, 3, 12, 25, G_portraitR);                // Retrato chica
+   drawHudSprite(66, 3, 12, 25, G_portraitB);               // Retrato chico       
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 2, 3);
-   cpct_drawSprite(G_portraitR, pvideomem, 12, 25);          // Retrato chica
-
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 66, 3);
-   cpct_drawSprite(G_portraitB, pvideomem, 12, 25);          // Retrato chico
-
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 15, 15);
-   cpct_drawSprite(G_weaponR, pvideomem, 6, 12);             // Retrato baston chica
-
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 59, 15);
-   cpct_drawSprite(G_weaponB, pvideomem, 6, 12);             // Retrato baston chico
+   drawHudSprite(15, 15, 6, 12, G_weaponR);                 // Retrato baston chica      
+   drawHudSprite(59, 15, 6, 12, G_weaponB);                 // Retrato baston chico          
 }
 
-void drawBulletsAndStars() {
-   u8 *pvideomem1, *pvideomem2, *pvideomem3;
-   
-   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 22, 18);
-   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 26, 18);
-   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 30, 18);
-
-   //HEROE 1
-   switch(heroe1.level) {
+void drawBulletsAndStars(struct Heroe *heroe, u8 x, i8 offSetStar) {
+   switch(heroe->level) {
       case sl_3:
-         cpct_drawSprite(G_starFull, pvideomem1, 4, 8);
-         cpct_drawSprite(G_starFull, pvideomem2, 4, 8);
-         cpct_drawSprite(G_starFull, pvideomem3, 4, 8);
+         drawHudSprite(x, 18, 4, 8, G_starFull);
+         drawHudSprite(x + offSetStar, 18, 4, 8, G_starFull);
+         drawHudSprite(x + offSetStar * 2, 18, 4, 8, G_starFull);
       break;
       case sl_2:
-         cpct_drawSprite(G_starFull, pvideomem1, 4, 8);
-         cpct_drawSprite(G_starFull, pvideomem2, 4, 8);
-         cpct_drawSprite(G_starEmpty, pvideomem3, 4, 8);
+         drawHudSprite(x, 18, 4, 8, G_starFull);
+         drawHudSprite(x + offSetStar, 18, 4, 8, G_starFull);
+         drawHudSprite(x + offSetStar * 2, 18, 4, 8, G_starEmpty);
       break;
       case sl_1:
-         cpct_drawSprite(G_starFull, pvideomem1, 4, 8);
-         cpct_drawSprite(G_starEmpty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_starEmpty, pvideomem3, 4, 8);
-      break;
-   }
-
-   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 54, 18);
-   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 50, 18);
-   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 46, 18);
-
-   //HEROE 2
-   switch(heroe2.level) {
-      case sl_3:
-         cpct_drawSprite(G_starFull, pvideomem1, 4, 8);
-         cpct_drawSprite(G_starFull, pvideomem2, 4, 8);
-         cpct_drawSprite(G_starFull, pvideomem3, 4, 8);
-      break;
-      case sl_2:
-         cpct_drawSprite(G_starFull, pvideomem1, 4, 8);
-         cpct_drawSprite(G_starFull, pvideomem2, 4, 8);
-         cpct_drawSprite(G_starEmpty, pvideomem3, 4, 8);
-      break;
-      case sl_1:
-         cpct_drawSprite(G_starFull, pvideomem1, 4, 8);
-         cpct_drawSprite(G_starEmpty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_starEmpty, pvideomem3, 4, 8);
+         drawHudSprite(x, 18, 4, 8, G_starFull);
+         drawHudSprite(x + offSetStar, 18, 4, 8, G_starEmpty);
+         drawHudSprite(x + offSetStar * 2, 18, 4, 8, G_starEmpty);
       break;
    }
 }
 
 // DIBUJAR CORAZONES
 void drawHearts() {
-   u8 *pvideomem1, *pvideomem2, *pvideomem3;
-   
-   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 16, 6);
-   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 20, 6);
-   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 24, 6);
+   drawSingleHeart(&heroe1, 16, 4, G_heartR_full, G_heartR_half);
+   drawSingleHeart(&heroe2, 60, -4, G_heartB_full, G_heartB_half);   
+}
 
-   //HEROE 1
-   switch(heroe1.health) {
+void drawSingleHeart(struct Heroe *heroe, u8 x, i8 offSetHeart, u8* heartFull, u8* heartHalf) {
+   switch(heroe->health) {
       case 6:
-         cpct_drawSprite(G_heartR_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartR_full, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heartR_full, pvideomem3, 4, 8);
+         drawHudSprite(x, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart*2, 6, 4, 8, heartFull);
       break;
       case 5:
-         cpct_drawSprite(G_heartR_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartR_full, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heartR_half, pvideomem3, 4, 8);
-      break;
-      case 4: 
-         cpct_drawSprite(G_heartR_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartR_full, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
-      break;
-      case 3:
-         cpct_drawSprite(G_heartR_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartR_half, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
-      break;
-      case 2:
-         cpct_drawSprite(G_heartR_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
-      break;
-      case 1:
-         cpct_drawSprite(G_heartR_half, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
-      break;
-      case 0:
-         cpct_drawSprite(G_heart_empty, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
-      break;
-   }
-
-   pvideomem1 = cpct_getScreenPtr(g_scrbuffers[1], 60, 6);
-   pvideomem2 = cpct_getScreenPtr(g_scrbuffers[1], 56, 6);
-   pvideomem3 = cpct_getScreenPtr(g_scrbuffers[1], 52, 6);
-
-   //HEROE 2
-   switch(heroe2.health) {
-      case 6:
-         cpct_drawSprite(G_heartB_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartB_full, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heartB_full, pvideomem3, 4, 8);
-      break;
-      case 5:
-         cpct_drawSprite(G_heartB_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartB_full, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heartB_half, pvideomem3, 4, 8);
+         drawHudSprite(x, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart*2, 6, 4, 8, heartHalf);
       break;
       case 4:
-         cpct_drawSprite(G_heartB_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartB_full, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
+         drawHudSprite(x, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart*2, 6, 4, 8, G_heart_empty);
       break;
       case 3:
-         cpct_drawSprite(G_heartB_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heartB_half, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
+         drawHudSprite(x, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart, 6, 4, 8, heartHalf);
+         drawHudSprite(x+offSetHeart*2, 6, 4, 8, G_heart_empty);
       break;
       case 2:
-         cpct_drawSprite(G_heartB_full, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
+         drawHudSprite(x, 6, 4, 8, heartFull);
+         drawHudSprite(x+offSetHeart, 6, 4, 8, G_heart_empty);
+         drawHudSprite(x+offSetHeart*2, 6, 4, 8, G_heart_empty);
       break;
       case 1:
-         cpct_drawSprite(G_heartB_half, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
+         drawHudSprite(x, 6, 4, 8, heartHalf);
+         drawHudSprite(x+offSetHeart, 6, 4, 8, G_heart_empty);
+         drawHudSprite(x+offSetHeart*2, 6, 4, 8, G_heart_empty);
       break;
       case 0:
-         cpct_drawSprite(G_heart_empty, pvideomem1, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem2, 4, 8);
-         cpct_drawSprite(G_heart_empty, pvideomem3, 4, 8);
+         drawHudSprite(x, 6, 4, 8, G_heart_empty);
+         drawHudSprite(x+offSetHeart, 6, 4, 8, G_heart_empty);
+         drawHudSprite(x+offSetHeart*2, 6, 4, 8, G_heart_empty);
       break;
    }
 }
 
 // DIBUJAR EL BORDE DEL HUD
 void drawHUDBorder() {
-   u8* pvideomem;
    u8 i;
 
    //Marco del HUD
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 0, 0);
-   cpct_drawTileAligned4x8_f(G_border01, pvideomem); 
+   drawHudBorderTile(0, 0, G_border01);
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 0, 8);
-   cpct_drawTileAligned4x8_f(G_border11, pvideomem); 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 0, 16);
-   cpct_drawTileAligned4x8_f(G_border11, pvideomem); 
+   drawHudBorderTile(0, 8, G_border11);
+   drawHudBorderTile(0, 16, G_border11);
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 0, 24);
-   cpct_drawTileAligned4x8_f(G_border10, pvideomem);    
+   drawHudBorderTile(0, 24, G_border10); 
 
    for(i = 0; i < 7; i++) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*4+4, 0);
-      cpct_drawSprite(G_border02, pvideomem, 4, 8); 
-
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*4+4, 24);
-      cpct_drawSprite(G_border09, pvideomem, 4, 8); 
-
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*4+48, 0);
-      cpct_drawSprite(G_border02, pvideomem, 4, 8); 
-
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*4+48, 24);
-      cpct_drawSprite(G_border09, pvideomem, 4, 8); 
+      drawHudSprite(i*4+4, 0, 4, 8, G_border02);
+      drawHudSprite(i*4+4, 24, 4, 8, G_border09);
+      drawHudSprite(i*4+48, 0, 4, 8, G_border02);
+      drawHudSprite(i*4+48, 24, 4, 8, G_border09);
    }
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 32, 0);
-   cpct_drawTileAligned4x8_f(G_border03, pvideomem); 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 36, 0);
-   cpct_drawTileAligned4x8_f(G_border04, pvideomem); 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 32, 8);
-   cpct_drawTileAligned4x8_f(G_border05, pvideomem); 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 36, 8);
-   cpct_drawTileAligned4x8_f(G_border06, pvideomem); 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 36, 16);
-   cpct_drawTileAligned4x8_f(G_border07, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 32, 24);
-   cpct_drawTileAligned4x8_f(G_border09, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 36, 24);
-   cpct_drawTileAligned4x8_f(G_border08, pvideomem);
+   drawHudBorderTile(32, 0, G_border03);
+   drawHudBorderTile(36, 0, G_border04);
+   drawHudBorderTile(32, 8, G_border05);
+   drawHudBorderTile(36, 8, G_border06);
+   drawHudBorderTile(36, 16, G_border07);
+   drawHudBorderTile(32, 24, G_border09);
+   drawHudBorderTile(36, 24, G_border08);
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 40, 0);
-   cpct_drawTileAligned4x8_f(G_border12, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 44, 0);
-   cpct_drawTileAligned4x8_f(G_border13, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 44, 8);
-   cpct_drawTileAligned4x8_f(G_border14, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 40, 8);
-   cpct_drawTileAligned4x8_f(G_border15, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 76, 0);
-   cpct_drawTileAligned4x8_f(G_border16, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 76, 24);
-   cpct_drawTileAligned4x8_f(G_border17, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 44, 24); 
-   cpct_drawTileAligned4x8_f(G_border09, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 40, 24); 
-   cpct_drawTileAligned4x8_f(G_border20, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 40, 16); 
-   cpct_drawTileAligned4x8_f(G_border18, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 76, 8); 
-   cpct_drawTileAligned4x8_f(G_border19, pvideomem);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 76, 16); 
-   cpct_drawTileAligned4x8_f(G_border19, pvideomem);
+   drawHudBorderTile(40, 0, G_border12);
+   drawHudBorderTile(44, 0, G_border13);
+   drawHudBorderTile(44, 8, G_border14);
+   drawHudBorderTile(40, 8, G_border15);
+   drawHudBorderTile(76, 0, G_border16);
+   drawHudBorderTile(76, 24, G_border17);
+   drawHudBorderTile(44, 24, G_border09); 
+   drawHudBorderTile(40, 24, G_border20); 
+   drawHudBorderTile(40, 16, G_border18); 
+   drawHudBorderTile(76, 8, G_border19); 
+   drawHudBorderTile(76, 16, G_border19); 
+}
+
+void drawHudBorderTile(u8 x, u8 y, u8* spriteBorder) {
+   u8* pvideomem;
+
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+   cpct_drawTileAligned4x8(spriteBorder, pvideomem);
+}
+
+void drawHudSprite(u8 x, u8 y, u8 sizeX, u8 sizeY, u8* spriteBorder) {
+   u8* pvideomem;
+
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+   cpct_drawSprite(spriteBorder, pvideomem, sizeX, sizeY); 
 }
 
 u8 tile2tile1(u8 x, u8 y) {
