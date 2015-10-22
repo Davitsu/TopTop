@@ -27,8 +27,9 @@
 void initGame();
 void initLevel();
 void firstDraw();
-u8 updateGameLevel();
-void updateGame();
+void updateGameLevel();
+u8 updateGame();
+u8 updateScreens();
 void createHeroes();
 void updateHeroe(struct Heroe*);
 void checkHeroeCollision(struct Heroe*, u8*);
@@ -61,6 +62,9 @@ u8 tile2tile1(u8 x, u8 y);
 void swapBuffers(u8**);
 //PANTALLAS
 void drawGameOver();
+void drawTextGameOver();
+void drawGameComplete();
+void drawTextGameComplete();
 void drawScreenOptions();
 void drawScreensBorder();
 void drawScreensBorderTile(u8 x, u8 y, u8 *spriteBorder);

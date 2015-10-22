@@ -62,7 +62,7 @@ u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los do
 // Inicializa el menu
 void initGame() {
    level = 1;
-   nextMap = 0;
+   nextMap = 4;
    sceneGame = 0;
 
    // Inicializamos a los heroes
@@ -81,7 +81,9 @@ void checkNextLevel() {
          initLevel();
       }
       else {   // Fin del juego
-
+         cpct_waitVSYNC();
+         sceneGame = 2;
+         drawGameComplete();
       }
    }
 }
@@ -178,8 +180,24 @@ void firstDraw() {
    drawHUD();
 }
 
+// Update que se encarga de cambiar de un update a otro
+u8 updateGame() {
+   switch(sceneGame) {
+      case 0:
+         updateGameLevel();
+      break;
+      case 1:
+         updateScreens(); 
+      break;
+      case 2:
+         updateScreens();
+      break;
+   }
+   return G_sceneGame;
+}
+
 // Update del menu
-u8 updateGameLevel() {
+void updateGameLevel() {
    // ---------------------------------------------------------------------------------------------------
    cpct_waitVSYNC(); //---------- Comienza Primer Frame (para actualizar entidades, 1 vez cada 2 frames)
 
@@ -200,17 +218,19 @@ u8 updateGameLevel() {
    // Reproduce musica (1 vez cada frame)
    cpct_akp_musicPlay(); // La musica se reproduce cada frame
 
-   // Redibuja tiles ocupados por Heroes
-   repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left);
-   repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right);
+   if(sceneGame != 2) {
+      // Redibuja tiles ocupados por Heroes
+      repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left);
+      repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right);
 
-   // Redibuja tiles ocupados por Disparos
-   repaintBackgroundOverShot(shots1, G_left);
-   repaintBackgroundOverShot(shots2, G_right);
-   
-   // Dibuja entidades
-   drawHeroes();
-   drawShots();
+      // Redibuja tiles ocupados por Disparos
+      repaintBackgroundOverShot(shots1, G_left);
+      repaintBackgroundOverShot(shots2, G_right);
+      
+      // Dibuja entidades
+      drawHeroes();
+      drawShots();
+   }
 
    // Intercambia buffer de dibujado
    swapBuffers(g_scrbuffers);
@@ -222,19 +242,12 @@ u8 updateGameLevel() {
    redrawHUD();
 
    if(heroe1.health == 0 || heroe2.health == 0) {
+      cpct_waitVSYNC();
+      sceneGame = 1;
       drawGameOver();
    }
 
-   return G_sceneGame;
-}
-
-// Update que se encarga de cambiar de un update a otro
-void updateGame() {
-   switch(sceneGame) {
-      case 1:
-         drawGameOver(); 
-      break;
-   }
+   //return G_sceneGame;
 }
 
 void updateHeroe(struct Heroe *heroe) {
@@ -308,7 +321,7 @@ void updateHeroe(struct Heroe *heroe) {
             // Si estaba en el suelo, salta
             if(heroe->stateY == sy_land) {
                // Reproducimos el efecto de sonido SALTAR
-               cpct_akp_SFXPlay(1, 15, 50, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
+               cpct_akp_SFXPlay(1, 12, 50, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
                heroe->stateY = sy_jump;
                heroe->jumpFactor = 0;
             }
@@ -498,8 +511,8 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
          drawHearts();
          redrawHearts = 1;
          // SFX
-         if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
-         else cpct_akp_SFXPlay(2, 15, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
+         if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 12, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
+         else cpct_akp_SFXPlay(2, 12, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
       }
    }
 }
@@ -581,13 +594,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                      heroe->x = (redDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                   }
                   else if(heroe->sensorCC == redDoor[i][1] || heroe->sensorCC == redDoor[i][1]+1 || heroe->sensorCC == redDoor[i][1]+G_mapWTiles || heroe->sensorCC == redDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (redDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                   }
                }
             }
@@ -607,13 +620,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                      heroe->x = (blueDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                   }
                   else if(heroe->sensorCC == blueDoor[i][1] || heroe->sensorCC == blueDoor[i][1]+1 || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (blueDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                   }
                }
             }
@@ -1228,31 +1241,121 @@ void drawHudSprite(u8 x, u8 y, u8 sizeX, u8 sizeY, u8* spriteBorder) {
 }
 
 // PANTALLAS ////////////////////////////////////////////////////////////////////
+u8 updateScreens() {
+   // ---------------------------------------------------------------------------------------------------
+   cpct_waitVSYNC(); //---------- Comienza Primer Frame (para actualizar entidades, 1 vez cada 2 frames)
+
+   // Reproduce musica (1 vez cada frame)
+   cpct_akp_musicPlay(); 
+   
+   // Scan Keyboard
+   cpct_scanKeyboard_f();
+
+   if(cpct_isKeyPressed(Key_1)) {  //Reintentar o rejugar
+      initGame();
+   }
+   else if(cpct_isKeyPressed(Key_2)) { //ir al menu
+      return G_sceneMenu;
+   }
+
+   // ---------------------------------------------------------------------------------------------------
+   cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
+   
+   // Reproduce musica (1 vez cada frame)
+   cpct_akp_musicPlay(); // La musica se reproduce cada frame
+
+   // Intercambia buffer de dibujado
+   swapBuffers(g_scrbuffers);
+   
+   return G_sceneGame;
+}
+
 void drawGameOver() {
+   u8 *pvideomem = 0;
+
    // Preparamos el double buffer y dibujamos...
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
    cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
+   
    cpct_akp_musicPlay();
-   drawScreensBorder();
-   drawScreenOptions();                                   // Dibujamos en el buffer actual
+
+   drawTextGameOver();
+
    cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+
    cpct_akp_musicPlay();
+
    swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
-   drawScreensBorder();
-   drawScreenOptions();                                  // Dibujamos en este buffer
 
+   drawTextGameOver();
+}
+
+void drawTextGameOver() {
+   u8 *pvideomem = 0;
+
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 24, 60);  
+   cpct_drawStringM0("GAME OVER", pvideomem, 7, 0);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 40);  
+   cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 8, 0);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 80);  
+   cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 8, 0);
+   drawScreensBorder();
+   drawScreenOptions();                                   // Dibujamos en el buffer actual
+}
+
+void drawGameComplete() {
+   u8 *pvideomem = 0;
+
+   // Preparamos el double buffer y dibujamos...
+   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+   cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
    
+   cpct_akp_musicPlay();
+
+   drawTextGameComplete();
+
+   cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+
+   cpct_akp_musicPlay();
+
+   swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
+   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
+
+   drawTextGameComplete();
+}
+
+void drawTextGameComplete() {
+   u8 *pvideomem = 0;
+
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 14, 60);  
+   cpct_drawStringM0("GAME COMPLETE", pvideomem, 3, 0);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 40);  
+   cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 1, 0);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 80);  
+   cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 1, 0);
+   drawScreensBorder();
+   drawScreenOptions();  
 }
 
 void drawScreenOptions() {
-   u8 *pvideomem;
+   u8 *pvideomem = 0;
 
    // Dibujar opciones
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 26, 115);  
-   cpct_drawStringM0("1.REINTENTAR", pvideomem, 3, 0);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 130);  
-   cpct_drawStringM0("2.IR AL MENU", pvideomem, 1, 0);
+   if(sceneGame == 1) {
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 125);  
+      cpct_drawStringM0("1.REINTENTAR", pvideomem, 2, 0);
+   }
+   else if(sceneGame == 2) {
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 4, 125);  
+      cpct_drawStringM0("1.EMPEZAR DE NUEVO", pvideomem, 2, 0);
+
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 6, 180);  
+      cpct_drawStringM0("GRACIAS POR JUGAR", pvideomem, 6, 0);
+   }
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 140);  
+   if(sceneGame == 1) cpct_drawStringM0("2.IR AL MENU", pvideomem, 1, 0);
+   else if(sceneGame == 2) cpct_drawStringM0("2.IR AL MENU", pvideomem, 7, 0);
 }
 
 void drawScreensBorder() {
