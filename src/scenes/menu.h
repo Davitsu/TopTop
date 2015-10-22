@@ -36,6 +36,4 @@ void drawOptions();
 void drawMenuHeroes();
 void swapBuffersMenu(u8**);
 
-extern u8 option;
-
 #endif
