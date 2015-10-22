@@ -1,13 +1,20 @@
-// ------------------------------------------------------
+//-----------------------------LICENSE NOTICE------------------------------------
+//  This file is part of TopTop: An Amstrad CPC Game
+//  Copyright (C) 2015 Rantan (@RantanGames)
 //
-// Copyright (c) 2015 RANTAN
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
 //
-// - David Girón Jareño - @Davitsu
-// - Sandra María Garzón Hernández - @AlexySGH
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
 //
-// More games: rantangames.com
-//
-// ------------------------------------------------------
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//------------------------------------------------------------------------------
 
 #include <types.h>
 #include "sprites.h"
@@ -1232,7 +1239,7 @@ const u8 G_bluePotion[32] = { 	// pocion de curacion azul
 	0x44, 0x0F, 0x0F, 0x88, 
 	0x00, 0xCC, 0xCC, 0x00};
 
-const u8 G_yellowPotion[32] = { // pocion de invencibilidad
+/*const u8 G_yellowPotion[32] = { // pocion de invencibilidad
 	0x00, 0x00, 0x00, 0x00, 
 	0x00, 0x98, 0x64, 0x00, 
 	0x00, 0x44, 0x88, 0x00, 
@@ -1240,7 +1247,7 @@ const u8 G_yellowPotion[32] = { // pocion de invencibilidad
 	0x10, 0x00, 0x00, 0x20, 
 	0x10, 0x3C, 0x3C, 0x20, 
 	0x44, 0xF0, 0xF0, 0x88, 
-	0x00, 0xCC, 0xCC, 0x00};
+	0x00, 0xCC, 0xCC, 0x00};*/
 
 const u8 G_key[32] = { 			// KEY
 	0x00, 0x00, 0x00, 0x00, 
@@ -1971,7 +1978,7 @@ const u8 G_logoRantan[32] = {
 	0x00, 0xFC, 0xFC, 0x00};
 
 u8* const G_tileId[G_tileRange] = {
-	G_tile01, G_redPotion, G_bluePotion, G_yellowPotion, G_key,																//   0 <--> 4
+	G_tile01, G_redPotion, G_bluePotion, 0, G_key,																//   0 <--> 4
 	G_tile02, G_tile03, G_tile04, G_spikes, 0, 																				//   5 <--> 9
 	0, 0, 0, 0, 0, 																											//  10 <--> 14
 	0, G_doorR_init01, G_doorR_init02, G_doorR_init03, G_doorR_init04, 														//  15 <--> 19

@@ -22,8 +22,12 @@
 #include <types.h>
 
 // IDs de las escenas del juego
-#define G_sceneMenu 0   	// Escena del menu principal
-#define G_sceneGame 1   	// Escena del juego
+#define G_sceneMenu      0   	// Escena del menu principal
+#define G_sceneGame      1   	// Escena del juego
+#define G_sceneGameOver  2   	// Escena de Game Over
+#define G_sceneNextLevel 3   	// Escena de Siguiente Nivel
+#define G_sceneComplete  4   	// Escena de Juego Completado
+#define G_sceneCredits   5		// Escena de los creditos
 
 // Tamano de un mapa en tiles
 #define G_mapWTiles 8 		// Ancho de un mapa en tiles

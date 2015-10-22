@@ -42,10 +42,10 @@ void initScene(u8 *scene) {
    switch(*scene) {
       case G_sceneMenu:
          initMenu();
-         break;
+      break;
       case G_sceneGame:
          initGame();
-         break;
+      break;
    }
 }
 
@@ -66,10 +66,10 @@ void application() {
       switch(scene) {
          case G_sceneMenu:
             nextScene = updateMenu();
-            break;
+         break;
          case G_sceneGame:
-            nextScene = updateGame();
-            break;
+            nextScene = updateGameLevel();
+         break;
       }
 
       // Comprobamos si vamos a cambiar de escena

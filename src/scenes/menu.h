@@ -20,7 +20,6 @@
 #define _MENU_H_
 
 #include <types.h>
-#include "../sprites/animation.h"
 
 void initMenu();
 u8 updateMenu();
@@ -29,12 +28,14 @@ void drawMenuBorder();
 void drawMenuBorderTile(u8 x, u8 y, u8 *spriteBorder);
 void drawMenuBorderSprite(u8 x, u8 y, u8 *spriteBorder);
 void drawMenu();
+void drawCredits();
+void drawLogo();
 void drawTop(u8 x, u8 y);
 void drawTopTile(u8 x, u8 y);
 void drawOptions();
 void drawMenuHeroes();
 void swapBuffersMenu(u8**);
 
-//extern TAnimation anim;
+extern u8 option;
 
 #endif

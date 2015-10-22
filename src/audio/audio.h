@@ -18,5 +18,5 @@
 
 #include <types.h>
 
-extern __at(0x7C3F) const u8 G_toptop_music[630];
-extern __at(0x7EB4) const u8 G_toptop_effects[252];
+extern __at(0x7D11) const u8 G_toptop_music[240];
+extern __at(0x7E00) const u8 G_toptop_effects[231];

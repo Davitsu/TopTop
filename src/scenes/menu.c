@@ -19,87 +19,101 @@
 #include <cpctelera.h>
 #include "menu.h"
 #include "../sprites/sprites.h"
-#include "../sprites/animation.h"
 #include "../constants.h"
+#include "../audio/audio.h"
 
 //TAnimation anim;
 u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
+u8 option;
+
 // Inicializa el menu
 void initMenu() {
-  //anim.frames = (TAnimFrames**)g_aniHeroeR[0][G_left];
+  option = 0;   // 0 menu, 1 creditos
+
+  cpct_akp_musicInit(G_toptop_music); 
+  cpct_akp_SFXInit(G_toptop_effects);
 
 	// Preparamos el double buffer y dibujamos...
 	cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
-	cpct_waitVSYNC();                               	// Esperamos al VSYNC para esperar a dibujar
-	drawMenu();                                     	// Dibujamos en el buffer actual
-	cpct_waitVSYNC();                               	// Volvemos a esperar al VSYNC
-	swapBuffersMenu(g_scrbuffersMenu);             	 	    // Cambiamos de buffer
-	drawMenu();                                     	// Dibujamos en este buffer
+	cpct_waitVSYNC();                               	  // Esperamos al VSYNC para esperar a dibujar
+  if(option == 0) drawMenu();                        	                // Dibujamos en el buffer actual
+  cpct_waitVSYNC();                               	  // Volvemos a esperar al VSYNC
+	swapBuffersMenu(g_scrbuffersMenu);             	 	  // Cambiamos de buffer
+  cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000);     // Limpiamos el primer buffer
+  if(option == 0) drawMenu();                                     	  // Dibujamos en este buffer
 }
 
 // Update del menu
 u8 updateMenu() { 
-
 	cpct_waitVSYNC();
+
+  // Reproduce musica (1 vez cada frame)
+  cpct_akp_musicPlay(); 
+
+  cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
+   
+  // Reproduce musica (1 vez cada frame)
+  cpct_akp_musicPlay(); // La musica se reproduce cada frame 
+
 	swapBuffersMenu(g_scrbuffersMenu);
 
   // Scan Keyboard
   cpct_scanKeyboard();
 
-  if (cpct_isKeyPressed(Key_1)) {
-    return G_sceneGame;
+  if(option == 0) {                     //Escena menu
+    if (cpct_isKeyPressed(Key_1)) {
+      cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
+      return G_sceneGame;
+    }
+    else if(cpct_isKeyPressed(Key_2)) {
+      cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
+      cpct_waitVSYNC();
+      drawCredits();
+      cpct_waitVSYNC();                                   // Volvemos a esperar al VSYNC
+      swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
+      cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el primer buffer
+      drawCredits();                                      // Dibujamos en este buffer
+      option = 1;
+    }
   }
-  else {
-    return G_sceneMenu;
+  else {                              //Escena de creditos
+    if(cpct_isKeyPressed(Key_Space)) {
+      cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
+      cpct_waitVSYNC();
+      drawMenu();
+      cpct_waitVSYNC();                                   // Volvemos a esperar al VSYNC
+      swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
+      cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el primer buffer
+      drawMenu();                                         // Dibujamos en este buffer
+      option = 0;
+    }
   }
 
-	
+  return G_sceneMenu;
 }
 
 void drawMenu() {
-  //u8 i;
-
 	drawMenuBorder();
+  drawLogo();
+}
 
-  //pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 0, 0);  
-  //cpct_drawStringM0("OOOOOOOOOOOOOOOOOOOO", pvideomem, 5, 0);
+void drawCredits() {
+  u8 *pvideomem;
 
-  /*for(i=0; i<20; i++) {   // Fila superior
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], i*G_tileSizeW, 0);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
+  drawMenuBorder();
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
+  cpct_drawStringM0("CREDITOS", pvideomem, 3, 0);
 
-  //pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 60);  
-  //cpct_drawStringM0("TOP TOP", pvideomem, 7, 0);
+}
 
+void drawLogo() {
   // TOPTOP LOGO
   drawTop(8, 16);
   drawTop(28, 56);
 
-  ///////
-
   drawOptions();
-
-  /*for(i=0; i<23; i++) {   // Columna izquierda
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 0, i*G_tileSizeH+G_tileSizeH);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
-
-  /*for(i=0; i<23; i++) {   // Columna derecha
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 76, i*G_tileSizeH+G_tileSizeH);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
-
-  /*for(i=0; i<20; i++) {   // Fila inferior
-    pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], i*G_tileSizeW, 192);
-    cpct_drawTileAligned4x8(G_tile01, pvideomem);
-  }*/
-
   drawMenuHeroes();
-
-  //pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 0, 192);  
-  //cpct_drawStringM0("OOOOOOOOOOOOOOOOOOOO", pvideomem, 5, 0);
 }
 
 void drawTop(u8 x, u8 y) {
@@ -133,7 +147,7 @@ void drawTop(u8 x, u8 y) {
 }
 
 void drawTopTile(u8 x, u8 y) {
-  u8 *pvideomem;
+  u8 *pvideomem = 0;
 
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], x, y);
   cpct_drawTileAligned4x8(G_tile01, pvideomem);
@@ -159,7 +173,7 @@ void drawMenuBorder() {
 }	
 
 void drawMenuBorderTile(u8 x, u8 y, u8 *spriteBorder) {
-  u8 *pvideomem;
+  u8 *pvideomem = 0;
 
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], x, y);
   cpct_drawTileAligned4x8(spriteBorder, pvideomem);

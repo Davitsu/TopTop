@@ -27,7 +27,8 @@
 void initGame();
 void initLevel();
 void firstDraw();
-u8 updateGame();
+u8 updateGameLevel();
+void updateGame();
 void createHeroes();
 void updateHeroe(struct Heroe*);
 void checkHeroeCollision(struct Heroe*, u8*);
@@ -58,6 +59,13 @@ void interactWithDoors(struct Heroe*, u8*);
 void checkNextLevel();
 u8 tile2tile1(u8 x, u8 y);
 void swapBuffers(u8**);
+//PANTALLAS
+void drawGameOver();
+void drawScreenOptions();
+void drawScreensBorder();
+void drawScreensBorderTile(u8 x, u8 y, u8 *spriteBorder);
+void drawScreensBorderSprite(u8 x, u8 y, u8 *spriteBorder);
+//FIN PANTALLAS
 
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;
@@ -81,5 +89,7 @@ extern u8 level;
 extern u8 nextMap;
 
 extern u8 redrawHearts;
+
+extern u8 sceneGame;		// pantalla actual
 
 #endif
