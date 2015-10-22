@@ -71,6 +71,7 @@ typedef struct Heroe {
 };
 
 void initHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
+void resetHeroes(struct Heroe *heroe1, struct Heroe *heroe2);
 void updateJump(struct Heroe *heroe);
 void updateCooldown(struct Heroe *heroe);
 void updateSensorHeroe(struct Heroe *heroe);
