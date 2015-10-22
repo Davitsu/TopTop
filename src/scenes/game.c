@@ -50,30 +50,25 @@ u8 redDoor[G_maxButtons][2];
 u8 blueButton[G_maxButtons][2];
 u8 redButton[G_maxButtons][2];
 
-extern u8* const G_SCR_VMEM = (u8*)0xC000; 
-
-u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
-
 u8 level;
 u8 nextMap;
 
 u8 redrawHearts;
 
+u8 sceneGame;
+
+u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
+
 // Inicializa el menu
 void initGame() {
    level = 1;
    nextMap = 0;
-
-   // Inicializamos el audio
-   //cpct_akp_musicInit(G_toptop_music); 
-
-   cpct_akp_musicInit(G_toptop_effects); 
-   cpct_akp_SFXInit(G_toptop_effects);
+   sceneGame = 0;
 
    // Inicializamos a los heroes
    initHeroes(&heroe1, &heroe2);
 
-   //I Inicializamos el nivel
+   // Inicializamos el nivel
    initLevel();
 }
 
@@ -176,15 +171,15 @@ void firstDraw() {
    drawGameBorder();
    drawMap();
 
-   cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
-   cpct_akp_musicPlay();
+   //cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+   //cpct_akp_musicPlay();
 
    drawHeroes();
    drawHUD();
 }
 
 // Update del menu
-u8 updateGame() {
+u8 updateGameLevel() {
    // ---------------------------------------------------------------------------------------------------
    cpct_waitVSYNC(); //---------- Comienza Primer Frame (para actualizar entidades, 1 vez cada 2 frames)
 
@@ -231,6 +226,15 @@ u8 updateGame() {
    }
    else {     
 	  return G_sceneGame;
+   }
+}
+
+// Update que se encarga de cambiar de un update a otro
+void updateGame() {
+   switch(sceneGame) {
+      case 1:
+         drawGameOver(); 
+      break;
    }
 }
 
@@ -1034,24 +1038,6 @@ void drawMap() {
    }
 }
 
-// Intercambia los buffers
-void swapBuffers(u8** scrbuffers) {
-   u8* aux; // Auxiliary pointer for making the change
-   
-   // Change what is shown on the screen (present backbuffer (1) is changed to 
-   // front-buffer, so it is shown at the screen)
-   // cpct_setVideoMemoryPage requires the 6 Most Significant bits of the address,
-   // so we have to shift them 10 times to the right (as addresses have 16 bits)
-   //
-   cpct_setVideoMemoryPage( (u16)(scrbuffers[1]) >> 10 );
-   
-   // Once backbuffer is being shown at the screen, we switch our two 
-   // variables to start using (0) as backbuffer and (1) as front-buffer
-   aux = scrbuffers[0];
-   scrbuffers[0] = scrbuffers[1];
-   scrbuffers[1] = aux;
-}
-
 void swapPrePosShot(u8 *preX, u8 *preY) {
    u8 prePos;
 
@@ -1340,6 +1326,75 @@ void drawHUDBorder() {
    cpct_drawTileAligned4x8_f(G_border19, pvideomem);
 }
 
+// PANTALLAS ////////////////////////////////////////////////////////////////////
+void drawGameOver() {
+   drawScreensBorder();
+
+   drawScreenOptions();
+}
+
+void drawScreenOptions() {
+   u8 *pvideomem;
+
+   // Dibujar opciones
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 26, 115);  
+   cpct_drawStringM0("1.REINTENTAR", pvideomem, 3, 0);
+   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 20, 130);  
+   cpct_drawStringM0("2.IR AL MENU", pvideomem, 1, 0);
+}
+
+void drawScreensBorder() {
+   u8 i;
+
+   drawScreensBorderTile(0, 0, G_border01);
+   drawScreensBorderTile(76, 0, G_border16);
+   drawScreensBorderTile(76, 192, G_border17);
+   drawScreensBorderTile(0, 192, G_border10);
+
+   for(i = 0; i < 18; i++) {
+     drawScreensBorderSprite(i*4+4, 0, G_border02);
+     drawScreensBorderSprite(i*4+4, 192, G_border09); 
+   }
+
+   for(i = 0; i < 23; i++) {
+     drawScreensBorderSprite(0, i*8+8, G_border11);
+     drawScreensBorderSprite(76, i*8+8, G_border19);
+   }
+}  
+
+void drawScreensBorderTile(u8 x, u8 y, u8 *spriteBorder) {
+  u8 *pvideomem;
+
+  pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+  cpct_drawTileAligned4x8(spriteBorder, pvideomem);
+}
+
+void drawScreensBorderSprite(u8 x, u8 y, u8 *spriteBorder) {
+  u8 *pvideomem;
+
+  pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+  cpct_drawSprite(spriteBorder, pvideomem, 4, 8);
+}
+
+// FIN PANTALLAS ////////////////////////////////////////////////////////////////
+
 u8 tile2tile1(u8 x, u8 y) {
    return y*G_mapWTiles+x;
+}
+
+void swapBuffers(u8** scrbuffers) {
+   u8* aux; // Auxiliary pointer for making the change
+   
+   // Change what is shown on the screen (present backbuffer (1) is changed to 
+   // front-buffer, so it is shown at the screen)
+   // cpct_setVideoMemoryPage requires the 6 Most Significant bits of the address,
+   // so we have to shift them 10 times to the right (as addresses have 16 bits)
+   //
+   cpct_setVideoMemoryPage( (u16)(scrbuffers[1]) >> 10 );
+   
+   // Once backbuffer is being shown at the screen, we switch our two 
+   // variables to start using (0) as backbuffer and (1) as front-buffer
+   aux = scrbuffers[0];
+   scrbuffers[0] = scrbuffers[1];
+   scrbuffers[1] = aux;
 }
