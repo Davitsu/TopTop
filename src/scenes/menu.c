@@ -24,23 +24,18 @@
 
 u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
-//u8 option;
-
 // Inicializa el menu
 void initMenu() {
-  //option = 0;   // 0 menu, 1 creditos
-
   cpct_akp_musicInit(G_toptop_music); 
   cpct_akp_SFXInit(G_toptop_effects);
 
 	// Preparamos el double buffer y dibujamos...
-	cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000);     // Limpiamos el segundo buffer (contiene valores aleatorios)
-	cpct_waitVSYNC();                               	      // Esperamos al VSYNC para esperar a dibujar
-  /*if(option == 0)*/ drawMenu();                        	                // Dibujamos en el buffer actual
-  cpct_waitVSYNC();                               	      // Volvemos a esperar al VSYNC
-	swapBuffersMenu(g_scrbuffersMenu);             	 	      // Cambiamos de buffer
+	cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+  drawMenu();                        	                // Dibujamos en el buffer actual
+  cpct_waitVSYNC();                               	  // Volvemos a esperar al VSYNC
+	swapBuffersMenu(g_scrbuffersMenu);             	 	  // Cambiamos de buffer
   cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000);     // Limpiamos el primer buffer
-  /*if(option == 0)*/ drawMenu();                         // Dibujamos en este buffer
+  drawMenu();                                     	  // Dibujamos en este buffer
 }
 
 // Update del menu
@@ -50,45 +45,13 @@ u8 updateMenu() {
   // Reproduce musica (1 vez cada frame)
   cpct_akp_musicPlay(); 
 
-  cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
-   
-  // Reproduce musica (1 vez cada frame)
-  cpct_akp_musicPlay(); // La musica se reproduce cada frame 
-
-	swapBuffersMenu(g_scrbuffersMenu);
-
   // Scan Keyboard
   cpct_scanKeyboard();
 
-  //if(option == 0) {                     //Escena menu
-    if (cpct_isKeyPressed(Key_1)) {
-      //cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
-      return G_sceneGame;
-    }
-  //}
-    /*else if(cpct_isKeyPressed(Key_2)) {
-      cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
-      cpct_waitVSYNC();
-      drawCredits();
-      cpct_waitVSYNC();                                   // Volvemos a esperar al VSYNC
-      swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
-      cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el primer buffer
-      drawCredits();                                      // Dibujamos en este buffer
-      option = 1;
-    }
+  if (cpct_isKeyPressed(Key_1)) {
+    cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
+    return G_sceneGame;
   }
-  else {                              //Escena de creditos
-    if(cpct_isKeyPressed(Key_Space)) {
-      cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
-      cpct_waitVSYNC();
-      drawMenu();
-      cpct_waitVSYNC();                                   // Volvemos a esperar al VSYNC
-      swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
-      cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el primer buffer
-      drawMenu();                                         // Dibujamos en este buffer
-      option = 0;
-    }
-  }*/
 
   return G_sceneMenu;
 }
