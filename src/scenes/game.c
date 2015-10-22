@@ -65,7 +65,7 @@ void initGame() {
    nextMap = 0;
 
    // Inicializamos el audio
-   cpct_akp_musicInit(G_toptop_effects); 
+   cpct_akp_musicInit(G_toptop_music); 
 
    //cpct_akp_musicInit(G_toptop_effects); 
    cpct_akp_SFXInit(G_toptop_effects);
@@ -146,6 +146,9 @@ void initLevel() {
             case 0x4C: redButton[2][0] = tile2tile1(x, y); break;          // |
          }
       }
+      
+      cpct_waitVSYNC();
+      cpct_akp_musicPlay(); 
    }
 
    for(x=0; x<G_NUM_REDRAW; x++) {
@@ -156,13 +159,13 @@ void initLevel() {
    initShots(shots1);
    initShots(shots2);
 
-   drawGameBorder();
-
    // Preparamos el double buffer y dibujamos...
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
    cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
+   cpct_akp_musicPlay();
    firstDraw();                                    // Dibujamos en el buffer actual
    cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+   cpct_akp_musicPlay();
    swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
    firstDraw();                                    // Dibujamos en este buffer
@@ -172,6 +175,10 @@ void initLevel() {
 void firstDraw() {
    drawGameBorder();
    drawMap();
+
+   cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+   cpct_akp_musicPlay();
+
    drawHeroes();
    drawHUD();
 }
@@ -500,7 +507,9 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
 
    // Colisiona con items e interruptores
    if(map[sensor] == 0x01 || map[sensor] == 0x02) {  // POCION DE CURACION
-      heroe->health++;
+      if(heroe->health < G_maxHealth) {
+         heroe->health++;
+      }
       drawHearts();
       redrawHearts = 1;
       changeTile(x, y, side, 0xFF);
@@ -1014,6 +1023,9 @@ void drawMap() {
          drawTile(x, y, G_left);
          drawTile(x, y, G_right);
       }
+
+      cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+      cpct_akp_musicPlay();
    }
 }
 

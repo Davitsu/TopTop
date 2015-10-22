@@ -191,12 +191,10 @@ void drawMenu() {
   ///////
 
 	// Dibujar opciones
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 105);  
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
   cpct_drawStringM0("1.JUGAR", pvideomem, 3, 0);
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 120);  
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
   cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 135);  
-  cpct_drawStringM0("3.SALIR", pvideomem, 3, 0);
 
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 14, 182);
   cpct_drawStringM0("RANTAN   2015", pvideomem, 6, 0);
