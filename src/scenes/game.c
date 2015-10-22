@@ -176,10 +176,6 @@ void initLevel() {
 void firstDraw() {
    drawGameBorder();
    drawMap();
-
-   //cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
-   //cpct_akp_musicPlay();
-
    drawHeroes();
    drawHUD();
 }
@@ -188,20 +184,20 @@ void firstDraw() {
 u8 updateGame() {
    switch(sceneGame) {
       case 0:
-         updateGameLevel();
+         return updateGameLevel();
       break;
       case 1:
-         updateScreens(); 
+         return updateScreens(); 
       break;
       case 2:
-         updateScreens();
+         return updateScreens();
       break;
    }
    return G_sceneGame;
 }
 
 // Update del menu
-void updateGameLevel() {
+u8 updateGameLevel() {
    // ---------------------------------------------------------------------------------------------------
    cpct_waitVSYNC(); //---------- Comienza Primer Frame (para actualizar entidades, 1 vez cada 2 frames)
 
@@ -251,7 +247,7 @@ void updateGameLevel() {
       drawGameOver();
    }
 
-   //return G_sceneGame;
+   return G_sceneGame;
 }
 
 void updateHeroe(struct Heroe *heroe) {
@@ -560,7 +556,7 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
 
       changeTile(x, y, side, 0xFF);
       // SFX
-      cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
+      cpct_akp_SFXPlay(3, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
    }
    else if(map[sensor] == 0x04) {  // LLAVE
       if(heroe->id == G_heroe1) {

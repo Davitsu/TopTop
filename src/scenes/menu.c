@@ -151,8 +151,13 @@ void drawMenuBorderSprite(u8 x, u8 y, u8 *spriteBorder) {
 void drawOptions() {
   u8 *pvideomem = 0;
 
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 12, 105);  
+  cpct_drawStringM0("OOOOOOOOOOOOOO", pvideomem, 1, 0);
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 12, 140);  
+  cpct_drawStringM0("OOOOOOOOOOOOOO", pvideomem, 1, 0);
+
   // Dibujar opciones
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 123); 
   cpct_drawStringM0("1.JUGAR", pvideomem, 3, 0);
   /*pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
   cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);*/
@@ -170,11 +175,11 @@ void drawMenuHeroes() {
 
   //PERSONAJES
   //Se dibuja el sprite del personaje 1
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 34, 155);
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 34, 157);
   cpct_drawSpriteMasked(G_heroR_idle_right01, pvideomem, G_heroeW, G_heroeH);
 
   //Se dibuja el sprite del personaje 2
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 155);
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 157);
   cpct_drawSpriteMasked(G_heroB_idle_left01, pvideomem, G_heroeW, G_heroeH);
 }
 
