@@ -27,7 +27,7 @@
 void initGame();
 void initLevel();
 void firstDraw();
-void updateGameLevel();
+u8 updateGameLevel();
 u8 updateGame();
 u8 updateScreens();
 void createHeroes();
