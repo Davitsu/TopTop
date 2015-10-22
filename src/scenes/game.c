@@ -1264,9 +1264,20 @@ void drawHudSprite(u8 x, u8 y, u8 sizeX, u8 sizeY, u8* spriteBorder) {
 
 // PANTALLAS ////////////////////////////////////////////////////////////////////
 void drawGameOver() {
+   // Preparamos el double buffer y dibujamos...
+   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+   cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
+   cpct_akp_musicPlay();
    drawScreensBorder();
+   drawScreenOptions();                                   // Dibujamos en el buffer actual
+   cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+   cpct_akp_musicPlay();
+   swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
+   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
+   drawScreensBorder();
+   drawScreenOptions();                                  // Dibujamos en este buffer
 
-   drawScreenOptions();
+   
 }
 
 void drawScreenOptions() {
