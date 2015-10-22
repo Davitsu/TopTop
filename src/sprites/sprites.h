@@ -1,13 +1,20 @@
-// ------------------------------------------------------
+//-----------------------------LICENSE NOTICE------------------------------------
+//  This file is part of TopTop: An Amstrad CPC Game
+//  Copyright (C) 2015 Rantan (@RantanGames)
 //
-// Copyright (c) 2015 RANTAN
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
 //
-// - David Girón Jareño - @Davitsu
-// - Sandra María Garzón Hernández - @AlexySGH
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
 //
-// More games: rantangames.com
-//
-// ------------------------------------------------------
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//------------------------------------------------------------------------------
 
 #ifndef _SPRITES_H_
 #define _SPRITES_H_
@@ -142,7 +149,7 @@ extern const u8 G_doorB_open04[32];
 
 extern const u8 G_redPotion[32];
 extern const u8 G_bluePotion[32];
-extern const u8 G_yellowPotion[32];
+//extern const u8 G_yellowPotion[32];
 extern const u8 G_key[32];
 
 // ===============================================

@@ -20,6 +20,7 @@
 #include "scenes/menu.h"
 #include "scenes/game.h"
 #include "sprites/sprites.h"
+#include "scenes/screens.h"
 #include "constants.h"
 
 // Initialization of the Amstrad CPC at the start of the application
@@ -41,11 +42,23 @@ void initScene(u8 *scene) {
    // Scene inits
    switch(*scene) {
       case G_sceneMenu:
-         initMenu();
+         initMenu(0);
          break;
       case G_sceneGame:
          initGame();
          break;
+      case G_sceneGameOver:
+         initScreens(0);
+      break;
+      case G_sceneNextLevel:
+         initScreens(1);
+      break;
+      case G_sceneComplete:
+         initScreens(2);
+      break;
+      case G_sceneCredits:
+         initMenu(1);
+      break;
    }
 }
 
@@ -65,11 +78,23 @@ void application() {
       // Scene updates
       switch(scene) {
          case G_sceneMenu:
-            nextScene = updateMenu();
-            break;
+            nextScene = updateMenu(0);
+         break;
          case G_sceneGame:
             nextScene = updateGame();
-            break;
+         break;
+         case G_sceneGameOver:
+            nextScene = updateScreens(0);
+         break;
+         case G_sceneNextLevel:
+            nextScene = updateScreens(1);
+         break;
+         case G_sceneComplete:
+            nextScene = updateScreens(2);
+         break;
+         case G_sceneCredits:
+            nextScene = updateMenu(1);
+         break;
       }
 
       // Comprobamos si vamos a cambiar de escena

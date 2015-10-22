@@ -16,23 +16,19 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
-#ifndef _MENU_H_
-#define _MENU_H_
+#ifndef _SCREENS_H_
+#define _SCREENS_H_
 
 #include <types.h>
 #include "../sprites/animation.h"
 
-void initMenu(u8 menu);
-u8 updateMenu(u8 menu);
+void initScreens(u8 screen);
+u8 updateScreens(u8 screen);
 
-void drawMenuBorder();
-void drawMenu();
-void drawCredits();
-void drawLogo();
-void swapBuffersMenu(u8**);
+void drawScreensBorder();
+void drawScreens();
+void swapBuffersScreens(u8**);
 
-extern u8* const g_SCR_VMEM_MENU; 	// Pointer to the start of default video memory screen
-
-//extern TAnimation anim;
+extern u8* const g_SCR_VMEM_SCREENS; 	// Pointer to the start of default video memory screen
 
 #endif
