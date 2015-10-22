@@ -22,26 +22,25 @@
 #include "../constants.h"
 #include "../audio/audio.h"
 
-//TAnimation anim;
 u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
-u8 option;
+//u8 option;
 
 // Inicializa el menu
 void initMenu() {
-  option = 0;   // 0 menu, 1 creditos
+  //option = 0;   // 0 menu, 1 creditos
 
   cpct_akp_musicInit(G_toptop_music); 
   cpct_akp_SFXInit(G_toptop_effects);
 
 	// Preparamos el double buffer y dibujamos...
-	cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
-	cpct_waitVSYNC();                               	  // Esperamos al VSYNC para esperar a dibujar
-  if(option == 0) drawMenu();                        	                // Dibujamos en el buffer actual
-  cpct_waitVSYNC();                               	  // Volvemos a esperar al VSYNC
-	swapBuffersMenu(g_scrbuffersMenu);             	 	  // Cambiamos de buffer
+	cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000);     // Limpiamos el segundo buffer (contiene valores aleatorios)
+	cpct_waitVSYNC();                               	      // Esperamos al VSYNC para esperar a dibujar
+  /*if(option == 0)*/ drawMenu();                        	                // Dibujamos en el buffer actual
+  cpct_waitVSYNC();                               	      // Volvemos a esperar al VSYNC
+	swapBuffersMenu(g_scrbuffersMenu);             	 	      // Cambiamos de buffer
   cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000);     // Limpiamos el primer buffer
-  if(option == 0) drawMenu();                                     	  // Dibujamos en este buffer
+  /*if(option == 0)*/ drawMenu();                         // Dibujamos en este buffer
 }
 
 // Update del menu
@@ -61,12 +60,13 @@ u8 updateMenu() {
   // Scan Keyboard
   cpct_scanKeyboard();
 
-  if(option == 0) {                     //Escena menu
+  //if(option == 0) {                     //Escena menu
     if (cpct_isKeyPressed(Key_1)) {
-      cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
+      //cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
       return G_sceneGame;
     }
-    else if(cpct_isKeyPressed(Key_2)) {
+  //}
+    /*else if(cpct_isKeyPressed(Key_2)) {
       cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
       cpct_waitVSYNC();
       drawCredits();
@@ -88,7 +88,7 @@ u8 updateMenu() {
       drawMenu();                                         // Dibujamos en este buffer
       option = 0;
     }
-  }
+  }*/
 
   return G_sceneMenu;
 }
@@ -98,14 +98,13 @@ void drawMenu() {
   drawLogo();
 }
 
-void drawCredits() {
+/*void drawCredits() {
   u8 *pvideomem;
 
   drawMenuBorder();
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
   cpct_drawStringM0("CREDITOS", pvideomem, 3, 0);
-
-}
+}*/
 
 void drawLogo() {
   // TOPTOP LOGO
@@ -192,8 +191,8 @@ void drawOptions() {
   // Dibujar opciones
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
   cpct_drawStringM0("1.JUGAR", pvideomem, 3, 0);
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
-  cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);
+  /*pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
+  cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);*/
 
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 14, 182);
   cpct_drawStringM0("RANTAN   2015", pvideomem, 6, 0);
