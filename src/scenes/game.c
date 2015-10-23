@@ -70,6 +70,10 @@ void initGame() {
    initHeroes(&heroe1, G_heroe1);
    initHeroes(&heroe2, G_heroe2);
 
+   cpct_waitVSYNC();
+   cpct_akp_musicPlay();
+   swapBuffers(g_scrbuffers);
+
    // Inicializamos el nivel
    initLevel();
 }

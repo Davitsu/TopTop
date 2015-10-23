@@ -83,7 +83,7 @@ u8 updateMenu() {
 
   swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
 
-  if (cpct_isKeyPressed(Key_1)) {
+  if (cpct_isKeyPressed(Key_1) || cpct_isKeyPressed(Key_Enter) || cpct_isKeyPressed(Key_Return)) {
     cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
     return G_sceneGame;
   }
