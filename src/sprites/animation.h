@@ -50,7 +50,7 @@ typedef struct {
 #define ANI_FPS_SHOT 2
 
 //Animaciones Chica
-extern const TAnimFrame G_allAniHeroR[28];             // guarda todos los frames de todas las animaciones
+extern const TAnimFrame G_allAniHeroR[30];             // guarda todos los frames de todas las animaciones
 
 extern TAnimFrame* const G_aniHeroR_idle_left[3];     // declaramos las animaciones, se le pasa el numero de frames + 1(null)   
 extern TAnimFrame* const G_aniHeroR_idle_right[3];
@@ -64,11 +64,13 @@ extern TAnimFrame* const G_aniHeroR_duck_left[3];
 extern TAnimFrame* const G_aniHeroR_duck_right[3];
 extern TAnimFrame* const G_aniHeroR_duckrun_left[5];
 extern TAnimFrame* const G_aniHeroR_duckrun_right[5];
+extern TAnimFrame* const G_aniHeroR_back_left[2];
+extern TAnimFrame* const G_aniHeroR_back_right[2];
 
-extern TAnimFrame** const g_aniHeroR[6][2];           // primer valor que se le pasa -> numero de animaciones, segundo valor -> numero de lados (siempre 2: izquierda y derecha)
+extern TAnimFrame** const g_aniHeroR[7][2];           // primer valor que se le pasa -> numero de animaciones, segundo valor -> numero de lados (siempre 2: izquierda y derecha)
 
 //Animaciones Chico
-extern const TAnimFrame G_allAniHeroB[28];
+extern const TAnimFrame G_allAniHeroB[30];
 
 extern TAnimFrame* const G_aniHeroB_idle_left[3];
 extern TAnimFrame* const G_aniHeroB_idle_right[3];
@@ -82,8 +84,10 @@ extern TAnimFrame* const G_aniHeroB_duck_left[3];
 extern TAnimFrame* const G_aniHeroB_duck_right[3];
 extern TAnimFrame* const G_aniHeroB_duckrun_left[5];
 extern TAnimFrame* const G_aniHeroB_duckrun_right[5];
+extern TAnimFrame* const G_aniHeroB_back_left[2];
+extern TAnimFrame* const G_aniHeroB_back_right[2];
 
-extern TAnimFrame** const g_aniHeroB[6][2];
+extern TAnimFrame** const g_aniHeroB[7][2];
 
 //Animaciones Disparos Chica
 extern const TAnimFrame G_allAniShotR[18];

@@ -387,6 +387,9 @@ void updateHeroe(struct Heroe *heroe) {
 
    updateCooldown(heroe);
 
+   if(heroe->readyNextLevel == 1) {
+      setAniHeroe(heroe, 6);
+   }
    updateAnimation(&heroe->anim, heroe->nextAnim, 0);
 }
 

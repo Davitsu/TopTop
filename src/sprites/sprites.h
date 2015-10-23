@@ -59,6 +59,7 @@ extern const u8 G_heroR_duckrun_right01[96];
 extern const u8 G_heroR_duckrun_right02[96];
 extern const u8 G_heroR_duckrun_right03[96];
 extern const u8 G_heroR_duckrun_right04[96];
+extern const u8 G_heroR_back[96];
 
 extern const u8 G_heroB_idle_left01[96];
 extern const u8 G_heroB_idle_left02[96];
@@ -88,6 +89,7 @@ extern const u8 G_heroB_duckrun_left03[96];
 extern const u8 G_heroB_duckrun_right03[96];
 extern const u8 G_heroB_duckrun_left04[96];
 extern const u8 G_heroB_duckrun_right04[96];
+extern const u8 G_heroB_back[96];
 
 // ===============================================
 // =											 =

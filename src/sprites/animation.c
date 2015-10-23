@@ -21,7 +21,7 @@
 #include "../sprites/sprites.h"
 
 // Animaciones Chica
-const TAnimFrame G_allAniHeroR[28] = {
+const TAnimFrame G_allAniHeroR[30] = {
 	{ G_heroR_idle_left01,  ANI_FPS }, 			// 0// << Idle Left
 	{ G_heroR_idle_left02,  ANI_FPS }, 			// 1// |
 	{ G_heroR_idle_right01, ANI_FPS }, 			// 2// << Idle Right
@@ -49,7 +49,9 @@ const TAnimFrame G_allAniHeroR[28] = {
 	{ G_heroR_duckrun_right01, ANI_FPS },	  	//24// << DuckRun Right
 	{ G_heroR_duckrun_right02, ANI_FPS },	  	//25// |
 	{ G_heroR_duckrun_right03, ANI_FPS },	  	//26// |
-	{ G_heroR_duckrun_right04, ANI_FPS } 	  	//27// |
+	{ G_heroR_duckrun_right04, ANI_FPS }, 	  	//27// |
+	{ G_heroR_back, ANI_FPS },	  				//28// << Back Left
+	{ G_heroR_back, ANI_FPS } 	  				//29// << Back Right
 };
 
 #define A_HR G_allAniHeroR
@@ -66,21 +68,24 @@ TAnimFrame*  const G_aniHeroR_duck_left[3]    	= { &A_HR[16], &A_HR[17], 0 };
 TAnimFrame*  const G_aniHeroR_duck_right[3]   	= { &A_HR[18], &A_HR[19], 0 };
 TAnimFrame*  const G_aniHeroR_duckrun_left[5]   = { &A_HR[20], &A_HR[21], &A_HR[22], &A_HR[23], 0 };
 TAnimFrame*  const G_aniHeroR_duckrun_right[5]  = { &A_HR[24], &A_HR[25], &A_HR[26], &A_HR[27], 0 };
+TAnimFrame*  const G_aniHeroR_back_left[2]   	= { &A_HR[28], 0 };
+TAnimFrame*  const G_aniHeroR_back_right[2]  	= { &A_HR[29], 0 };
 
-TAnimFrame** const g_aniHeroR[6][2] = {
+TAnimFrame** const g_aniHeroR[7][2] = {
    {  G_aniHeroR_idle_left, G_aniHeroR_idle_right  }, 		// STATE 0 = IDLE
    {  G_aniHeroR_run_left,  G_aniHeroR_run_right   },  		// STATE 1 = RUN
    {  G_aniHeroR_jump_left,  G_aniHeroR_jump_right },  		// STATE 2 = JUMP
    {  G_aniHeroR_fall_left,  G_aniHeroR_fall_right }, 		// STATE 3 = FALL
    {  G_aniHeroR_duck_left,  G_aniHeroR_duck_right }, 		// STATE 4 = DUCK
-   {  G_aniHeroR_duckrun_left,  G_aniHeroR_duckrun_right }  // STATE 5 = DUCKRUN
+   {  G_aniHeroR_duckrun_left,  G_aniHeroR_duckrun_right }, // STATE 5 = DUCKRUN
+   {  G_aniHeroR_back_left,  G_aniHeroR_back_right }  		// STATE 6 = BACK
 };
 
 #undef A_HR
 
 
 // Animaciones Chico
-const TAnimFrame G_allAniHeroB[28] = {
+const TAnimFrame G_allAniHeroB[30] = {
     { G_heroB_idle_left01,  ANI_FPS }, 			// 0// << Idle Left
     { G_heroB_idle_left02,  ANI_FPS }, 			// 1// |
     { G_heroB_idle_right01, ANI_FPS }, 			// 2// << Idle Right
@@ -108,7 +113,9 @@ const TAnimFrame G_allAniHeroB[28] = {
 	{ G_heroB_duckrun_right01, ANI_FPS },	  	//24// << DuckRun Right
 	{ G_heroB_duckrun_right02, ANI_FPS },	  	//25// |
 	{ G_heroB_duckrun_right03, ANI_FPS },	  	//26// |
-	{ G_heroB_duckrun_right04, ANI_FPS }	  	//27// |
+	{ G_heroB_duckrun_right04, ANI_FPS },	  	//27// |
+	{ G_heroB_back, ANI_FPS },	  				//28// << Back Left
+	{ G_heroB_back, ANI_FPS } 	  				//29// << Back Right
 };
 
 #define A_HB G_allAniHeroB
@@ -125,14 +132,17 @@ TAnimFrame*  const G_aniHeroB_duck_left[3]    	= { &A_HB[16], &A_HB[17], 0 };
 TAnimFrame*  const G_aniHeroB_duck_right[3]   	= { &A_HB[18], &A_HB[19], 0 };
 TAnimFrame*  const G_aniHeroB_duckrun_left[5]   = { &A_HB[20], &A_HB[21], &A_HB[22], &A_HB[23], 0 };
 TAnimFrame*  const G_aniHeroB_duckrun_right[5]  = { &A_HB[24], &A_HB[25], &A_HB[26], &A_HB[27], 0 };
+TAnimFrame*  const G_aniHeroB_back_left[2]   	= { &A_HB[28], 0 };
+TAnimFrame*  const G_aniHeroB_back_right[2]  	= { &A_HB[29], 0 };
 
-TAnimFrame** const g_aniHeroB[6][2] = {
+TAnimFrame** const g_aniHeroB[7][2] = {
    {  G_aniHeroB_idle_left, G_aniHeroB_idle_right  }, 		// STATE 0 = IDLE
    {  G_aniHeroB_run_left,  G_aniHeroB_run_right   },  		// STATE 1 = RUN
    {  G_aniHeroB_jump_left,  G_aniHeroB_jump_right },  		// STATE 2 = JUMP
    {  G_aniHeroB_fall_left,  G_aniHeroB_fall_right },		// STATE 3 = FALL
    {  G_aniHeroB_duck_left,  G_aniHeroB_duck_right }, 		// STATE 4 = DUCK
-   {  G_aniHeroB_duckrun_left,  G_aniHeroB_duckrun_right }  // STATE 5 = DUCKRUN
+   {  G_aniHeroB_duckrun_left,  G_aniHeroB_duckrun_right }, // STATE 5 = DUCKRUN
+   {  G_aniHeroB_back_left,  G_aniHeroB_back_right }  		// STATE 5 = BACK
 };
 
 #undef A_HB
