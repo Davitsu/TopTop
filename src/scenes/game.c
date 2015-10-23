@@ -800,14 +800,17 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
                break;
          }
          
-
-         if(heroe->id == G_heroe1) {
-            checkShotsCollision(&shots[i], &map1[0][0], G_left);
+         if(shots[i].x < G_mapWBytes-4 || shots[i].dir == sd_up) { // Esta condicion arregla el bug de atravesar el limite del escenario
+            if(heroe->id == G_heroe1) {
+               checkShotsCollision(&shots[i], &map1[0][0], G_left);
+            }
+            else {
+               checkShotsCollision(&shots[i], &map2[0][0], G_right);
+            }
          }
          else {
-            checkShotsCollision(&shots[i], &map2[0][0], G_right);
+            shots[i].active = 0;
          }
-         
       }
    }
 }
