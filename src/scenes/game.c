@@ -321,7 +321,7 @@ void updateHeroe(struct Heroe *heroe) {
             // Si estaba en el suelo, salta
             if(heroe->stateY == sy_land) {
                // Reproducimos el efecto de sonido SALTAR
-               cpct_akp_SFXPlay(1, 12, 50, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
+               cpct_akp_SFXPlay(1, 15, 50, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
                heroe->stateY = sy_jump;
                heroe->jumpFactor = 0;
             }
@@ -521,8 +521,8 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
             drawHearts();
             redrawHearts = 1;
             // SFX
-            if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 12, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
-            else cpct_akp_SFXPlay(2, 12, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
+            if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
+            else cpct_akp_SFXPlay(2, 15, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
          }
       }
    }
@@ -612,13 +612,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                      heroe->x = (redDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                   }
                   else if(heroe->sensorCC == redDoor[i][1] || heroe->sensorCC == redDoor[i][1]+1 || heroe->sensorCC == redDoor[i][1]+G_mapWTiles || heroe->sensorCC == redDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (redDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                   }
                }
             }
@@ -638,13 +638,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                      heroe->x = (blueDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                   }
                   else if(heroe->sensorCC == blueDoor[i][1] || heroe->sensorCC == blueDoor[i][1]+1 || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (blueDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 12, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
+                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                   }
                }
             }
