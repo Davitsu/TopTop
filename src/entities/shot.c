@@ -153,7 +153,7 @@ void createShot(struct Heroe *heroe, struct Shot *shots) {
 		shots[j].preY[1] = shots[j].y;
 
 		//SFX
-		cpct_akp_SFXPlay(5, 12, 43, 0, 0, AY_CHANNEL_B);
+		cpct_akp_SFXPlay(5, 15, 43, 0, 0, AY_CHANNEL_B);
 	}
 }
 
