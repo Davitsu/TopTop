@@ -55,6 +55,7 @@ u8 updateMenu() {
   cpct_scanKeyboard();
 
   if (cpct_isKeyPressed(Key_Space)) {
+    cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
     if(spaceDown == 0) {
       spaceDown = 1;
       if(future == 0) {
