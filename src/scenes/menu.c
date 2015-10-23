@@ -55,11 +55,11 @@ u8 updateMenu() {
   cpct_scanKeyboard();
 
   if (cpct_isKeyPressed(Key_Space)) {
-    cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
     if(spaceDown == 0) {
       spaceDown = 1;
       if(future == 0) {
         future = 1;
+        cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A); 
         drawMenuHeroesFuture();
         cpct_waitVSYNC();
         cpct_akp_musicPlay(); 
@@ -68,6 +68,7 @@ u8 updateMenu() {
       }
       else {
         future = 0;
+        cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
         drawMenuHeroes();
         cpct_waitVSYNC();
         cpct_akp_musicPlay(); 
