@@ -62,8 +62,8 @@ u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los do
 
 // Inicializa el menu
 void initGame() {
-   level = 1;
-   nextMap = 0;
+   level = 1;        // Debe empezar en 1
+   nextMap = 0;      // Debe empezar en 0
    sceneGame = 0;
 
    // Inicializamos a los heroes
