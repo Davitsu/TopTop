@@ -209,8 +209,6 @@ u8 updateGameLevel() {
    updateHeroe(&heroe2);
    updateShots(&heroe1, shots1);
    updateShots(&heroe2, shots2);
-
-   checkNextLevel();
    
    // ---------------------------------------------------------------------------------------------------
    cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
@@ -246,6 +244,8 @@ u8 updateGameLevel() {
       sceneGame = 1;
       drawGameOver();
    }
+
+   checkNextLevel();
 
    return G_sceneGame;
 }
