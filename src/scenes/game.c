@@ -539,8 +539,9 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
 
    // Colisiona con items e interruptores
    if(map[sensor] == 0x01 || map[sensor] == 0x02) {  // POCION DE CURACION
-      if(heroe->health < G_maxHealth) {
-         heroe->health++;
+      heroe->health+=2;
+      if(heroe->health > G_maxHealth) {
+         heroe->health = G_maxHealth;
       }
       drawHearts();
       redrawHearts = 1;
@@ -608,13 +609,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
             for(i=0; i<G_maxButtons; i++) {
                heroe->upPressed = 1;
                if(redButton[i][1] == 1) {
-                  if(heroe->sensorCC == redDoor[i][0] || heroe->sensorCC == redDoor[i][0]+1 || heroe->sensorCC == redDoor[i][0]+G_mapWTiles || heroe->sensorCC == redDoor[i][0]+G_mapWTiles+1) {
+                  if(/*heroe->sensorCC == redDoor[i][0] || heroe->sensorCC == redDoor[i][0]+1 || */heroe->sensorCC == redDoor[i][0]+G_mapWTiles || heroe->sensorCC == redDoor[i][0]+G_mapWTiles+1) {
                      heroe->x = (redDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
                      cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                   }
-                  else if(heroe->sensorCC == redDoor[i][1] || heroe->sensorCC == redDoor[i][1]+1 || heroe->sensorCC == redDoor[i][1]+G_mapWTiles || heroe->sensorCC == redDoor[i][1]+G_mapWTiles+1) {
+                  else if(/*heroe->sensorCC == redDoor[i][1] || heroe->sensorCC == redDoor[i][1]+1 || */heroe->sensorCC == redDoor[i][1]+G_mapWTiles || heroe->sensorCC == redDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (redDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
@@ -634,13 +635,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
             for(i=0; i<G_maxButtons; i++) {
                heroe->upPressed = 1;
                if(blueButton[i][1] == 1) {
-                  if(heroe->sensorCC == blueDoor[i][0] || heroe->sensorCC == blueDoor[i][0]+1 || heroe->sensorCC == blueDoor[i][0]+G_mapWTiles || heroe->sensorCC == blueDoor[i][0]+G_mapWTiles+1) {
+                  if(/*heroe->sensorCC == blueDoor[i][0] || heroe->sensorCC == blueDoor[i][0]+1 || */heroe->sensorCC == blueDoor[i][0]+G_mapWTiles || heroe->sensorCC == blueDoor[i][0]+G_mapWTiles+1) {
                      heroe->x = (blueDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
                      cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                   }
-                  else if(heroe->sensorCC == blueDoor[i][1] || heroe->sensorCC == blueDoor[i][1]+1 || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles+1) {
+                  else if(/*heroe->sensorCC == blueDoor[i][1] || heroe->sensorCC == blueDoor[i][1]+1 || */heroe->sensorCC == blueDoor[i][1]+G_mapWTiles || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (blueDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA

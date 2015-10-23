@@ -16,7 +16,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //------------------------------------------------------------------------------
 
+#ifndef _AUDIO_H_
+#define _AUDIO_H_
+
 #include <types.h>
 
 extern __at(0x7D5E) const u8 G_toptop_music[195];
 extern __at(0x7E20) const u8 G_toptop_effects[231];
+
+#endif

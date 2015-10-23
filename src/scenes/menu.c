@@ -24,10 +24,16 @@
 
 u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
 
+u8 future;
+u8 spaceDown;
+
 // Inicializa el menu
 void initMenu() {
   cpct_akp_musicInit(G_toptop_music); 
   cpct_akp_SFXInit(G_toptop_effects);
+
+  future = 0;
+  spaceDown = 0;
 
 	// Preparamos el double buffer y dibujamos...
 	cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
@@ -47,6 +53,33 @@ u8 updateMenu() {
 
   // Scan Keyboard
   cpct_scanKeyboard();
+
+  if (cpct_isKeyPressed(Key_Space)) {
+    if(spaceDown == 0) {
+      spaceDown = 1;
+      if(future == 0) {
+        future = 1;
+        drawMenuHeroesFuture();
+        cpct_waitVSYNC();
+        cpct_akp_musicPlay(); 
+        swapBuffersMenu(g_scrbuffersMenu);
+        drawMenuHeroesFuture();
+      }
+      else {
+        future = 0;
+        drawMenuHeroes();
+        cpct_waitVSYNC();
+        cpct_akp_musicPlay(); 
+        swapBuffersMenu(g_scrbuffersMenu);
+        drawMenuHeroes();
+      }
+    }
+  }
+  else {
+    spaceDown = 0;
+  }
+
+  swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
 
   if (cpct_isKeyPressed(Key_1)) {
     cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
@@ -157,8 +190,8 @@ void drawOptions() {
   cpct_drawStringM0("OOOOOOOOOOOOOO", pvideomem, 1, 0);
 
   // Dibujar opciones
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 123); 
-  cpct_drawStringM0("1.JUGAR", pvideomem, 3, 0);
+  /*pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 123); 
+  cpct_drawStringM0("1.JUGAR", pvideomem, 3, 0);*/
   /*pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
   cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);*/
 
@@ -175,12 +208,41 @@ void drawMenuHeroes() {
 
   //PERSONAJES
   //Se dibuja el sprite del personaje 1
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 34, 156);
+  cpct_drawSpriteMasked(G_heroR_idle_right01, pvideomem, G_heroeW, 12);
+
+  //Se dibuja el sprite del personaje 2
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 156);
+  cpct_drawSpriteMasked(G_heroB_idle_left01, pvideomem, G_heroeW, 12);
+
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 2, 123); 
+  cpct_drawStringM0("      1.JUGAR      ", pvideomem, 3, 0);
+}
+
+void drawMenuHeroesFuture() {
+  u8 *pvideomem = 0;
+
+  //PERSONAJES
+  //Se dibuja el sprite del personaje 1
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 34, 157);
-  cpct_drawSpriteMasked(G_heroR_idle_right01, pvideomem, G_heroeW, G_heroeH);
+  cpct_drawSprite(G_future1, pvideomem, G_heroeW, 11);
 
   //Se dibuja el sprite del personaje 2
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 157);
-  cpct_drawSpriteMasked(G_heroB_idle_left01, pvideomem, G_heroeW, G_heroeH);
+  cpct_drawSprite(G_future2, pvideomem, G_heroeW, 11);
+
+  cpct_waitVSYNC();
+
+  // Reproduce musica (1 vez cada frame)
+  cpct_akp_musicPlay(); 
+
+  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 2, 123); 
+  cpct_drawStringM0("1.REGRESA AL FUTURO", pvideomem, 3, 0);
+
+  cpct_waitVSYNC();
+
+  // Reproduce musica (1 vez cada frame)
+  cpct_akp_musicPlay(); 
 }
 
 void swapBuffersMenu(u8** scrbuffers) {

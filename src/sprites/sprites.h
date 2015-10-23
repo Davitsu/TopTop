@@ -255,27 +255,12 @@ extern const u8 G_shotR_left3_02[56];
 extern const u8 G_shotR_right3_02[56];
 extern const u8 G_shotR_up3_01[64];
 extern const u8 G_shotR_up3_02[64];
-/*extern const u8 G_shotB_left1_01[8];
-extern const u8 G_shotB_right1_01[8];
-extern const u8 G_shotB_left1_02[8];
-extern const u8 G_shotB_right1_02[8];
-extern const u8 G_shotB_up1_01[16];
-extern const u8 G_shotB_up1_02[16];
-extern const u8 G_shotB_left2_01[40];
-extern const u8 G_shotB_right2_01[40];
-extern const u8 G_shotB_left2_02[40];
-extern const u8 G_shotB_right2_02[40];
-extern const u8 G_shotB_up2_01[48];
-extern const u8 G_shotB_up2_02[48];
-extern const u8 G_shotB_left3_01[56];
-extern const u8 G_shotB_right3_01[56];
-extern const u8 G_shotB_left3_02[56];
-extern const u8 G_shotB_right3_02[56];
-extern const u8 G_shotB_up3_01[64];
-extern const u8 G_shotB_up3_02[64];*/
-
-extern u8* const G_tileId[G_tileRange];
 
 extern const u8 G_logoRantan[32];
+
+extern const u8 G_future1[44];
+extern const u8 G_future2[44];
+
+extern u8* const G_tileId[G_tileRange];
 
 #endif

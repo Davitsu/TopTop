@@ -34,6 +34,7 @@ void drawTop(u8 x, u8 y);
 void drawTopTile(u8 x, u8 y);
 void drawOptions();
 void drawMenuHeroes();
+void drawMenuHeroesFuture();
 void swapBuffersMenu(u8**);
 
 #endif
