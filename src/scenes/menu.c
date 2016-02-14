@@ -29,8 +29,8 @@ u8 spaceDown;
 
 // Inicializa el menu
 void initMenu() {
-  cpct_akp_musicInit(G_toptop_music); 
-  cpct_akp_SFXInit(G_toptop_effects);
+  ////cpct_akp_musicInit(G_toptop_music); 
+  ////cpct_akp_SFXInit(G_toptop_effects);
 
   future = 0;
   spaceDown = 0;
@@ -49,7 +49,7 @@ u8 updateMenu() {
 	cpct_waitVSYNC();
 
   // Reproduce musica (1 vez cada frame)
-  cpct_akp_musicPlay(); 
+  ////cpct_akp_musicPlay(); 
 
   // Scan Keyboard
   cpct_scanKeyboard();
@@ -59,7 +59,7 @@ u8 updateMenu() {
       spaceDown = 1;
       if(future == 0) {
         future = 1;
-        cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A); 
+        ////cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A); 
         drawMenuHeroesFuture();
         cpct_waitVSYNC();
         cpct_akp_musicPlay(); 
@@ -68,7 +68,7 @@ u8 updateMenu() {
       }
       else {
         future = 0;
-        cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
+        ////cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
         drawMenuHeroes();
         cpct_waitVSYNC();
         cpct_akp_musicPlay(); 
@@ -84,7 +84,7 @@ u8 updateMenu() {
   swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
 
   if (cpct_isKeyPressed(Key_1) || cpct_isKeyPressed(Key_Enter) || cpct_isKeyPressed(Key_Return)) {
-    cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
+    ////cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
     return G_sceneGame;
   }
 
@@ -236,7 +236,7 @@ void drawMenuHeroesFuture() {
   cpct_waitVSYNC();
 
   // Reproduce musica (1 vez cada frame)
-  cpct_akp_musicPlay(); 
+  ////cpct_akp_musicPlay(); 
 
   pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 2, 123); 
   cpct_drawStringM0("1.REGRESA AL FUTURO", pvideomem, 3, 0);
@@ -244,7 +244,7 @@ void drawMenuHeroesFuture() {
   cpct_waitVSYNC();
 
   // Reproduce musica (1 vez cada frame)
-  cpct_akp_musicPlay(); 
+  ////cpct_akp_musicPlay(); 
 }
 
 void swapBuffersMenu(u8** scrbuffers) {

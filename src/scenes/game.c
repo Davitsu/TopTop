@@ -71,7 +71,7 @@ void initGame() {
    initHeroes(&heroe2, G_heroe2);
 
    cpct_waitVSYNC();
-   cpct_akp_musicPlay();
+   ////cpct_akp_musicPlay();
    swapBuffers(g_scrbuffers);
 
    // Inicializamos el nivel
@@ -153,7 +153,7 @@ void initLevel() {
       }
       
       cpct_waitVSYNC();
-      cpct_akp_musicPlay(); 
+      ////cpct_akp_musicPlay(); 
    }
 
    for(x=0; x<G_NUM_REDRAW; x++) {
@@ -167,10 +167,10 @@ void initLevel() {
    // Preparamos el double buffer y dibujamos...
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
    cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
-   cpct_akp_musicPlay();
+   ////cpct_akp_musicPlay();
    firstDraw();                                    // Dibujamos en el buffer actual
    cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
-   cpct_akp_musicPlay();
+   ////cpct_akp_musicPlay();
    swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
    firstDraw();                                    // Dibujamos en este buffer
@@ -206,7 +206,7 @@ u8 updateGameLevel() {
    cpct_waitVSYNC(); //---------- Comienza Primer Frame (para actualizar entidades, 1 vez cada 2 frames)
 
    // Reproduce musica (1 vez cada frame)
-   cpct_akp_musicPlay(); 
+   ////cpct_akp_musicPlay(); 
 
    // Actualiza entidades
    updateHeroe(&heroe1);
@@ -218,7 +218,7 @@ u8 updateGameLevel() {
    cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
    
    // Reproduce musica (1 vez cada frame)
-   cpct_akp_musicPlay(); // La musica se reproduce cada frame
+   ////cpct_akp_musicPlay(); // La musica se reproduce cada frame
 
    if(sceneGame != 2) {
       // Redibuja tiles ocupados por Heroes
@@ -325,7 +325,7 @@ void updateHeroe(struct Heroe *heroe) {
             // Si estaba en el suelo, salta
             if(heroe->stateY == sy_land) {
                // Reproducimos el efecto de sonido SALTAR
-               cpct_akp_SFXPlay(1, 15, 50, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
+               ////cpct_akp_SFXPlay(1, 15, 50, 0, 0, AY_CHANNEL_B);  //parametros: numero del instrumento, volumen [0-15], nota tocada, velocidad (0=original), inverted pitch (0=no pitch), numero del canal (0, 1, 2)
                heroe->stateY = sy_jump;
                heroe->jumpFactor = 0;
             }
@@ -525,8 +525,8 @@ void checkHeroeCollision(struct Heroe *heroe, u8 *map) {
             drawHearts();
             redrawHearts = 1;
             // SFX
-            if(heroe->id == G_heroe1) cpct_akp_SFXPlay(2, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
-            else cpct_akp_SFXPlay(2, 15, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
+            ////if(heroe->id == G_heroe1) ////cpct_akp_SFXPlay(2, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: E-5 = MI5 = 64
+            ////else cpct_akp_SFXPlay(2, 15, 59, 0, 0, AY_CHANNEL_B); //nota que se toca: B-4 = SI4 = 59
          }
       }
    }
@@ -551,7 +551,7 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
       redrawHearts = 1;
       changeTile(x, y, side, 0xFF);
       // SFX
-      cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
+      ////cpct_akp_SFXPlay(3, 15, 50, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
    }
    else if(map[sensor] == 0x03) {  // ESTRELLA
       // Logica estrella
@@ -564,7 +564,7 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
 
       changeTile(x, y, side, 0xFF);
       // SFX
-      cpct_akp_SFXPlay(3, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
+      ////cpct_akp_SFXPlay(3, 15, 64, 0, 0, AY_CHANNEL_B); //nota que se toca: D-4 = RE4 = 50
    }
    else if(map[sensor] == 0x04) {  // LLAVE
       if(heroe->id == G_heroe1) {
@@ -587,7 +587,7 @@ void interactWithItems(struct Heroe *heroe, u8 *map, u8 sensor) {
       }
       changeTile(x, y, side, 0xFF);
       // SFX
-      cpct_akp_SFXPlay(4, 15, 76, 0, 0, AY_CHANNEL_B); //nota que se toca: E-6 = MI6 = 76
+      ////cpct_akp_SFXPlay(4, 15, 76, 0, 0, AY_CHANNEL_B); //nota que se toca: E-6 = MI6 = 76
    }
 }
 
@@ -617,13 +617,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                      heroe->x = (redDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
+                     ////cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                   }
                   else if(/*heroe->sensorCC == redDoor[i][1] || heroe->sensorCC == redDoor[i][1]+1 || */heroe->sensorCC == redDoor[i][1]+G_mapWTiles || heroe->sensorCC == redDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (redDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (redDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
+                     ////cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                   }
                }
             }
@@ -643,13 +643,13 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                      heroe->x = (blueDoor[i][1] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][1] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
+                     ////cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                   }
                   else if(/*heroe->sensorCC == blueDoor[i][1] || heroe->sensorCC == blueDoor[i][1]+1 || */heroe->sensorCC == blueDoor[i][1]+G_mapWTiles || heroe->sensorCC == blueDoor[i][1]+G_mapWTiles+1) {
                      heroe->x = (blueDoor[i][0] % G_mapWTiles) * G_tileSizeW + 2;
                      heroe->y = (blueDoor[i][0] / G_mapWTiles) * G_tileSizeH + 4;
                      // SFX ENTRAR PUERTA
-                     cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
+                     ////cpct_akp_SFXPlay(7, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                   }
                }
             }
@@ -671,7 +671,7 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                   checkButtons(blueButton, blueDoor, map2, side, 4, map[blueButton[i][0]]+1, i, G_right);   // Lo activo
 
                   //SFX PULSAR
-                  cpct_akp_SFXPlay(6, 15, 36, 0, 0, AY_CHANNEL_A); //nota que se toca: C-4 = DO4 = 36
+                  ////cpct_akp_SFXPlay(6, 15, 36, 0, 0, AY_CHANNEL_A); //nota que se toca: C-4 = DO4 = 36
                }
             }
             else if(blueButton[i][1] == 1) {   // Si el boton esta pulsado...
@@ -680,7 +680,7 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                   checkButtons(blueButton, blueDoor, map2, side, -4, map[blueButton[i][0]]-1, i, G_right);   // Lo desactivo
 
                   //SFX DESPULSAR
-                  cpct_akp_SFXPlay(6, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
+                  ////cpct_akp_SFXPlay(6, 15, 24, 0, 0, AY_CHANNEL_A); //nota que se toca: C-3 = DO3 = 24
                }
             }
          }
@@ -696,7 +696,7 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                   checkButtons(redButton, redDoor, map1, side, 4, map[redButton[i][0]]+1, i, G_left);   // Lo activo
 
                   //SFX PULSAR
-                  cpct_akp_SFXPlay(6, 15, 36, 0, 0, AY_CHANNEL_C); //nota que se toca: C-4 = DO4 = 36
+                  ////cpct_akp_SFXPlay(6, 15, 36, 0, 0, AY_CHANNEL_C); //nota que se toca: C-4 = DO4 = 36
                }
             }
             else if(redButton[i][1] == 1) {   // Si el boton esta pulsado...
@@ -705,7 +705,7 @@ void interactWithDoors(struct Heroe *heroe, u8 *map) {
                   checkButtons(redButton, redDoor, map1, side, -4, map[redButton[i][0]]-1, i, G_left);   // Lo desactivo
 
                   //SFX DESPULSAR
-                  cpct_akp_SFXPlay(6, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
+                  ////cpct_akp_SFXPlay(6, 15, 24, 0, 0, AY_CHANNEL_C); //nota que se toca: C-3 = DO3 = 24
                }
             }
          }
