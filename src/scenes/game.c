@@ -58,7 +58,7 @@ u8 redrawStars;
 
 u8 sceneGame;
 
-u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
+u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0xC000 }; // Direccion de los dos buffers
 
 // Inicializa el menu
 void initGame() {
@@ -165,13 +165,13 @@ void initLevel() {
    initShots(shots2);
 
    // Preparamos el double buffer y dibujamos...
-   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
-   cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
+   ////cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+   ////cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
    ////cpct_akp_musicPlay();
-   firstDraw();                                    // Dibujamos en el buffer actual
+   ////firstDraw();                                    // Dibujamos en el buffer actual
    cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
    ////cpct_akp_musicPlay();
-   swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
+   ////swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
    firstDraw();                                    // Dibujamos en este buffer
 }
@@ -1403,7 +1403,7 @@ u8 tile2tile1(u8 x, u8 y) {
 }
 
 void swapBuffers(u8** scrbuffers) {
-   u8* aux; // Auxiliary pointer for making the change
+   /*u8* aux; // Auxiliary pointer for making the change
    
    // Change what is shown on the screen (present backbuffer (1) is changed to 
    // front-buffer, so it is shown at the screen)
@@ -1416,5 +1416,5 @@ void swapBuffers(u8** scrbuffers) {
    // variables to start using (0) as backbuffer and (1) as front-buffer
    aux = scrbuffers[0];
    scrbuffers[0] = scrbuffers[1];
-   scrbuffers[1] = aux;
+   scrbuffers[1] = aux;*/
 }

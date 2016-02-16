@@ -22,7 +22,7 @@
 #include "../constants.h"
 #include "../audio/audio.h"
 
-u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0x8000 }; // Direccion de los dos buffers
+u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0xC000 }; // Direccion de los dos buffers
 
 u8 future;
 u8 spaceDown;
@@ -36,10 +36,10 @@ void initMenu() {
   spaceDown = 0;
 
 	// Preparamos el double buffer y dibujamos...
-	cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
-  drawMenu();                        	                // Dibujamos en el buffer actual
+	////cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+  ////drawMenu();                        	                // Dibujamos en el buffer actual
   cpct_waitVSYNC();                               	  // Volvemos a esperar al VSYNC
-	swapBuffersMenu(g_scrbuffersMenu);             	 	  // Cambiamos de buffer
+	////swapBuffersMenu(g_scrbuffersMenu);             	 	  // Cambiamos de buffer
   cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000);     // Limpiamos el primer buffer
   drawMenu();                                     	  // Dibujamos en este buffer
 }
@@ -248,7 +248,7 @@ void drawMenuHeroesFuture() {
 }
 
 void swapBuffersMenu(u8** scrbuffers) {
-   u8* aux; // Auxiliary pointer for making the change
+   /*u8* aux; // Auxiliary pointer for making the change
    
    // Change what is shown on the screen (present backbuffer (1) is changed to 
    // front-buffer, so it is shown at the screen)
@@ -261,5 +261,5 @@ void swapBuffersMenu(u8** scrbuffers) {
    // variables to start using (0) as backbuffer and (1) as front-buffer
    aux = scrbuffers[0];
    scrbuffers[0] = scrbuffers[1];
-   scrbuffers[1] = aux;
+   scrbuffers[1] = aux;*/
 }
