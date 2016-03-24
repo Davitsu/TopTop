@@ -258,8 +258,8 @@ void updateHeroe(struct Heroe *heroe) {
    // Cambiamos la variable en la que guardamos la posicion previa.
    // Usamos dos variables para saber donde limpiar el rastro en cada buffer
    swapPrePos(heroe);
-   heroe->preX[1] = heroe->x;
-   heroe->preY[1] = heroe->y;
+   heroe->preX[0] = heroe->x;
+   heroe->preY[0] = heroe->y;
 
    // Scan Keyboard
    cpct_scanKeyboard_f();
@@ -984,25 +984,24 @@ void redrawTiles(u8 side) {
 void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
    byte2tile2(&x, &y);
 
-   // Ahora limpiamos el area de tiles adyacentes al jugador (3x3 tiles)
+   // Ahora limpiamos el area de tiles adyacentes al jugador (2x3 tiles)
+   // Antes limpiabamos 3x3 tiles debido al doble buffer, pero con un buffer
+   // no hace falta.
 
-   // [x][-][-] <- Columna y
+   // Fila y
    drawTile(x, y, side);
    if(x+1 < G_mapWTiles) drawTile(x+1, y, side);
-   if(x-1 >= 0) drawTile(x-1, y, side);
 
-   // [-][x][-] <- Columna y+1
+   // Fila y+1
    if(y+1 < G_mapHTiles) {
       drawTile(x, y+1, side);
       if(x+1 < G_mapWTiles) drawTile(x+1, y+1, side);
-      if(x-1 >= 0) drawTile(x-1, y+1, side);
    }
 
-   // [-][-][x] <- Columna y+2
+   // Fila y+2
    if(y+2 < G_mapHTiles) {
       drawTile(x, y+2, side);
       if(x+1 < G_mapWTiles) drawTile(x+1, y+2, side);
-      if(x-1 >= 0) drawTile(x-1, y+2, side);
    }
 }
 

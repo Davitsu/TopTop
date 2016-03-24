@@ -154,8 +154,8 @@ u8 byte2tile1(u8 x, u8 y) {
 
 // Convierte la posicion en bytes a posicion en tiles (2 dimensiones)
 void byte2tile2(u8 *x, u8 *y) {
-	*x = *x / G_tileSizeW;
-	*y = *y / G_tileSizeH;
+	*x = *x / G_tileSizeW; //*x = *x >> 2;
+	*y = *y / G_tileSizeH; //*y = *y >> 3;
 }
 
 // Prepara la siguiente animacion
