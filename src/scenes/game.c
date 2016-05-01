@@ -58,6 +58,10 @@ u8 redrawStars;
 
 u8 sceneGame;
 
+u8 canUpdate;
+
+u8 interruptId;   // Interrupcion actual
+
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0xC000 }; // Direccion de los dos buffers
 
 // Inicializa el menu
@@ -65,6 +69,7 @@ void initGame() {
    level = 1;        // Debe empezar en 1
    nextMap = 0;      // Debe empezar en 0
    sceneGame = 0;
+   canUpdate = 0;
 
    // Inicializamos a los heroes
    initHeroes(&heroe1, G_heroe1);
@@ -202,56 +207,62 @@ u8 updateGame() {
 
 // Update del menu
 u8 updateGameLevel() {
-   // ---------------------------------------------------------------------------------------------------
-   cpct_waitVSYNC(); //---------- Comienza Primer Frame (para actualizar entidades, 1 vez cada 2 frames)
+   if(canUpdate == 1) {
+      canUpdate = 0;
+      // ---------------------------------------------------------------------------------------------------
+      //cpct_waitVSYNC(); //---------- Comienza Primer Frame (para actualizar entidades, 1 vez cada 2 frames)
 
-   // Reproduce musica (1 vez cada frame)
-   ////cpct_akp_musicPlay(); 
+      // Reproduce musica (1 vez cada frame)
+      ////cpct_akp_musicPlay(); 
 
-   // Actualiza entidades
-   updateHeroe(&heroe1);
-   updateHeroe(&heroe2);
-   updateShots(&heroe1, shots1);
-   updateShots(&heroe2, shots2);
-   
-   // ---------------------------------------------------------------------------------------------------
-   cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
-   
-   // Reproduce musica (1 vez cada frame)
-   ////cpct_akp_musicPlay(); // La musica se reproduce cada frame
+      // Actualiza entidades
+      updateHeroe(&heroe1);
+      updateHeroe(&heroe2);
+      updateShots(&heroe1, shots1);
+      updateShots(&heroe2, shots2);
+      
+      // ---------------------------------------------------------------------------------------------------
+      //cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
+      
+      // Reproduce musica (1 vez cada frame)
+      ////cpct_akp_musicPlay(); // La musica se reproduce cada frame
 
-   if(sceneGame != 2) {
+      if(heroe1.health == 0 || heroe2.health == 0) {
+         //cpct_waitVSYNC();
+         sceneGame = 1;
+         drawGameOver();
+      }
+
+      checkNextLevel();
+   }
+
+   return G_sceneGame;
+}
+
+void drawGame() {
+   if(sceneGame != 2) { // Si no es Game Over...
       // Redibuja tiles ocupados por Heroes
-      repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left);
-      repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right);
+      repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left, heroe1.stateY);
+      repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right, heroe2.stateY);
 
       // Redibuja tiles ocupados por Disparos
       repaintBackgroundOverShot(shots1, G_left);
       repaintBackgroundOverShot(shots2, G_right);
       
+      // Redibuja tiles que han cambiado
+      redrawTiles(G_left);
+      redrawTiles(G_right);
+      
       // Dibuja entidades
       drawHeroes();
       drawShots();
-   }
 
-   // Intercambia buffer de dibujado
-   swapBuffers(g_scrbuffers);
-   
-   // Redibuja tiles que han cambiado
-   redrawTiles(G_left);
-   redrawTiles(G_right);
+      redrawHUD();
 
-   redrawHUD();
-
-   if(heroe1.health == 0 || heroe2.health == 0) {
       cpct_waitVSYNC();
-      sceneGame = 1;
-      drawGameOver();
+      interruptId = 6;
    }
-
-   checkNextLevel();
-
-   return G_sceneGame;
+   canUpdate = 1;
 }
 
 void updateHeroe(struct Heroe *heroe) {
@@ -958,7 +969,7 @@ void changeTile(u8 xTile, u8 yTile, u8 side, u8 newValue) {
    }
 }
 
-void redrawTiles(u8 side) {
+void redrawTiles(u8 side) __z88dk_fastcall {
    u8 *mapRedraw, i, found;
    found = 0;
 
@@ -981,7 +992,7 @@ void redrawTiles(u8 side) {
 }
 
 // Redibuja los tiles adyacentes al player (limpia su rastro)
-void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
+void repaintBackgroundOverSprite(u8 x, u8 y, u8 side, u8 stateY) {
    byte2tile2(&x, &y);
 
    // Ahora limpiamos el area de tiles adyacentes al jugador (2x3 tiles)
@@ -999,9 +1010,11 @@ void repaintBackgroundOverSprite(u8 x, u8 y, u8 side) {
    }
 
    // Fila y+2
-   if(y+2 < G_mapHTiles) {
-      drawTile(x, y+2, side);
-      if(x+1 < G_mapWTiles) drawTile(x+1, y+2, side);
+   if(stateY == 1 || stateY == 2) {
+      if(y+2 < G_mapHTiles) {
+         drawTile(x, y+2, side);
+         if(x+1 < G_mapWTiles) drawTile(x+1, y+2, side);
+      }
    }
 }
 

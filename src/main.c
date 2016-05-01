@@ -22,10 +22,35 @@
 #include "sprites/sprites.h"
 #include "constants.h"
 
+u8 scene;         // Primera escena (y la actual)
+u8 nextScene;     // Siguiente escena (siempre empieza siendo igual a la primera)
+
+// Interrupcion
+void interruptHandler() {
+   static u8 i, j;   // Static variable to be preserved from call to call
+   
+   //cpct_setBorder(interruptId+1);
+
+   if(scene == G_sceneGame && interruptId == 5) {
+      drawGame();
+   }
+
+   // Count one more interrupt. There are 6 interrupts in total (0-5)
+   if (++interruptId > 5) {
+      interruptId = 0;
+      if(++j > 1) {
+         j = 0;
+      }
+   }
+}
+
 // Initialization of the Amstrad CPC at the start of the application
 void initializeCPC() {
    // Disable firmware: we dont want it to interfere with our code
    cpct_disableFirmware();
+
+   // Set the function interruptHandler to be called on each interrupt.
+   cpct_setInterruptHandler(interruptHandler);
 
    // Set the hardware palette (convert firmware colour values to hardware ones and set the palette)
    cpct_fw2hw(G_palette, 16);
@@ -50,9 +75,9 @@ void initScene(u8 *scene) {
 }
 
 void application() {
-   //u8 scene = G_sceneGame;    // Primera escena (y la actual)
-   u8 scene = G_sceneMenu;      // Primera escena (y la actual)
-   u8 nextScene = scene;        // Siguiente escena (siempre empieza siendo igual a la primera)
+   scene = G_sceneMenu;      // Primera escena (y la actual)
+   nextScene = scene;        // Siguiente escena (siempre empieza siendo igual a la primera)
+   interruptId = 0;          // Primera interrupcion
 
    // Initialize CPC before starting the game
    initializeCPC();
@@ -86,7 +111,7 @@ void application() {
 // Cuando movemos la pila no se debe hacer uso de ella dentro
 // de la misma funcion, asi que simplemente llamamos a application()
 void main(void) {
-   cpct_setStackLocation((void*)0x8000);
+   cpct_setStackLocation((void*)0x8000); //Antes, con doble buffer, estaba en 0x8000
 
    application();   
 }

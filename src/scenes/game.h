@@ -29,6 +29,7 @@ void initLevel();
 void firstDraw();
 u8 updateGameLevel();
 u8 updateGame();
+void drawGame();
 u8 updateScreens();
 void createHeroes();
 void updateHeroe(struct Heroe*);
@@ -42,8 +43,8 @@ void drawHUD();
 void redrawHUD();
 void drawTile(u8, u8, u8);
 void changeTile(u8, u8, u8, u8);
-void redrawTiles(u8);
-void repaintBackgroundOverSprite(u8, u8, u8);
+void redrawTiles(u8) __z88dk_fastcall;
+void repaintBackgroundOverSprite(u8, u8, u8, u8);
 void repaintBackgroundOverShot(struct Shot*, u8);
 void drawMap();
 void swapPrePosShot(u8*, u8*);
@@ -97,5 +98,9 @@ extern u8 redrawHearts;
 extern u8 redrawStars;
 
 extern u8 sceneGame;		// pantalla actual
+
+extern u8 canUpdate;		// Avisa si se puede actualizar (si ha dibujado y han pasado 2 frames)
+
+extern u8 interruptId;   	// Interrupcion actual
 
 #endif
