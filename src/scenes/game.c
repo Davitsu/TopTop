@@ -60,6 +60,8 @@ u8 sceneGame;
 
 u8 canUpdate;
 
+u8 levelStarted;    // Avisa si ha terminado de preparar el nivel
+
 u8 interruptId;   // Interrupcion actual
 
 u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0xC000 }; // Direccion de los dos buffers
@@ -68,6 +70,7 @@ u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0xC000 }; // Direccion de los do
 void initGame() {
    level = 1;        // Debe empezar en 1
    nextMap = 0;      // Debe empezar en 0
+   levelStarted = 0;
    sceneGame = 0;
    canUpdate = 0;
 
@@ -75,9 +78,9 @@ void initGame() {
    initHeroes(&heroe1, G_heroe1);
    initHeroes(&heroe2, G_heroe2);
 
-   cpct_waitVSYNC();
+   //cpct_waitVSYNC();
    ////cpct_akp_musicPlay();
-   swapBuffers(g_scrbuffers);
+   //swapBuffers(g_scrbuffers);
 
    // Inicializamos el nivel
    initLevel();
@@ -85,6 +88,7 @@ void initGame() {
 
 void checkNextLevel() {
    if(heroe1.readyNextLevel == 1 && heroe2.readyNextLevel == 1) {
+      levelStarted = 0;
       nextMap+=2;
       if(nextMap < G_numMaps) { // Preparo siguiente nivel
          level++;
@@ -157,7 +161,7 @@ void initLevel() {
          }
       }
       
-      cpct_waitVSYNC();
+      //cpct_waitVSYNC();
       ////cpct_akp_musicPlay(); 
    }
 
@@ -174,19 +178,22 @@ void initLevel() {
    ////cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
    ////cpct_akp_musicPlay();
    ////firstDraw();                                    // Dibujamos en el buffer actual
-   cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
+   //cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
    ////cpct_akp_musicPlay();
    ////swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
    cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
+   //cpct_waitVSYNC();
    firstDraw();                                    // Dibujamos en este buffer
+
+   levelStarted = 1;    // Ya ha dibujado el primer frame, asi que las interrupciones se encargan del resto
 }
 
 // Dibuja todo lo que habra en pantalla al comenzar la partida
 void firstDraw() {
+   drawHUD();
    drawGameBorder();
    drawMap();
    drawHeroes();
-   drawHUD();
 }
 
 // Update que se encarga de cambiar de un update a otro
@@ -230,6 +237,7 @@ u8 updateGameLevel() {
       if(heroe1.health == 0 || heroe2.health == 0) {
          //cpct_waitVSYNC();
          sceneGame = 1;
+         levelStarted = 0;
          drawGameOver();
       }
 
@@ -240,10 +248,10 @@ u8 updateGameLevel() {
 }
 
 void drawGame() {
-   if(sceneGame != 2) { // Si no es Game Over...
+   if(sceneGame != 2 && levelStarted == 1) { // Si no es Game Over y el nivel ha empezado...
       // Redibuja tiles ocupados por Heroes
-      repaintBackgroundOverSprite(heroe1.preX[0], heroe1.preY[0], G_left, heroe1.stateY);
-      repaintBackgroundOverSprite(heroe2.preX[0], heroe2.preY[0], G_right, heroe2.stateY);
+      repaintBackgroundOverSprite(heroe1.preX, heroe1.preY, G_left, heroe1.stateY);
+      repaintBackgroundOverSprite(heroe2.preX, heroe2.preY, G_right, heroe2.stateY);
 
       // Redibuja tiles ocupados por Disparos
       repaintBackgroundOverShot(shots1, G_left);
@@ -266,11 +274,9 @@ void drawGame() {
 }
 
 void updateHeroe(struct Heroe *heroe) {
-   // Cambiamos la variable en la que guardamos la posicion previa.
-   // Usamos dos variables para saber donde limpiar el rastro en cada buffer
-   swapPrePos(heroe);
-   heroe->preX[0] = heroe->x;
-   heroe->preY[0] = heroe->y;
+   // Guardamos la posicion previa para limpiar el rastro
+   heroe->preX = heroe->x;
+   heroe->preY = heroe->y;
 
    // Scan Keyboard
    cpct_scanKeyboard_f();
@@ -766,14 +772,23 @@ void drawHeroes() {
 
 void updateShots(struct Heroe *heroe, struct Shot *shots) {
    u8 i;
+   u8 justShot; // Para comprobar si acaba de disparar
 
    for(i=0; i<G_maxShots; i++) {
       if(shots[i].active == 1) {
-         // Cambiamos la variable en la que guardamos la posicion previa.
-         // Usamos dos variables para saber donde limpiar el rastro en cada buffer
-         swapPrePosShot(shots[i].preX, shots[i].preY);
-         shots[i].preX[1] = shots[i].x;
-         shots[i].preY[1] = shots[i].y;
+         // Comprobamos si acaba de disparar. Necesitamos saberlo porque, al disparar pegado
+         // a la pared de la izquierda, intenta limpiar un tile que no existe porque la posicion
+         // del disparo es "menor que 0" (aunque usamos unsigned)
+         if(shots[i].preX == shots[i].x && shots[i].preY == shots[i].y) {
+            justShot = 1;  // Acaba de disparar
+         }
+         else {
+            justShot = 0;  // NO acaba de disparar
+         }
+
+         // Guardamos la posicion previa para limpiar el rastro
+         shots[i].preX = shots[i].x;
+         shots[i].preY = shots[i].y;
 
          updateAnimation(&shots[i].anim, shots[i].nextAnim, 0);
 
@@ -782,8 +797,8 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
                shots[i].x -= 2;
                if(shots[i].x > 200) { // Al ser unsigned no puedo poner <0
                   shots[i].active = 0;
-                  if(shots[i].preX[0] != shots[i].preX[1]) { // Seguro por si acaba de disparar
-                     shots[i].x = shots[i].preX[1];
+                  if(justShot == 0) { // Seguro por si acaba de disparar
+                     shots[i].x = shots[i].preX;
                   }
                   else {
                      shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
@@ -794,8 +809,8 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
                shots[i].x += 2;
                if(shots[i].x > G_mapWBytes-4) {
                   shots[i].active = 0;
-                  if(shots[i].preX[0] != shots[i].preX[1]) { // Seguro por si acaba de disparar
-                     shots[i].x = shots[i].preX[1];
+                  if(justShot == 0) { // Seguro por si acaba de disparar
+                     shots[i].x = shots[i].preX;
                   }
                   else {
                      shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
@@ -806,8 +821,8 @@ void updateShots(struct Heroe *heroe, struct Shot *shots) {
                shots[i].y -= 4;
                if(shots[i].y > 200) { // Al ser unsigned no puedo poner <0
                   shots[i].active = 0;
-                  if(shots[i].preY[0] != shots[i].preY[1]) { // Seguro por si acaba de disparar
-                     shots[i].y = shots[i].preY[1];
+                  if(justShot == 0) { // Seguro por si acaba de disparar
+                     shots[i].y = shots[i].preY;
                   }
                   else {
                      shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
@@ -1023,8 +1038,8 @@ void repaintBackgroundOverShot(struct Shot *shots, u8 side) {
 
    for(i=0; i<G_maxShots; i++) {
       if(shots[i].drawable > 0) {
-         x = shots[i].preX[0];
-         y = shots[i].preY[0];
+         x = shots[i].preX;
+         y = shots[i].preY;
 
          byte2tile2(&x, &y);
 
@@ -1060,18 +1075,6 @@ void drawMap() {
       cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
       cpct_akp_musicPlay();
    }
-}
-
-void swapPrePosShot(u8 *preX, u8 *preY) {
-   u8 prePos;
-
-   prePos = preX[0];
-   preX[0] = preX[1];
-   preX[1] = prePos;
-
-   prePos = preY[0];
-   preY[0] = preY[1];
-   preY[1] = prePos;
 }
 
 // Dibuja el HUD

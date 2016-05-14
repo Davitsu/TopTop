@@ -41,8 +41,8 @@ typedef struct Heroe {
 	u8 id;
 	u8 x;
 	u8 y;
-	u8 preX[2];
-	u8 preY[2];
+	u8 preX;
+	u8 preY;
 	enum StateY stateY;
 	u8 jumpFactor;
 	u8 jumpPressed;
@@ -75,7 +75,6 @@ void resetHeroes(struct Heroe *heroe);
 void updateJump(struct Heroe *heroe);
 void updateCooldown(struct Heroe *heroe);
 void updateSensorHeroe(struct Heroe *heroe);
-void swapPrePos(struct Heroe *heroe);
 u8 byte2tile1(u8, u8);
 void byte2tile2(u8*, u8*);
 void setAniHeroe(struct Heroe*, u8);

@@ -30,10 +30,8 @@ void initShots(struct Shot *shots) {
 	for(i=0; i<G_maxShots; i++) {
 		shots[i].x = 0;
 		shots[i].y = 0;
-		shots[i].preX[0] = shots[i].x;
-		shots[i].preX[1] = shots[i].x;
-		shots[i].preY[0] = shots[i].y;
-		shots[i].preY[1] = shots[i].y;
+		shots[i].preX = shots[i].x;
+		shots[i].preY = shots[i].y;
 		shots[i].width = 0;
 		shots[i].height = 0;
 		shots[i].level = sl_1;
@@ -147,10 +145,8 @@ void createShot(struct Heroe *heroe, struct Shot *shots) {
 				break;
 		}
 
-		shots[j].preX[0] = shots[j].x;
-		shots[j].preX[1] = shots[j].x;
-		shots[j].preY[0] = shots[j].y;
-		shots[j].preY[1] = shots[j].y;
+		shots[j].preX = shots[j].x;
+		shots[j].preY = shots[j].y;
 
 		//SFX
 		cpct_akp_SFXPlay(5, 15, 43, 0, 0, AY_CHANNEL_B);

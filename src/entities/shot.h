@@ -34,8 +34,8 @@ typedef enum ShotDir {
 typedef struct Shot {
 	u8 x;
 	u8 y;
-	u8 preX[2];
-	u8 preY[2];
+	u8 preX;
+	u8 preY;
 	u8 width;
 	u8 height;
 	enum shotLevel level;

@@ -101,6 +101,8 @@ extern u8 sceneGame;		// pantalla actual
 
 extern u8 canUpdate;		// Avisa si se puede actualizar (si ha dibujado y han pasado 2 frames)
 
+extern u8 levelStarted;		// Avisa si ha terminado de preparar el nivel
+
 extern u8 interruptId;   	// Interrupcion actual
 
 #endif

@@ -47,10 +47,8 @@ void initHeroes(struct Heroe *heroe, u8 idHeroe) {
 	heroe->anim.time = ANI_FPS_RUN;
 	heroe->anim.status = as_cycle;
 	heroe->nextAnim = heroe->anim.frames;
-	heroe->preX[0] = heroe->x;
-	heroe->preX[1] = heroe->x;
-	heroe->preY[0] = heroe->y;
-	heroe->preY[1] = heroe->y;
+	heroe->preX = heroe->x;
+	heroe->preY = heroe->y;
 	heroe->stateY = sy_land;
 	heroe->jumpPressed = 0;
 	heroe->duckPressed = 0;
@@ -74,10 +72,8 @@ void resetHeroes(struct Heroe *heroe) {
 		heroe->y = 140;
 		heroe->side = G_right;
 	}
-	heroe->preX[0] = heroe->x;
-	heroe->preX[1] = heroe->x;
-	heroe->preY[0] = heroe->y;
-	heroe->preY[1] = heroe->y;
+	heroe->preX = heroe->x;
+	heroe->preY = heroe->y;
 	heroe->stateY = sy_land;
 	heroe->cooldown = 0;
 	heroe->readyNextLevel = 0;
@@ -129,21 +125,6 @@ void updateSensorHeroe(struct Heroe *heroe) {
 	heroe->sensorDR = byte2tile1(heroe->x + G_heroeW - 2, heroe->y + G_heroeH - 1);
 	heroe->sensorCT = byte2tile1(heroe->x + (G_heroeW / 2) - 1, heroe->y + 3);
 	heroe->sensorCC = byte2tile1(heroe->x + (G_heroeW / 2) - 1, heroe->y + G_heroeH - 4);
-}
-
-// Intercambia  las posiciones previas del heroe
-// Se almacenan dos para saber donde se dibujo por ultima vez
-// en cada uno de los dos buffer
-void swapPrePos(struct Heroe *heroe) {
-	u8 prePos;
-
-	prePos = heroe->preX[0];
-	heroe->preX[0] = heroe->preX[1];
-	heroe->preX[1] = prePos;
-
-	prePos = heroe->preY[0];
-	heroe->preY[0] = heroe->preY[1];
-	heroe->preY[1] = prePos;
 }
 
 // Convierte la posicion en bytes a posicion en tiles (1 dimension)
