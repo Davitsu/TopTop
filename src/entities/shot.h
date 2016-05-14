@@ -48,7 +48,7 @@ typedef struct Shot {
 	u8 sensor2;
 };
 
-void initShots(struct Shot*);
+void initShot(struct Shot*);
 void createShot(struct Heroe*, struct Shot*);
 void updateSensorShot(struct Shot*);
 

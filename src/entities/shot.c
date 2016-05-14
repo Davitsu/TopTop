@@ -24,132 +24,114 @@
 #include "../sprites/sprites.h"
 #include "../constants.h"
 
-void initShots(struct Shot *shots) {
-	u8 i;
-
-	for(i=0; i<G_maxShots; i++) {
-		shots[i].x = 0;
-		shots[i].y = 0;
-		shots[i].preX = shots[i].x;
-		shots[i].preY = shots[i].y;
-		shots[i].width = 0;
-		shots[i].height = 0;
-		shots[i].level = sl_1;
-		shots[i].active = 0;
-		shots[i].drawable = 0;
-		shots[i].dir = sd_up;
-		shots[i].anim.frames = (TAnimFrame**)g_aniShotR[shots[i].dir][shots[i].level];
-		shots[i].anim.frame_id = 0;
-		shots[i].anim.time = ANI_FPS_SHOT;
-		shots[i].anim.status = as_cycle;
-		shots[i].nextAnim = shots[i].anim.frames;
-		shots[i].sensor1 = 0;
-		shots[i].sensor2 = 0;
-	}
+void initShot(struct Shot *shot) {
+	shot->x = 0;
+	shot->y = 0;
+	shot->preX = shot->x;
+	shot->preY = shot->y;
+	shot->width = 0;
+	shot->height = 0;
+	shot->level = sl_1;
+	shot->active = 0;
+	shot->drawable = 0;
+	shot->dir = sd_up;
+	shot->anim.frames = (TAnimFrame**)g_aniShotR[shot->dir][shot->level];
+	shot->anim.frame_id = 0;
+	shot->anim.time = ANI_FPS_SHOT;
+	shot->anim.status = as_cycle;
+	shot->nextAnim = shot->anim.frames;
+	shot->sensor1 = 0;
+	shot->sensor2 = 0;
 }
 
-void createShot(struct Heroe *heroe, struct Shot *shots) {
-	u8 i;
-	u8 j = 0;
-	u8 found = 0;
-
-	// Comprobamos si es posible disparar (si hay menos de 3 en pantalla)
-	for(i=0; i<G_maxShots && found==0; i++) {
-		// Si hay un disparo no activo, ese sera el que usaremos
-		if(shots[i].active == 0 && shots[i].drawable == 0) {
-			found = 1;
-			j = i;
-		}
-	}
-
-	// Si hemos encontrado un disparo para usar, seguimos
-	// si no, se acaba la funcion, no podemos disparar
-	if(found == 1) {
-		shots[j].active = 1;
-		shots[j].drawable = 3;
-		shots[j].level = heroe->level;
+void createShot(struct Heroe *heroe, struct Shot *shot) {
+	// Comprobamos si podemos disparar
+	if(shot->active == 0 && shot->drawable == 0) {
+		shot->active = 1;
+		shot->drawable = 3;
+		shot->level = heroe->level;
 
 		// Si pulsa arriba, dispara hacia arriba. Si no, depende del lado al que mira el heroe
 		if ((cpct_isKeyPressed(Key_W) && heroe->id == G_heroe1) || (cpct_isKeyPressed(Key_CursorUp) && heroe->id == G_heroe2)) {
-			shots[j].dir = sd_up;
+			shot->dir = sd_up;
 		}
 		else if (heroe->side == G_left) {
-			shots[j].dir = sd_left;
+			shot->dir = sd_left;
 		}
 		else {
-			shots[j].dir = sd_right;
+			shot->dir = sd_right;
 		}
 		
-		shots[j].nextAnim = (TAnimFrame**)g_aniShotR[shots[j].dir][shots[j].level];
+		shot->nextAnim = (TAnimFrame**)g_aniShotR[shot->dir][shot->level];
 
-		switch(shots[j].dir) {
+		switch(shot->dir) {
 			case sd_left:
-				if(shots[j].level == sl_1) {
-					shots[j].x = heroe->x - 1;
-					shots[j].y = heroe->y + 5;
-					shots[j].width = 4;
-					shots[j].height = 1;
+				if(shot->level == sl_1) {
+					shot->x = heroe->x - 1;
+					shot->y = heroe->y + 5;
+					shot->width = 4;
+					shot->height = 1;
 				}
-				else if(shots[j].level == sl_2) {
-					shots[j].x = heroe->x - 1;
-					shots[j].y = heroe->y + 3;
-					shots[j].width = 4;
-					shots[j].height = 5;
+				else if(shot->level == sl_2) {
+					shot->x = heroe->x - 1;
+					shot->y = heroe->y + 3;
+					shot->width = 4;
+					shot->height = 5;
 				}
 				else {
-					shots[j].x = heroe->x - 1;
-					shots[j].y = heroe->y + 2;
-					shots[j].width = 4;
-					shots[j].height = 7;
+					shot->x = heroe->x - 1;
+					shot->y = heroe->y + 2;
+					shot->width = 4;
+					shot->height = 7;
 				}
 				break;
 			case sd_right:
-				if(shots[j].level == sl_1) {
-					shots[j].x = heroe->x + 1;
-					shots[j].y = heroe->y + 5;
-					shots[j].width = 4;
-					shots[j].height = 1;
+				if(shot->level == sl_1) {
+					shot->x = heroe->x + 1;
+					shot->y = heroe->y + 5;
+					shot->width = 4;
+					shot->height = 1;
 				}
-				else if(shots[j].level == sl_2) {
-					shots[j].x = heroe->x + 1;
-					shots[j].y = heroe->y + 3;
-					shots[j].width = 4;
-					shots[j].height = 5;
+				else if(shot->level == sl_2) {
+					shot->x = heroe->x + 1;
+					shot->y = heroe->y + 3;
+					shot->width = 4;
+					shot->height = 5;
 				}
 				else {
-					shots[j].x = heroe->x + 1;
-					shots[j].y = heroe->y + 2;
-					shots[j].width = 4;
-					shots[j].height = 7;
+					shot->x = heroe->x + 1;
+					shot->y = heroe->y + 2;
+					shot->width = 4;
+					shot->height = 7;
 				}
 				break;
 			case sd_up:
-				if(shots[j].level == sl_1) {
-					shots[j].x = heroe->x + 2;
-					shots[j].y = heroe->y;
-					shots[j].width = 1;
-					shots[j].height = 8;
+				if(shot->level == sl_1) {
+					shot->x = heroe->x + 2;
+					shot->y = heroe->y;
+					shot->width = 1;
+					shot->height = 8;
 				}
-				else if(shots[j].level == sl_2) {
-					shots[j].x = heroe->x + 1;
-					shots[j].y = heroe->y;
-					shots[j].width = 3;
-					shots[j].height = 8;
+				else if(shot->level == sl_2) {
+					shot->x = heroe->x + 1;
+					shot->y = heroe->y;
+					shot->width = 3;
+					shot->height = 8;
 				}
 				else {
-					shots[j].x = heroe->x;
-					shots[j].y = heroe->y;
-					shots[j].width = 4;
-					shots[j].height = 8;
+					shot->x = heroe->x;
+					shot->y = heroe->y;
+					shot->width = 4;
+					shot->height = 8;
 				}
 				break;
 		}
 
-		shots[j].preX = shots[j].x;
-		shots[j].preY = shots[j].y;
+		shot->preX = shot->x;
+		shot->preY = shot->y;
 
 		//SFX
-		cpct_akp_SFXPlay(5, 15, 43, 0, 0, AY_CHANNEL_B);
+		//cpct_akp_SFXPlay(5, 15, 43, 0, 0, AY_CHANNEL_B);
 	}
 }
 

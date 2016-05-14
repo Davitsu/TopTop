@@ -32,8 +32,8 @@
 struct Heroe heroe1;
 struct Heroe heroe2;
 
-struct Shot shots1[G_maxShots];
-struct Shot shots2[G_maxShots];
+struct Shot shot1;
+struct Shot shot2;
 
 u8 map1[G_mapHTiles][G_mapWTiles];
 u8 map2[G_mapHTiles][G_mapWTiles];
@@ -170,8 +170,8 @@ void initLevel() {
       mapRedraw2[x] = G_DONT_REDRAW;
    }
 
-   initShots(shots1);
-   initShots(shots2);
+   initShot(&shot1);
+   initShot(&shot2);
 
    // Preparamos el double buffer y dibujamos...
    ////cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
@@ -225,8 +225,8 @@ u8 updateGameLevel() {
       // Actualiza entidades
       updateHeroe(&heroe1);
       updateHeroe(&heroe2);
-      updateShots(&heroe1, shots1);
-      updateShots(&heroe2, shots2);
+      updateShot(&heroe1, &shot1);
+      updateShot(&heroe2, &shot2);
       
       // ---------------------------------------------------------------------------------------------------
       //cpct_waitVSYNC(); // ---------- Comienza Segundo Frame (para redibujar elementos, 1 vez cada 2 frames)
@@ -254,8 +254,8 @@ void drawGame() {
       repaintBackgroundOverSprite(heroe2.preX, heroe2.preY, G_right, heroe2.stateY);
 
       // Redibuja tiles ocupados por Disparos
-      repaintBackgroundOverShot(shots1, G_left);
-      repaintBackgroundOverShot(shots2, G_right);
+      repaintBackgroundOverShot(&shot1, G_left);
+      repaintBackgroundOverShot(&shot2, G_right);
       
       // Redibuja tiles que han cambiado
       redrawTiles(G_left);
@@ -263,7 +263,7 @@ void drawGame() {
       
       // Dibuja entidades
       drawHeroes();
-      drawShots();
+      drawShot();
 
       redrawHUD();
 
@@ -379,7 +379,7 @@ void updateHeroe(struct Heroe *heroe) {
       if(cpct_isKeyPressed(Key_G)) {
          if(heroe->shotPressed == 0) {
             heroe->shotPressed = 1;
-            createShot(heroe, shots1);
+            createShot(heroe, &shot1);
          }
          heroe->readyNextLevel = 0;
       }
@@ -397,7 +397,7 @@ void updateHeroe(struct Heroe *heroe) {
       if(cpct_isKeyPressed(Key_P)) {
          if(heroe->shotPressed == 0) {
             heroe->shotPressed = 1;
-            createShot(heroe, shots2);
+            createShot(heroe, &shot2);
          }
          heroe->readyNextLevel = 0;
       }
@@ -770,83 +770,80 @@ void drawHeroes() {
    }
 }
 
-void updateShots(struct Heroe *heroe, struct Shot *shots) {
-   u8 i;
+void updateShot(struct Heroe *heroe, struct Shot *shot) {
    u8 justShot; // Para comprobar si acaba de disparar
 
-   for(i=0; i<G_maxShots; i++) {
-      if(shots[i].active == 1) {
-         // Comprobamos si acaba de disparar. Necesitamos saberlo porque, al disparar pegado
-         // a la pared de la izquierda, intenta limpiar un tile que no existe porque la posicion
-         // del disparo es "menor que 0" (aunque usamos unsigned)
-         if(shots[i].preX == shots[i].x && shots[i].preY == shots[i].y) {
-            justShot = 1;  // Acaba de disparar
+   if(shot->active == 1) {
+      // Comprobamos si acaba de disparar. Necesitamos saberlo porque, al disparar pegado
+      // a la pared de la izquierda, intenta limpiar un tile que no existe porque la posicion
+      // del disparo es "menor que 0" (aunque usamos unsigned)
+      if(shot->preX == shot->x && shot->preY == shot->y) {
+         justShot = 1;  // Acaba de disparar
+      }
+      else {
+         justShot = 0;  // NO acaba de disparar
+      }
+
+      // Guardamos la posicion previa para limpiar el rastro
+      shot->preX = shot->x;
+      shot->preY = shot->y;
+
+      updateAnimation(&shot->anim, shot->nextAnim, 0);
+
+      switch(shot->dir) {
+         case sd_left:
+            shot->x -= 2;
+            if(shot->x > 200) { // Al ser unsigned no puedo poner <0
+               shot->active = 0;
+               if(justShot == 0) { // Seguro por si acaba de disparar
+                  shot->x = shot->preX;
+               }
+               else {
+                  shot->drawable = 0; // si acaba de disparar, no hay que limpiar
+               }
+            }
+            break;
+         case sd_right:
+            shot->x += 2;
+            if(shot->x > G_mapWBytes-4) {
+               shot->active = 0;
+               if(justShot == 0) { // Seguro por si acaba de disparar
+                  shot->x = shot->preX;
+               }
+               else {
+                  shot->drawable = 0; // si acaba de disparar, no hay que limpiar
+               }
+            }
+            break;
+         case sd_up:
+            shot->y -= 4;
+            if(shot->y > 200) { // Al ser unsigned no puedo poner <0
+               shot->active = 0;
+               if(justShot == 0) { // Seguro por si acaba de disparar
+                  shot->y = shot->preY;
+               }
+               else {
+                  shot->drawable = 0; // si acaba de disparar, no hay que limpiar
+               }
+            }
+            break;
+      }
+      
+      if(shot->x < G_mapWBytes-4 || shot->dir == sd_up) { // Esta condicion arregla el bug de atravesar el limite del escenario
+         if(heroe->id == G_heroe1) {
+            checkShotCollision(shot, &map1[0][0], G_left);
          }
          else {
-            justShot = 0;  // NO acaba de disparar
+            checkShotCollision(shot, &map2[0][0], G_right);
          }
-
-         // Guardamos la posicion previa para limpiar el rastro
-         shots[i].preX = shots[i].x;
-         shots[i].preY = shots[i].y;
-
-         updateAnimation(&shots[i].anim, shots[i].nextAnim, 0);
-
-         switch(shots[i].dir) {
-            case sd_left:
-               shots[i].x -= 2;
-               if(shots[i].x > 200) { // Al ser unsigned no puedo poner <0
-                  shots[i].active = 0;
-                  if(justShot == 0) { // Seguro por si acaba de disparar
-                     shots[i].x = shots[i].preX;
-                  }
-                  else {
-                     shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
-                  }
-               }
-               break;
-            case sd_right:
-               shots[i].x += 2;
-               if(shots[i].x > G_mapWBytes-4) {
-                  shots[i].active = 0;
-                  if(justShot == 0) { // Seguro por si acaba de disparar
-                     shots[i].x = shots[i].preX;
-                  }
-                  else {
-                     shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
-                  }
-               }
-               break;
-            case sd_up:
-               shots[i].y -= 4;
-               if(shots[i].y > 200) { // Al ser unsigned no puedo poner <0
-                  shots[i].active = 0;
-                  if(justShot == 0) { // Seguro por si acaba de disparar
-                     shots[i].y = shots[i].preY;
-                  }
-                  else {
-                     shots[i].drawable = 0; // si acaba de disparar, no hay que limpiar
-                  }
-               }
-               break;
-         }
-         
-         if(shots[i].x < G_mapWBytes-4 || shots[i].dir == sd_up) { // Esta condicion arregla el bug de atravesar el limite del escenario
-            if(heroe->id == G_heroe1) {
-               checkShotsCollision(&shots[i], &map1[0][0], G_left);
-            }
-            else {
-               checkShotsCollision(&shots[i], &map2[0][0], G_right);
-            }
-         }
-         else {
-            shots[i].active = 0;
-         }
+      }
+      else {
+         shot->active = 0;
       }
    }
 }
 
-void checkShotsCollision(struct Shot* shot, u8 *map, u8 side) {
+void checkShotCollision(struct Shot* shot, u8 *map, u8 side) {
    updateSensorShot(shot);
 
    if(map[shot->sensor1] == 0x00) {
@@ -880,25 +877,21 @@ void checkShotsCollision(struct Shot* shot, u8 *map, u8 side) {
 }
 
 // Dibuja los disparos
-void drawShots() {
-   u8 *pvideomem, i;
+void drawShot() {
+   u8 *pvideomem;
 
-   // Disparos de la chica
-   for(i=0; i<G_maxShots; i++) {
-      // Dibuja el disparo si esta vivo (activo)
-      if(shots1[i].active == 1) {
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + shots1[i].x, G_offsetY + shots1[i].y);
-         cpct_drawSpriteMasked(shots1[i].anim.frames[shots1[i].anim.frame_id]->sprite, pvideomem, shots1[i].width, shots1[i].height);
-      }
+   // Disparo de la chica
+   // Dibuja el disparo si esta vivo (activo)
+   if(shot1.active == 1) {
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + shot1.x, G_offsetY + shot1.y);
+      cpct_drawSpriteMasked(shot1.anim.frames[shot1.anim.frame_id]->sprite, pvideomem, shot1.width, shot1.height);
    }
 
-   // Disparos del chico
-   for(i=0; i<G_maxShots; i++) {
-      // Dibuja el disparo si esta vivo (activo)
-      if(shots2[i].active == 1) {
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + shots2[i].x, G_offsetY + shots2[i].y);
-         cpct_drawSpriteMasked(shots2[i].anim.frames[shots2[i].anim.frame_id]->sprite, pvideomem, shots2[i].width, shots2[i].height);
-      }
+   // Disparo del chico
+   // Dibuja el disparo si esta vivo (activo)
+   if(shot2.active == 1) {
+      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + shot2.x, G_offsetY + shot2.y);
+      cpct_drawSpriteMasked(shot2.anim.frames[shot2.anim.frame_id]->sprite, pvideomem, shot2.width, shot2.height);
    }
 }
 
@@ -1033,31 +1026,29 @@ void repaintBackgroundOverSprite(u8 x, u8 y, u8 side, u8 stateY) {
    }
 }
 
-void repaintBackgroundOverShot(struct Shot *shots, u8 side) {
-   u8 i, x, y;
+void repaintBackgroundOverShot(struct Shot *shot, u8 side) {
+   u8 x, y;
 
-   for(i=0; i<G_maxShots; i++) {
-      if(shots[i].drawable > 0) {
-         x = shots[i].preX;
-         y = shots[i].preY;
+   if(shot->drawable > 0) {
+      x = shot->preX;
+      y = shot->preY;
 
-         byte2tile2(&x, &y);
+      byte2tile2(&x, &y);
 
-         // Ahora limpiamos el area de tiles adyacentes al disparo (2x2 tiles)
+      // Ahora limpiamos el area de tiles adyacentes al disparo (2x2 tiles)
 
-         // [x][-] <- Columna y
-         drawTile(x, y, side);
-         if(x+1 < G_mapWTiles) drawTile(x+1, y, side);
+      // [x][-] <- Columna y
+      drawTile(x, y, side);
+      if(x+1 < G_mapWTiles) drawTile(x+1, y, side);
 
-         // [-][x] <- Columna y+1
-         if(y+1 < G_mapHTiles) {
-            drawTile(x, y+1, side);
-            if(x+1 < G_mapWTiles) drawTile(x+1, y+1, side);
-         }
+      // [-][x] <- Columna y+1
+      if(y+1 < G_mapHTiles) {
+         drawTile(x, y+1, side);
+         if(x+1 < G_mapWTiles) drawTile(x+1, y+1, side);
+      }
 
-         if(shots[i].active == 0) {
-            shots[i].drawable--;
-         }
+      if(shot->active == 0) {
+         shot->drawable--;
       }
    }
 }

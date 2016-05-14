@@ -111,7 +111,7 @@ void application() {
 // Cuando movemos la pila no se debe hacer uso de ella dentro
 // de la misma funcion, asi que simplemente llamamos a application()
 void main(void) {
-   cpct_setStackLocation((void*)0x8000); //Antes, con doble buffer, estaba en 0x8000
+   cpct_setStackLocation((void*)0x8000);
 
    application();   
 }

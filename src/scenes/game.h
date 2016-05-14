@@ -35,9 +35,9 @@ void createHeroes();
 void updateHeroe(struct Heroe*);
 void checkHeroeCollision(struct Heroe*, u8*);
 void drawHeroes();
-void updateShots(struct Heroe*, struct Shot*);
-void checkShotsCollision(struct Shot*, u8*, u8);
-void drawShots();
+void updateShot(struct Heroe*, struct Shot*);
+void checkShotCollision(struct Shot*, u8*, u8);
+void drawShot();
 void drawGameBorder();
 void drawHUD();
 void redrawHUD();
@@ -76,8 +76,8 @@ void drawScreensBorderSprite(u8 x, u8 y, u8 *spriteBorder);
 extern struct Heroe heroe1;
 extern struct Heroe heroe2;
 
-extern struct Shot shots1[G_maxShots];
-extern struct Shot shots2[G_maxShots];
+extern struct Shot shot1;
+extern struct Shot shot2;
 
 extern u8 map1[G_mapHTiles][G_mapWTiles];
 extern u8 map2[G_mapHTiles][G_mapWTiles];
