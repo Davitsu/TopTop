@@ -22,7 +22,7 @@
 #include "../constants.h"
 #include "../audio/audio.h"
 
-u8* const g_scrbuffersMenu[2] = { (u8*)0xC000, (u8*)0xC000 }; // Direccion de los dos buffers
+u8* const g_scrbufferMenu = (u8*)0xC000; // Direccion del buffer
 
 u8 future;
 u8 spaceDown;
@@ -35,12 +35,7 @@ void initMenu() {
   future = 0;
   spaceDown = 0;
 
-	// Preparamos el double buffer y dibujamos...
-	////cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
-  ////drawMenu();                        	                // Dibujamos en el buffer actual
-  cpct_waitVSYNC();                               	  // Volvemos a esperar al VSYNC
-	////swapBuffersMenu(g_scrbuffersMenu);             	 	  // Cambiamos de buffer
-  cpct_memset_f64(g_scrbuffersMenu[1], 0x00, 0x4000);     // Limpiamos el primer buffer
+  cpct_memset_f64(g_scrbufferMenu, 0x00, 0x4000);     // Limpiamos el buffer
   drawMenu();                                     	  // Dibujamos en este buffer
 }
 
@@ -63,7 +58,6 @@ u8 updateMenu() {
         drawMenuHeroesFuture();
         cpct_waitVSYNC();
         cpct_akp_musicPlay(); 
-        swapBuffersMenu(g_scrbuffersMenu);
         drawMenuHeroesFuture();
       }
       else {
@@ -72,7 +66,6 @@ u8 updateMenu() {
         drawMenuHeroes();
         cpct_waitVSYNC();
         cpct_akp_musicPlay(); 
-        swapBuffersMenu(g_scrbuffersMenu);
         drawMenuHeroes();
       }
     }
@@ -81,7 +74,6 @@ u8 updateMenu() {
     spaceDown = 0;
   }
 
-  swapBuffersMenu(g_scrbuffersMenu);                  // Cambiamos de buffer
 
   if (cpct_isKeyPressed(Key_1) || cpct_isKeyPressed(Key_Enter) || cpct_isKeyPressed(Key_Return)) {
     ////cpct_akp_SFXPlay(6, 15, 65, 0, 0, AY_CHANNEL_A);
@@ -95,14 +87,6 @@ void drawMenu() {
 	drawMenuBorder();
   drawLogo();
 }
-
-/*void drawCredits() {
-  u8 *pvideomem;
-
-  drawMenuBorder();
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 115);  
-  cpct_drawStringM0("CREDITOS", pvideomem, 3, 0);
-}*/
 
 void drawLogo() {
   // TOPTOP LOGO
@@ -146,7 +130,7 @@ void drawTop(u8 x, u8 y) {
 void drawTopTile(u8 x, u8 y) {
   u8 *pvideomem = 0;
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], x, y);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, x, y);
   cpct_drawTileAligned4x8(G_tile01, pvideomem);
 }
 
@@ -172,36 +156,30 @@ void drawMenuBorder() {
 void drawMenuBorderTile(u8 x, u8 y, u8 *spriteBorder) {
   u8 *pvideomem = 0;
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], x, y);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, x, y);
   cpct_drawTileAligned4x8(spriteBorder, pvideomem);
 }
 
 void drawMenuBorderSprite(u8 x, u8 y, u8 *spriteBorder) {
   u8 *pvideomem;
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], x, y);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, x, y);
   cpct_drawSprite(spriteBorder, pvideomem, 4, 8);
 }
 
 void drawOptions() {
   u8 *pvideomem = 0;
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 12, 105);  
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 12, 105);  
   cpct_drawStringM0("OOOOOOOOOOOOOO", pvideomem, 1, 0);
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 12, 140);  
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 12, 140);  
   cpct_drawStringM0("OOOOOOOOOOOOOO", pvideomem, 1, 0);
 
-  // Dibujar opciones
-  /*pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 26, 123); 
-  cpct_drawStringM0("1.JUGAR", pvideomem, 3, 0);*/
-  /*pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 20, 130);  
-  cpct_drawStringM0("2.CREDITOS", pvideomem, 1, 0);*/
-
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 14, 182);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 14, 182);
   cpct_drawStringM0("RANTAN   2015", pvideomem, 6, 0);
 
   // logo Rantan
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 181);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 42, 181);
   cpct_drawSprite(G_logoRantan, pvideomem, 4, 8);
 }
 
@@ -210,14 +188,14 @@ void drawMenuHeroes() {
 
   //PERSONAJES
   //Se dibuja el sprite del personaje 1
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 34, 156);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 34, 156);
   cpct_drawSpriteMasked(G_heroR_idle_right01, pvideomem, G_heroeW, 12);
 
   //Se dibuja el sprite del personaje 2
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 156);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 42, 156);
   cpct_drawSpriteMasked(G_heroB_idle_left01, pvideomem, G_heroeW, 12);
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 2, 123); 
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 2, 123); 
   cpct_drawStringM0("      1.JUGAR      ", pvideomem, 3, 0);
 }
 
@@ -226,11 +204,11 @@ void drawMenuHeroesFuture() {
 
   //PERSONAJES
   //Se dibuja el sprite del personaje 1
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 34, 157);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 34, 157);
   cpct_drawSprite(G_future1, pvideomem, G_heroeW, 11);
 
   //Se dibuja el sprite del personaje 2
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 42, 157);
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 42, 157);
   cpct_drawSprite(G_future2, pvideomem, G_heroeW, 11);
 
   cpct_waitVSYNC();
@@ -238,28 +216,11 @@ void drawMenuHeroesFuture() {
   // Reproduce musica (1 vez cada frame)
   ////cpct_akp_musicPlay(); 
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffersMenu[1], 2, 123); 
+  pvideomem = cpct_getScreenPtr(g_scrbufferMenu, 2, 123); 
   cpct_drawStringM0("1.REGRESA AL FUTURO", pvideomem, 3, 0);
 
   cpct_waitVSYNC();
 
   // Reproduce musica (1 vez cada frame)
   ////cpct_akp_musicPlay(); 
-}
-
-void swapBuffersMenu(u8** scrbuffers) {
-   /*u8* aux; // Auxiliary pointer for making the change
-   
-   // Change what is shown on the screen (present backbuffer (1) is changed to 
-   // front-buffer, so it is shown at the screen)
-   // cpct_setVideoMemoryPage requires the 6 Most Significant bits of the address,
-   // so we have to shift them 10 times to the right (as addresses have 16 bits)
-   //
-   cpct_setVideoMemoryPage( (u16)(scrbuffers[1]) >> 10 );
-   
-   // Once backbuffer is being shown at the screen, we switch our two 
-   // variables to start using (0) as backbuffer and (1) as front-buffer
-   aux = scrbuffers[0];
-   scrbuffers[0] = scrbuffers[1];
-   scrbuffers[1] = aux;*/
 }

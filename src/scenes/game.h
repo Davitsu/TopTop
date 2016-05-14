@@ -61,7 +61,6 @@ void interactWithDoors(struct Heroe*, u8*);
 void checkButtons(u8 buttons[G_maxButtons][2], u8 doors[G_maxButtons][2], u8 mapDest[G_mapHTiles][G_mapWTiles], u8 sideHeroe, i8 nextDoor, u8 mapValue, u8 i, u8 side);
 void checkNextLevel();
 u8 tile2tile1(u8 x, u8 y);
-void swapBuffers(u8**);
 //PANTALLAS
 void drawGameOver();
 void drawTextGameOver();

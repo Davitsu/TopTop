@@ -64,7 +64,7 @@ u8 levelStarted;    // Avisa si ha terminado de preparar el nivel
 
 u8 interruptId;   // Interrupcion actual
 
-u8* const g_scrbuffers[2] = { (u8*)0xC000, (u8*)0xC000 }; // Direccion de los dos buffers
+u8* const g_scrbuffer = (u8*)0xC000; // Direccion de los dos buffers
 
 // Inicializa el menu
 void initGame() {
@@ -80,7 +80,6 @@ void initGame() {
 
    //cpct_waitVSYNC();
    ////cpct_akp_musicPlay();
-   //swapBuffers(g_scrbuffers);
 
    // Inicializamos el nivel
    initLevel();
@@ -173,17 +172,9 @@ void initLevel() {
    initShot(&shot1);
    initShot(&shot2);
 
-   // Preparamos el double buffer y dibujamos...
-   ////cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
-   ////cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
-   ////cpct_akp_musicPlay();
-   ////firstDraw();                                    // Dibujamos en el buffer actual
-   //cpct_waitVSYNC();                               // Volvemos a esperar al VSYNC
-   ////cpct_akp_musicPlay();
-   ////swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
-   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
+   cpct_memset_f64(g_scrbuffer, 0x00, 0x4000); // Limpiamos el buffer
    //cpct_waitVSYNC();
-   firstDraw();                                    // Dibujamos en este buffer
+   firstDraw();
 
    levelStarted = 1;    // Ya ha dibujado el primer frame, asi que las interrupciones se encargan del resto
 }
@@ -758,14 +749,14 @@ void drawHeroes() {
    //Se dibuja el sprite del personaje 1
    if(heroe1.cooldown == 0 || heroe1.cooldown == 1 || heroe1.cooldown == 4 || heroe1.cooldown == 5 || heroe1.cooldown == 8 || heroe1.cooldown == 9 ||
       heroe1.cooldown == 12 || heroe1.cooldown == 13 || heroe1.cooldown == 16 || heroe1.cooldown == 17 || heroe1.cooldown == 20) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, G_offsetX_m1 + heroe1.x, G_offsetY + heroe1.y);
       cpct_drawSpriteMasked(heroe1.anim.frames[heroe1.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
    }
 
    //Se dibuja el sprite del personaje 2
    if(heroe2.cooldown == 0 || heroe2.cooldown == 1 || heroe2.cooldown == 4 || heroe2.cooldown == 5 || heroe2.cooldown == 8 || heroe2.cooldown == 9 ||
       heroe2.cooldown == 12 || heroe2.cooldown == 13 || heroe2.cooldown == 16 || heroe2.cooldown == 17 || heroe2.cooldown == 20) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, G_offsetX_m2 + heroe2.x, G_offsetY + heroe2.y);
       cpct_drawSpriteMasked(heroe2.anim.frames[heroe2.anim.frame_id]->sprite, pvideomem, G_heroeW, G_heroeH);
    }
 }
@@ -883,14 +874,14 @@ void drawShot() {
    // Disparo de la chica
    // Dibuja el disparo si esta vivo (activo)
    if(shot1.active == 1) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m1 + shot1.x, G_offsetY + shot1.y);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, G_offsetX_m1 + shot1.x, G_offsetY + shot1.y);
       cpct_drawSpriteMasked(shot1.anim.frames[shot1.anim.frame_id]->sprite, pvideomem, shot1.width, shot1.height);
    }
 
    // Disparo del chico
    // Dibuja el disparo si esta vivo (activo)
    if(shot2.active == 1) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], G_offsetX_m2 + shot2.x, G_offsetY + shot2.y);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, G_offsetX_m2 + shot2.x, G_offsetY + shot2.y);
       cpct_drawSpriteMasked(shot2.anim.frames[shot2.anim.frame_id]->sprite, pvideomem, shot2.width, shot2.height);
    }
 }
@@ -902,33 +893,33 @@ void drawGameBorder() {
 
    // Filas
    for(i=0; i<20; i++) {   // Fila superior
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*G_tileSizeW, 4*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, i*G_tileSizeW, 4*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    for(i=0; i<24; i++) {   // Fila inferior
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], i*G_tileSizeW, 24*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, i*G_tileSizeW, 24*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    // Columnas
    for(i=0; i<19; i++) {   // Columna izquierda
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 0, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 0, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    for(i=0; i<19; i++) {   // Columna central izq
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 9*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 9*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 
    for(i=0; i<19; i++) {   // Columna central der
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 10*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 10*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
    
    for(i=0; i<19; i++) {   // Columna derecha
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 19*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 19*G_tileSizeW, 5*G_tileSizeH+i*G_tileSizeH);
       cpct_drawTileAligned4x8(G_tile01, pvideomem);
    }
 }
@@ -946,7 +937,7 @@ void drawTile(u8 xTile, u8 yTile, u8 side) {
       map = *map2;
    }
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, xTile * G_tileSizeW + offSetX, yTile*G_tileSizeH+G_offsetY);
 
    sprTile = G_tileId[map[yTile*G_mapWTiles+xTile]];
    
@@ -1095,29 +1086,29 @@ void drawLevel() {
    u8 *pvideomem;
    u8 aux;
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 34, 8);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 34, 8);  
    cpct_drawCharM0(pvideomem, 4, 0, 'N');
 
    if(level < 10) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 38, 8);  
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 38, 8);  
       cpct_drawCharM0(pvideomem, 4, 0, '0');
 
       if(level != 0) {  // comprobamos que no sea cero porque la funcion no puede pasarle un string que valga 0
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 42, 8);  
+         pvideomem = cpct_getScreenPtr(g_scrbuffer, 42, 8);  
          cpct_drawCharM0(pvideomem, 4, 0, level+'0');
       }
       else {
-         pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 42, 8);  
+         pvideomem = cpct_getScreenPtr(g_scrbuffer, 42, 8);  
          cpct_drawCharM0(pvideomem, 4, 0, '0');
       }
    }
    else if(level < 100) {
       aux = level/10;
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 38, 8);  
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 38, 8);  
       cpct_drawCharM0(pvideomem, 4, 0, aux+'0');
 
       aux = level%10;
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 42, 8);  
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 42, 8);  
       cpct_drawCharM0(pvideomem, 4, 0, aux+'0');
    }
 }
@@ -1240,14 +1231,14 @@ void drawHUDBorder() {
 void drawHudBorderTile(u8 x, u8 y, u8* spriteBorder) {
    u8* pvideomem;
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, x, y);
    cpct_drawTileAligned4x8(spriteBorder, pvideomem);
 }
 
 void drawHudSprite(u8 x, u8 y, u8 sizeX, u8 sizeY, u8* spriteBorder) {
    u8* pvideomem;
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, x, y);
    cpct_drawSprite(spriteBorder, pvideomem, sizeX, sizeY); 
 }
 
@@ -1274,9 +1265,6 @@ u8 updateScreens() {
    
    // Reproduce musica (1 vez cada frame)
    cpct_akp_musicPlay(); // La musica se reproduce cada frame
-
-   // Intercambia buffer de dibujado
-   swapBuffers(g_scrbuffers);
    
    return G_sceneGame;
 }
@@ -1284,8 +1272,8 @@ u8 updateScreens() {
 void drawGameOver() {
    u8 *pvideomem = 0;
 
-   // Preparamos el double buffer y dibujamos...
-   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+   // Preparamos el buffer y dibujamos...
+   cpct_memset_f64(g_scrbuffer, 0x00, 0x4000); // Limpiamos el buffer (contiene valores aleatorios)
    cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
    
    cpct_akp_musicPlay();
@@ -1296,20 +1284,17 @@ void drawGameOver() {
 
    cpct_akp_musicPlay();
 
-   swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
-   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
-
    drawTextGameOver();
 }
 
 void drawTextGameOver() {
    u8 *pvideomem = 0;
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 24, 60);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 24, 60);  
    cpct_drawStringM0("GAME OVER", pvideomem, 7, 0);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 40);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 8, 40);  
    cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 8, 0);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 80);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 8, 80);  
    cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 8, 0);
    drawScreensBorder();
    drawScreenOptions();                                   // Dibujamos en el buffer actual
@@ -1318,8 +1303,8 @@ void drawTextGameOver() {
 void drawGameComplete() {
    u8 *pvideomem = 0;
 
-   // Preparamos el double buffer y dibujamos...
-   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el segundo buffer (contiene valores aleatorios)
+   // Preparamos el buffer y dibujamos...
+   cpct_memset_f64(g_scrbuffer, 0x00, 0x4000); // Limpiamos el buffer (contiene valores aleatorios)
    cpct_waitVSYNC();                               // Esperamos al VSYNC para esperar a dibujar
    
    cpct_akp_musicPlay();
@@ -1330,20 +1315,17 @@ void drawGameComplete() {
 
    cpct_akp_musicPlay();
 
-   swapBuffers(g_scrbuffers);                      // Cambiamos de buffer
-   cpct_memset_f64(g_scrbuffers[1], 0x00, 0x4000); // Limpiamos el primer buffer
-
    drawTextGameComplete();
 }
 
 void drawTextGameComplete() {
    u8 *pvideomem = 0;
 
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 14, 60);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 14, 60);  
    cpct_drawStringM0("GAME COMPLETE", pvideomem, 3, 0);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 40);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 8, 40);  
    cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 1, 0);
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 8, 80);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 8, 80);  
    cpct_drawStringM0("OOOOOOOOOOOOOOOO", pvideomem, 1, 0);
    drawScreensBorder();
    drawScreenOptions();  
@@ -1354,17 +1336,17 @@ void drawScreenOptions() {
 
    // Dibujar opciones
    if(sceneGame == 1) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 125);  
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 16, 125);  
       cpct_drawStringM0("1.REINTENTAR", pvideomem, 2, 0);
    }
    else if(sceneGame == 2) {
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 4, 125);  
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 4, 125);  
       cpct_drawStringM0("1.EMPEZAR DE NUEVO", pvideomem, 2, 0);
 
-      pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 6, 180);  
+      pvideomem = cpct_getScreenPtr(g_scrbuffer, 6, 180);  
       cpct_drawStringM0("GRACIAS POR JUGAR", pvideomem, 6, 0);
    }
-   pvideomem = cpct_getScreenPtr(g_scrbuffers[1], 16, 140);  
+   pvideomem = cpct_getScreenPtr(g_scrbuffer, 16, 140);  
    if(sceneGame == 1) cpct_drawStringM0("2.IR AL MENU", pvideomem, 1, 0);
    else if(sceneGame == 2) cpct_drawStringM0("2.IR AL MENU", pvideomem, 7, 0);
 }
@@ -1391,14 +1373,14 @@ void drawScreensBorder() {
 void drawScreensBorderTile(u8 x, u8 y, u8 *spriteBorder) {
   u8 *pvideomem;
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+  pvideomem = cpct_getScreenPtr(g_scrbuffer, x, y);
   cpct_drawTileAligned4x8(spriteBorder, pvideomem);
 }
 
 void drawScreensBorderSprite(u8 x, u8 y, u8 *spriteBorder) {
   u8 *pvideomem;
 
-  pvideomem = cpct_getScreenPtr(g_scrbuffers[1], x, y);
+  pvideomem = cpct_getScreenPtr(g_scrbuffer, x, y);
   cpct_drawSprite(spriteBorder, pvideomem, 4, 8);
 }
 
@@ -1406,21 +1388,4 @@ void drawScreensBorderSprite(u8 x, u8 y, u8 *spriteBorder) {
 
 u8 tile2tile1(u8 x, u8 y) {
    return y*G_mapWTiles+x;
-}
-
-void swapBuffers(u8** scrbuffers) {
-   /*u8* aux; // Auxiliary pointer for making the change
-   
-   // Change what is shown on the screen (present backbuffer (1) is changed to 
-   // front-buffer, so it is shown at the screen)
-   // cpct_setVideoMemoryPage requires the 6 Most Significant bits of the address,
-   // so we have to shift them 10 times to the right (as addresses have 16 bits)
-   //
-   cpct_setVideoMemoryPage( (u16)(scrbuffers[1]) >> 10 );
-   
-   // Once backbuffer is being shown at the screen, we switch our two 
-   // variables to start using (0) as backbuffer and (1) as front-buffer
-   aux = scrbuffers[0];
-   scrbuffers[0] = scrbuffers[1];
-   scrbuffers[1] = aux;*/
 }
